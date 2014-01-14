@@ -1,0 +1,1 @@
+{:+ {:app [(:lt.objs.plugins/load-js "jewel_compiled.js" true)]}}

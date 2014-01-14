@@ -1,0 +1,5 @@
+{:name "Jewel"
+ :author "Mike Innes"
+ :source "https://github.com/one-more-minute/Jewel"
+ :desc "Julia Environment"
+ :behaviors "jewel.behaviors"}
