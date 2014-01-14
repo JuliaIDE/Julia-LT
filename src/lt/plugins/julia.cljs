@@ -26,17 +26,10 @@
 
 ;; Other
 
-;; (behavior ::connect
-;;           :triggers #{:connect}
-;;           :reaction (fn [this path]
-;;                       (popup/popup! {:header path :buttons [{:label "ok"}]})))
-
-;; (object/object* ::julia-lang
-;;                 :tags #{:julia.lang})
-
-;; (def julia (object/create ::julia-lang))
-
-;; (object/raise julia :connect "hello there")
+(behavior ::eval.one
+          :triggers #{:eval.one}
+          :reaction (fn [editor]
+                      (popup/popup! {:header (str {:cursor (ed/->cursor editor)}) :buttons [{:label "ok"}]})))
 
 ;; User connector
 
