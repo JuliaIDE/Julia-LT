@@ -1,5 +1,5 @@
-if(!lt.util.load.provided_QMARK_('lt.objs.langs.python')) {
-goog.provide('lt.objs.langs.python');
+if(!lt.util.load.provided_QMARK_('lt.objs.langs.julia')) {
+goog.provide('lt.objs.langs.julia');
 goog.require('cljs.core');
 goog.require('lt.util.cljs');
 goog.require('lt.objs.plugins');
