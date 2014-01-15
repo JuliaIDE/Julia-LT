@@ -6,4 +6,5 @@ The aim is to provide basic support for eval at first, followed by building a so
 
 Current Features:
 
-* None. (Yet. I'm working on it.)
+* Option to add Julia client (must be done manually)
+* Full two-way communication (LT can send input, Julia can trigger events)

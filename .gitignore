@@ -1,2 +1,2 @@
-*.nrepl-port
-target
+.nrepl-port
+target/

@@ -17,7 +17,9 @@
             [lt.objs.clients :as clients]
             [lt.objs.notifos :as notifos]
             [lt.util.load :as load]
-            [lt.util.cljs :refer [js->clj]])
+            [lt.util.cljs :refer [js->clj]]
+            [lt.objs.editor :as editor]
+            [lt.objs.editor.pool :as pool])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 ;; Proc
@@ -26,19 +28,41 @@
 
 ;; Other
 
+(defn connect []
+  (let [client (clients/client! :julia.client)]
+    (popup/popup! {:header "Connect Julia to Light Table"
+                   :body (str "ltconnect(" tcp/port ", " (clients/->id client) ")")
+                   :buttons [{:label "Done"}]})
+    client))
+
+(behavior ::popup
+  :triggers #{:editor.eval.julia.popup}
+  :reaction (fn [editor arg]
+              (popup/popup! {:header (str arg) :buttons [{:label "ok"}]})))
+
 (behavior ::eval.one
-          :triggers #{:eval.one}
-          :reaction (fn [editor]
-                      (popup/popup! {:header (str {:cursor (ed/->cursor editor)}) :buttons [{:label "ok"}]})))
+  :triggers #{:eval.one}
+  :reaction (fn [editor]
+              (clients/send (eval/get-client! {:command :editor.eval.julia
+                                               :origin editor
+                                               :info {}
+                                               :create connect})
+                            :editor.eval.julia
+                            {:code "println(hi)"}
+                            :only
+                            editor)))
+
+;; (defn current-buffer-content []
+;;   "Returns content of the current buffer"
+;;   (let [cm (editor/->cm-ed (pool/last-active))]
+;;     (.getRange cm #js {:line 0 :ch 0} #js {:line (.lineCount (editor/->cm-ed (pool/last-active))) :ch 0})))
 
 ;; User connector
 
-;; (scl/add-connector {:name "Julia"
+(scl/add-connector {:name "Julia"
 ;;                     :desc "Select a directory to serve as the root of your Julia project."
-;;                     :connect (fn []
-;;                                (popup/popup! {:header "Yeah, this doesn't actually work yet."
-;;                                               :body   "Sorry."
-;;                                               :buttons [{:label "Ok."}]}))})
+                    :desc "Manually connect to Julia."
+                    :connect connect})
 
 ;; Settings
 
