@@ -27,14 +27,53 @@
 
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
+(behavior ::proc-out
+          :triggers #{:proc.out}
+          :reaction (fn [this data]
+                      (let [out (.toString data)]
+                        (object/update! this [:buffer] str out)
+                        (if (= out "Connected")
+                          (do
+                            (notifos/done-working)
+                            (object/merge! this {:connected true}))
+                          (console/log out)))))
+
+(behavior ::proc-error
+          :triggers #{:proc.error}
+          :reaction (fn [this data]
+                      (let [out (.toString data)]
+                        (console/log out "error")
+                        (object/update! this [:buffer] str data))))
+
+(behavior ::proc-exit
+          :triggers #{:proc.exit}
+          :reaction (fn [this data]
+                      (when-not (:connected @this)
+                        (notifos/done-working)
+                        (popup/popup! {:header "We couldn't connect."
+                                       :body [:span "Looks like there was an issue trying to connect
+                                              to the project. Here's what we got:" [:pre (:buffer @this)]]
+                                       :buttons [{:label "close"}]})
+                        (clients/rem! (:client @this)))
+                      (proc/kill-all (:procs @this))
+                      (object/destroy! this)))
+
+(object/object* ::connecting-notifier
+                :behaviors [::proc-exit ::proc-error ::proc-out]
+                :init (fn [this client]
+                        (object/merge! this {:client client :buffer ""})
+                        nil))
+
 ;; Connection
 
-;; (defn connect []
-;;   (let [client (clients/client! :julia.client)]
-;;     (proc/exec {:command "julia"
-;;                 :args [init tcp/port (clients/->id client)]
-;;                 :obj julia})
-;;     (clients/send client :julia.set-global-client {} :only julia)))
+(defn connect []
+  (notifos/working "Connecting..")
+  (let [client (clients/client! :julia.client)
+        obj (object/create ::connecting-notifier client)]
+    (proc/exec {:command "C:\\lein\\julia.bat" ;"julia"
+                :args [init tcp/port (clients/->id client)]
+                :obj obj})
+    (clients/send client :julia.set-global-client {} :only julia)))
 
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
@@ -67,6 +106,7 @@
 (behavior ::editor-commands
   :triggers #{:editor.eval.julia.editor-command}
   :reaction (fn [editor res]
+              (notifos/done-working)
               (condp = (res :cmd)
                 "result" (object/raise editor (if (res :under)
                                                 :editor.result.under
@@ -95,26 +135,25 @@
 
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
-                :behaviours [::commands])
+                :behaviors [::commands])
 
 (def julia (object/create ::julia-lang))
-
-(prn julia)
 
 ;; Eval
 
 (behavior ::eval.one
   :triggers #{:eval.one}
   :reaction (fn [editor]
-                (clients/send (eval/get-client! {:command :editor.eval.julia
-                                                 :origin editor
-                                                 :info {}
-                                                 :create connect-manual})
-                              :editor.eval.julia
-                              {:code (current-buffer-content)
-                               :start (cursor editor "start") :end (cursor editor "end")}
-                              :only
-                              editor)))
+              (notifos/working "")
+              (clients/send (eval/get-client! {:command :editor.eval.julia
+                                               :origin editor
+                                               :info {}
+                                               :create connect})
+                            :editor.eval.julia
+                            {:code (current-buffer-content)
+                             :start (cursor editor "start") :end (cursor editor "end")}
+                            :only
+                            editor)))
 
 ;; Settings
 
