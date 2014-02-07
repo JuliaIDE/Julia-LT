@@ -1,6 +1,6 @@
-{:+ {:app [(:lt.objs.plugins/load-js ["codemirror/julia.js" "jewel_compiled.js"])]
+{:+ {:app [(:lt.objs.plugins/load-js [#_"codemirror/julia.js" "jewel_compiled.js"])]
      :files [(:lt.objs.files/file-types [{:name "Julia" :exts [:jl] :mime "text/x-julia" :tags [:editor.julia]}])]
 
      :editor.julia [:lt.objs.langs.julia/eval.one
-                    :lt.objs.langs.julia/popup]
+                    :lt.objs.langs.julia/editor-commands]
      }}
