@@ -2,7 +2,14 @@
 
 This is a plugin for Light Table supporting Julia.
 
-The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use.
+The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't completely replace the standard REPL.
+
+## Instructions
+
+* Intall the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager").
+* `Pkg.clone("Jewel")` in the Julia repl.
+* Open a .jl file
+* ctrl+enter with the cursor on the line you want to evaluate.
 
 ## Current Features
 
@@ -13,8 +20,8 @@ The plan is to build a powerful environment for technical computing, to rival th
 
 ## Current Anti-Features
 
-* The plugin looks for "julia.bat" on your path - this is hard-coded in for now.
-* Pkg functions don't seem to work - no idea why atm.
+* Modules aren't supported; everything is evaluated in the top level scope, unless you select and eval an entire file by hand.
+* Shelling out (and by extension the package manager) doesn't work (on windows at least) - this seems to be to do with the way Node.js handles processes, and might not be fixed soon.
 
 ## Coming Up Soon
 
