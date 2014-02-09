@@ -23,7 +23,7 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-;; Proc
+;; Connection Monitors
 
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
@@ -32,34 +32,48 @@
           :reaction (fn [this data]
                       (let [out (.toString data)]
                         (object/update! this [:buffer] str out)
-                        (if (= out "Connected")
-                          (do
-                            (notifos/done-working)
-                            (object/merge! this {:connected true}))
-                          (console/log out)))))
+                        (when (= out "connected")
+                          (notifos/done-working)
+                          (object/merge! this {:connected true})))))
 
 (behavior ::proc-error
           :triggers #{:proc.error}
           :reaction (fn [this data]
                       (let [out (.toString data)]
-                        (console/log out "error")
-                        (object/update! this [:buffer] str data))))
+                        (object/update! this [:buffer] str out))))
 
 (behavior ::proc-exit
           :triggers #{:proc.exit}
           :reaction (fn [this data]
                       (when-not (:connected @this)
                         (notifos/done-working)
-                        (popup/popup! {:header "We couldn't connect."
-                                       :body [:span "Looks like there was an issue trying to connect
-                                              to the project. Here's what we got:" [:pre (:buffer @this)]]
+                        (popup/popup! {:header "Couldn't connect to Julia"
+                                       :body [:span "Julia Says:" [:pre (:buffer @this)]]
                                        :buttons [{:label "close"}]})
                         (clients/rem! (:client @this)))
                       (proc/kill-all (:procs @this))
                       (object/destroy! this)))
 
+(behavior ::pipe-out
+           :triggers #{:proc.out}
+           :reaction (fn [this data]
+                       (object/update! this [:out-buffer] str data)
+                       (let [out (@this :out-buffer)]
+                         (when (= (last out) "\n")
+                           (console/log out)
+                           (object/merge! this {:out-buffer ""})))))
+
+(behavior ::pipe-err
+           :triggers #{:proc.error}
+           :reaction (fn [this data]
+                       (object/update! this [:err-buffer] str data)
+                       (let [out (@this :err-buffer)]
+                         (when (= (last out) "\n")
+                           (console/log out "error")
+                           (object/merge! this {:err-buffer ""})))))
+
 (object/object* ::connecting-notifier
-                :behaviors [::proc-exit ::proc-error ::proc-out]
+                :behaviors [::proc-out ::proc-error ::proc-exit ::pipe-out ::pipe-err]
                 :init (fn [this client]
                         (object/merge! this {:client client :buffer ""})
                         nil))
@@ -70,7 +84,7 @@
   (notifos/working "Connecting..")
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
-    (proc/exec {:command "C:\\lein\\julia.bat" ;"julia"
+    (proc/exec {:command "julia.bat"
                 :args [init tcp/port (clients/->id client)]
                 :obj obj})
     (clients/send client :julia.set-global-client {} :only julia)))
@@ -144,16 +158,18 @@
 (behavior ::eval.one
   :triggers #{:eval.one}
   :reaction (fn [editor]
-              (notifos/working "")
-              (clients/send (eval/get-client! {:command :editor.eval.julia
-                                               :origin editor
-                                               :info {}
-                                               :create connect})
-                            :editor.eval.julia
-                            {:code (current-buffer-content)
-                             :start (cursor editor "start") :end (cursor editor "end")}
-                            :only
-                            editor)))
+              ; This seems to return nil at first - not ideal.
+              (when-let [client (eval/get-client! {:command :editor.eval.julia
+                                                      :origin editor
+                                                      :info {}
+                                                      :create connect})]
+                (notifos/working "")
+                (clients/send client
+                              :editor.eval.julia
+                              {:code (current-buffer-content)
+                               :start (cursor editor "start") :end (cursor editor "end")}
+                              :only
+                              editor))))
 
 ;; Settings
 
