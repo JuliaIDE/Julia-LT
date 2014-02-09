@@ -14,6 +14,7 @@ The plan is to build a powerful environment for technical computing, to rival th
 ## Current Anti-Features
 
 * The plugin looks for "julia.bat" on your path - this is hard-coded in for now.
+* Pkg functions don't seem to work - no idea why atm.
 
 ## Coming Up Soon
 
