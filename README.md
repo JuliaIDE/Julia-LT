@@ -8,6 +8,7 @@ The plan is to build a powerful environment for technical computing, to rival th
 
 * Intall the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager").
 * `Pkg.clone("Jewel")` in the Julia repl.
+* Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia")`.
 * Open a .jl file
 * ctrl+enter with the cursor on the line you want to evaluate.
 
