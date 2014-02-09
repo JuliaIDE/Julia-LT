@@ -48,7 +48,7 @@
                       (when-not (:connected @this)
                         (notifos/done-working)
                         (popup/popup! {:header "Couldn't connect to Julia"
-                                       :body [:span "Julia Says:" [:pre (:buffer @this)]]
+                                       :body [:pre (:buffer @this)]
                                        :buttons [{:label "close"}]})
                         (clients/rem! (:client @this)))
                       (proc/kill-all (:procs @this))
@@ -64,13 +64,13 @@
                            (object/merge! this {:out-buffer ""})))))
 
 (behavior ::pipe-err
-           :triggers #{:proc.error}
-           :reaction (fn [this data]
-                       (object/update! this [:err-buffer] str data)
-                       (let [out (@this :err-buffer)]
-                         (when (= (last out) "\n")
-                           (console/log out "error")
-                           (object/merge! this {:err-buffer ""})))))
+          :triggers #{:proc.error}
+          :reaction (fn [this data]
+                      (object/update! this [:err-buffer] str data)
+                      (let [out (@this :err-buffer)]
+                        (when (= (last out) "\n")
+                          (console/log out "error")
+                          (object/merge! this {:err-buffer ""})))))
 
 (object/object* ::connecting-notifier
                 :behaviors [::proc-out ::proc-error ::proc-exit ::pipe-out ::pipe-err]
@@ -84,7 +84,7 @@
   (notifos/working "Connecting..")
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
-    (proc/exec {:command "julia.bat"
+    (proc/exec {:command (or (@julia :path) "julia")
                 :args [init tcp/port (clients/->id client)]
                 :obj obj})
     (clients/send client :julia.set-global-client {} :only julia)))
@@ -92,7 +92,7 @@
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
     (popup/popup! {:header "Connect Julia to Light Table"
-                   :body (str "ltconnect(" tcp/port ", " (clients/->id client) ")")
+                   :body (str "Jewel.server(" tcp/port ", " (clients/->id client) ")")
                    :buttons [{:label "Done"}]})
     (clients/send client :julia.set-global-client {} :only julia)
     client))
@@ -160,9 +160,9 @@
   :reaction (fn [editor]
               ; This seems to return nil at first - not ideal.
               (when-let [client (eval/get-client! {:command :editor.eval.julia
-                                                      :origin editor
-                                                      :info {}
-                                                      :create connect})]
+                                                   :origin editor
+                                                   :info {}
+                                                   :create connect})]
                 (notifos/working "")
                 (clients/send client
                               :editor.eval.julia
@@ -173,12 +173,12 @@
 
 ;; Settings
 
-;; (behavior ::julia-exe
-;;           :triggers #{:object.instant}
-;;           :desc "Julia: Set the path to the Julia executable for clients"
-;;           :type :user
-;;           :params [{:label "path"
-;;                     :type :path}]
-;;           :exclusive true
-;;           :reaction (fn [this exe]
-;;                       (object/merge! julia {:julia-exe exe})))
+(behavior ::julia-path
+          :triggers #{:object.instant}
+          :desc "Julia: Set the path to the Julia executable"
+          :type :user
+          :params [{:label "path"
+                    :type :path}]
+          :exclusive true
+          :reaction (fn [this exe]
+                      (object/merge! julia {:path exe})))
