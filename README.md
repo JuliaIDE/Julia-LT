@@ -44,7 +44,7 @@ The plan is to build a powerful environment for technical computing, to rival th
 * The interactivity should be easily extensible from within Julia itself, so that it can provide the foundation for the kind of fully interactive data visualisation that people want to build.
 * Input of greek letters/other unicode characters via replacement; \mu -> μ. Could work with autocompletion.
   * This would solve some issues people have been having with confusable unicode chars.
-* Extensible Mathematica style input of formulae, matrices, integrals etc.; e.g., x^2 would display in the editor as x2. More advanced things would be possible, like displaying @sumt n 1:10 n^2 as fully editable sigma notation: 1:10nn2.
+* Extensible Mathematica style input of formulae, matrices, integrals etc.; e.g., x^2 would display in the editor as x<sup>2</sup>. More advanced things would be possible, like displaying @sumt n 1:10 n^2 as fully editable sigma notation: 1:10nn2.
 * Similarly, data frame input; have the ease-of-use of an excel style spreadsheet right inside your file. Copy + paste data directly from Excel to Julia, for example.
   * This could taken even further, by having a mode where the spreadsheet is the primary environment, “code boxes” are secondary. Could be great for quick stats work.
   * Ideally this kind of functionality would be defined within relevant Julia packages
