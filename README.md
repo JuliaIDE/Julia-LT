@@ -22,7 +22,7 @@ The plan is to build a powerful environment for technical computing, to rival th
 ## Current Anti-Features
 
 * Modules aren't supported; everything is evaluated in the top level scope, unless you select and eval an entire file by hand.
-* Shelling out (and by extension the package manager) doesn't work (on windows at least) - this seems to be to do with the way Node.js handles processes, and might not be fixed soon.
+* Shelling out (and by extension e.g. `Pkg`, `PyPlot`) doesn't work on some windows systems - this seems to be to do with the way Node.js handles processes.
 
 ## Coming Up Soon
 
