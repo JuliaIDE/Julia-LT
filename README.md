@@ -4,7 +4,7 @@
 
 This is a plugin for Light Table supporting Julia.
 
-The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't completely replace the standard REPL.
+The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't replace the standard REPL.
 
 ## Instructions
 
@@ -50,6 +50,5 @@ The plan is to build a powerful environment for technical computing, to rival th
 * Similarly, data frame input; have the ease-of-use of an excel style spreadsheet right inside your file. Copy + paste data directly from Excel to Julia, for example.
   * This could taken even further, by having a mode where the spreadsheet is the primary environment, “code boxes” are secondary. Could be great for quick stats work.
 * Further ideas within scope:
-  * Better story for windows users; i.e. a Julia installer.
-  * Perhaps also a custom Light Table installer specifically designed to get non-programmer users up and running as quickly as possible.
+  * Perhaps a custom Light Table installer specifically designed to get non-programmer users up and running as quickly as possible.
 
