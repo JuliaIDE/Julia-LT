@@ -1,5 +1,7 @@
 # Jewel
 
+[![Gitter chat](https://badges.gitter.im/one-more-minute/Jewel.png)](https://gitter.im/one-more-minute/Jewel)
+
 This is a plugin for Light Table supporting Julia.
 
 The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't completely replace the standard REPL.
