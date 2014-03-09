@@ -6,6 +6,8 @@ This is a plugin for Light Table supporting Julia.
 
 The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't replace the standard REPL.
 
+This is alpha software, so the code will likely be completely reworked.
+
 ## Instructions
 
 * Intall the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager").
