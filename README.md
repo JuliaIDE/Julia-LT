@@ -2,11 +2,9 @@
 
 [![Gitter chat](https://badges.gitter.im/one-more-minute/Jewel.png)](https://gitter.im/one-more-minute/Jewel)
 
-This is a plugin for Light Table supporting Julia.
+This is a plugin for Light Table supporting Julia. The Julia side of this project lives [here](https://github.com/one-more-minute/Jewel.jl). My only goal with the current code was to get it working, so it's definitely due for a rewrite.
 
-The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't replace the standard REPL.
-
-This is alpha software, so the code will likely be completely reworked.
+The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't replace the standard REPL by a long way.
 
 ## Instructions
 
