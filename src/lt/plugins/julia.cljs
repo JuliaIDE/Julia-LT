@@ -171,6 +171,22 @@
                               :only
                               editor))))
 
+(behavior ::eval.all
+  :triggers #{:eval}
+  :reaction (fn [editor]
+              ; This seems to return nil at first - not ideal.
+              (when-let [client (eval/get-client! {:command :editor.eval.julia
+                                                   :origin editor
+                                                   :info {}
+                                                   :create connect})]
+                (notifos/working "")
+                (clients/send client
+                              :editor.eval.julia
+                              {:code (current-buffer-content)
+                               :all true}
+                              :only
+                              editor))))
+
 ;; Settings
 
 (behavior ::julia-path
