@@ -1,6 +1,6 @@
 # Jewel
 
-[![Gitter chat](https://badges.gitter.im/one-more-minute/Jewel.png)](https://gitter.im/one-more-minute/Jewel)
+[![Gitter chat](https://badges.gitter.im/one-more-minute/Jewel.png)](https://gitter.im/one-more-minute/Jewel) - feel free to ask questions here.
 
 This is a plugin for Light Table supporting Julia. The Julia side of this project lives [here](https://github.com/one-more-minute/Jewel.jl). My only goal with the current code was to get it working, so it's definitely due for a rewrite.
 
@@ -20,15 +20,14 @@ The plan is to build a powerful environment for technical computing, to rival th
 * Reasonable error handling.
 * Printing and warnings work well.
 * Limited interaction with LT from Julia (popup messages etc.)
+* Some support for modules - opening a file starting with `module X` will eval code in the context of that module, so you can change modules at run time.
 
 ## Current Anti-Features
 
-* Modules aren't supported; everything is evaluated in the top level scope, unless you select and eval an entire file by hand.
 * Shelling out (and by extension e.g. `Pkg`, `PyPlot`) doesn't work on some windows systems - this seems to be to do with the way Node.js handles processes.
 
 ## Coming Up Soon
 
-* Support for modules
 * Autocomplete
 * Images / Plots
 
