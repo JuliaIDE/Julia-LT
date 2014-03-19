@@ -17,7 +17,7 @@
             [lt.objs.clients :as clients]
             [lt.objs.notifos :as notifos]
             [lt.util.load :as load]
-            [lt.util.cljs :refer [js->clj]]
+            [lt.util.cljs]; :refer [js->clj]]
             [lt.objs.editor :as editor]
             [lt.objs.editor.pool :as pool]
             [crate.core :as crate])
@@ -167,7 +167,8 @@
                 (clients/send client
                               :editor.eval.julia
                               {:code (current-buffer-content)
-                               :start (cursor editor "start") :end (cursor editor "end")}
+                               :start (cursor editor "start") :end (cursor editor "end")
+                               :path (-> @editor :info :path)}
                               :only
                               editor))))
 
@@ -183,7 +184,8 @@
                 (clients/send client
                               :editor.eval.julia
                               {:code (current-buffer-content)
-                               :all true}
+                               :all true
+                               :path (-> @editor :info :path)}
                               :only
                               editor))))
 
