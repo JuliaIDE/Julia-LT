@@ -25,8 +25,6 @@
 
 ;; Connection Monitors
 
-(def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
-
 (behavior ::proc-out
           :triggers #{:proc.out}
           :reaction (fn [this data]
@@ -80,6 +78,8 @@
 
 ;; Connection
 
+(def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
+
 (defn connect []
   (notifos/working "Connecting..")
   (let [client (clients/client! :julia.client)
@@ -115,7 +115,7 @@
       {:line (-> cursor :line inc)
        :col  (-> cursor :ch   inc)})))
 
-; Editor commands
+;; Editor commands
 
 (behavior ::editor-commands
   :triggers #{:editor.eval.julia.editor-command}
@@ -145,7 +145,8 @@
                                        :body    (res :body)
                                        :buttons (res :buttons)})
                 "print" (console/log (res :value)
-                                     (if (res :error) "error")))))
+                                     (if (res :error) "error"))
+                "done"  (notifos/done-working))))
 
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
@@ -172,6 +173,7 @@
                               :only
                               editor))))
 
+; Could be DRYer
 (behavior ::eval.all
   :triggers #{:eval}
   :reaction (fn [editor]
