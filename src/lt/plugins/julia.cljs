@@ -9,6 +9,7 @@
             [lt.objs.files :as files]
             [lt.objs.popup :as popup]
             [lt.objs.platform :as platform]
+            [lt.plugins.auto-complete :as auto-complete]
             [lt.objs.editor :as ed]
             [lt.objs.plugins :as plugins]
             [lt.plugins.watches :as watches]
@@ -81,7 +82,7 @@
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
 (defn connect []
-  (notifos/working "Connecting..")
+  (notifos/working "Connecting...")
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
     (proc/exec {:command (or (@julia :path) "julia")
@@ -117,6 +118,7 @@
 
 ;; Editor commands
 
+; Should really factor these into behaviours
 (behavior ::editor-commands
   :triggers #{:editor.eval.julia.editor-command}
   :reaction (fn [editor res]
@@ -133,7 +135,10 @@
                 "error" (object/raise editor :editor.exception
                                              (res :value)
                                              {:start-line (-> res :start dec)
-                                              :line (-> res :end dec)}))))
+                                              :line (-> res :end dec)})
+                "hints" (do
+                          (object/merge! editor {::hints (map #(do #js {:completion %}) (:hints res))})
+                          (object/raise auto-complete/hinter :refresh!)))))
 
 ;; Global commands
 
@@ -190,6 +195,30 @@
                                :path (-> @editor :info :path)}
                               :only
                               editor))))
+
+;; Autocomplete
+
+(behavior ::trigger-update-hints
+          :triggers #{:editor.julia.hints.update!}
+          :debounce 100
+          :reaction (fn [editor res]
+                      (when-let [default-client (-> @editor :client :default)] ;; dont eval unless we're already connected
+                        (when @default-client
+                          (clients/send (eval/get-client! {:command :editor.julia.hints
+                                                           :info {}
+                                                           :origin editor
+                                                           :create connect})
+                                        :editor.julia.hints
+                                        {:token (::token @editor)}
+                                        :only editor)))))
+
+(behavior ::use-local-hints
+          :triggers #{:hints+}
+          :reaction (fn [editor hints token]
+                      (when (not= token (::token @editor))
+                        (object/merge! editor {::token token})
+                        (object/raise editor :editor.julia.hints.update!))
+                        (concat (::hints @editor) hints)))
 
 ;; Settings
 
