@@ -209,7 +209,9 @@
                                                            :origin editor
                                                            :create connect})
                                         :editor.julia.hints
-                                        {:token (::token @editor)}
+                                        {:token (::token @editor)
+                                         :cursor (cursor editor)
+                                         :code (current-buffer-content)}
                                         :only editor)))))
 
 (behavior ::use-local-hints
