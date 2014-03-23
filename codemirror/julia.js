@@ -258,5 +258,4 @@ CodeMirror.defineMode("julia", function(_conf, parserConf) {
   return external;
 });
 
-
-CodeMirror.defineMIME("text/x-julia", "julia");
+CodeMirror.defineMIME("text/julia", "julia");
