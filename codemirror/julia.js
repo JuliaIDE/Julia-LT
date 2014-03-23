@@ -253,7 +253,7 @@ CodeMirror.defineMode("julia", function(_conf, parserConf) {
 
     lineComment: "#",
     fold: "indent",
-    electricChars: "edlsifyh]}"
+//     electricChars: "edlsifyh]}"
   };
   return external;
 });
