@@ -21,6 +21,7 @@
             [lt.util.cljs]; :refer [js->clj]]
             [lt.objs.editor :as editor]
             [lt.objs.editor.pool :as pool]
+            [lt.plugins.doc :as doc]
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
@@ -140,7 +141,13 @@
                           (object/merge! editor {::no-textual-hints (:notextual res)})
                           (object/merge! editor {::hints (map #(do #js {:completion %}) (:hints res))})
                           (object/raise auto-complete/hinter :refresh!))
-                "doc"   (object/raise editor :editor.doc.show! res))))
+                "doc"   (doc/inline-doc editor
+                                        (crate/html
+                                          [:div.inline-doc
+                                            (if (res :html)
+                                              (crate/raw (res :doc))
+                                              [:pre (res :doc)])])
+                                        {} (:loc res)))))
 
 ;; Global commands
 
@@ -232,7 +239,7 @@
 
 ;; Docs
 
-(behavior ::jl-doc
+(behavior ::doc
           :triggers #{:editor.doc}
           :reaction (fn [editor]
                       (clients/send (eval/get-client! {:command :editor.julia.doc
@@ -243,6 +250,28 @@
                                     {:cursor (cursor editor)
                                      :code (current-buffer-content)}
                                     :only editor)))
+
+(behavior ::methods
+          :triggers #{:editor.methods}
+          :reaction (fn [editor]
+                      (clients/send (eval/get-client! {:command :editor.julia.doc
+                                                       :info {}
+                                                       :origin editor
+                                                       :create connect})
+                                    :editor.julia.doc
+                                    {:cursor (cursor editor)
+                                     :code (current-buffer-content)
+                                     :type :methods}
+                                    :only editor)))
+
+(cmd/command {:command :editor.methods.toggle
+              :desc "Docs: Toggle methods at cursor"
+              :exec (fn []
+                      (when-let [ed (pool/last-active)]
+                        (let [loc (editor/->cursor ed)]
+                          (if-let [cur (doc/doc-on-line? ed (:line loc))]
+                            (doc/remove! ed cur)
+                            (object/raise ed :editor.methods)))))})
 
 ;; Settings
 

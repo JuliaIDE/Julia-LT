@@ -3,4 +3,6 @@
                                            :exts [:jl]
                                            :mime "text/julia"
                                            :tags [:editor.julia]})]}
-  :editor.julia {"ctrl-/" [:toggle-comment-selection]}}}
+  :editor.julia {"ctrl-/" [:toggle-comment-selection]
+                 "ctrl-;" [:auto-complete.force]
+                 "ctrl-m" [:editor.methods.toggle]}}}
