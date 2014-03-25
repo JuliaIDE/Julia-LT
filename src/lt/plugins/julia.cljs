@@ -46,7 +46,7 @@
           :triggers #{:proc.exit}
           :reaction (fn [this data]
                       (when-not (:connected @this)
-                        (notifos/done-working) (notifos/done-working)
+                        (notifos/done-working)
                         (popup/popup! {:header "Couldn't connect to Julia"
                                        :body [:pre (:buffer @this)]
                                        :buttons [{:label "close"}]})
@@ -85,7 +85,6 @@
 (defn julia-path [] (or (@julia :path) "julia"))
 
 (defn connect []
-  (notifos/working "Connecting to Julia...")
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
     (proc/exec {:command (julia-path)
