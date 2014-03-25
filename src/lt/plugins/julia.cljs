@@ -226,7 +226,6 @@
 (behavior ::textual-hints
           :triggers #{:hints+}
           :reaction (fn [editor hints]
-                      (println (::no-textual-hints @editor))
                       (if-not (::no-textual-hints @editor)
                         (concat (:lt.plugins.auto-complete/hints @editor) hints)
                         hints)))
