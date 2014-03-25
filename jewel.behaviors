@@ -4,8 +4,10 @@
      :editor.julia [:lt.objs.langs.julia/eval.one
                     :lt.objs.langs.julia/eval.all
                     :lt.objs.langs.julia/editor-commands
+                    :lt.objs.langs.julia/jl-doc
                     (:lt.objs.editor/tab-settings false 2 2)
-                    (:lt.object/add-tag :editor.julia.hints)]
+                    (:lt.object/add-tag :editor.julia.hints)
+                    (:lt.object/add-tag :docable)]
 
      :editor.julia.hints [:lt.objs.langs.julia/use-local-hints
                           :lt.objs.langs.julia/trigger-update-hints]

@@ -138,7 +138,8 @@
                                               :line (-> res :end dec)})
                 "hints" (do
                           (object/merge! editor {::hints (map #(do #js {:completion %}) (:hints res))})
-                          (object/raise auto-complete/hinter :refresh!)))))
+                          (object/raise auto-complete/hinter :refresh!))
+                "doc"   (object/raise editor :editor.doc.show! res))))
 
 ;; Global commands
 
@@ -221,6 +222,20 @@
                         (object/merge! editor {::token token})
                         (object/raise editor :editor.julia.hints.update!))
                         (concat (::hints @editor) hints)))
+
+;; Docs
+
+(behavior ::jl-doc
+          :triggers #{:editor.doc}
+          :reaction (fn [editor]
+                      (clients/send (eval/get-client! {:command :editor.julia.doc
+                                                       :info {}
+                                                       :origin editor
+                                                       :create connect})
+                                    :editor.julia.doc
+                                    {:cursor (cursor editor)
+                                     :code (current-buffer-content)}
+                                    :only editor)))
 
 ;; Settings
 
