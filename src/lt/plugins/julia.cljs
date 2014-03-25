@@ -160,7 +160,8 @@
                                        :buttons (res :buttons)})
                 "print" (console/log (res :value)
                                      (if (res :error) "error"))
-                "done"  (notifos/done-working))))
+                "done"  (notifos/done-working)
+                "notify" (notifos/set-msg! (res :msg) {:class (res :class)}))))
 
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
