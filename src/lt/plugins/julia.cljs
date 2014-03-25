@@ -137,6 +137,7 @@
                                              {:start-line (-> res :start dec)
                                               :line (-> res :end dec)})
                 "hints" (do
+                          (object/merge! editor {::no-textual-hints (:notextual res)})
                           (object/merge! editor {::hints (map #(do #js {:completion %}) (:hints res))})
                           (object/raise auto-complete/hinter :refresh!))
                 "doc"   (object/raise editor :editor.doc.show! res))))
@@ -218,10 +219,17 @@
 (behavior ::use-local-hints
           :triggers #{:hints+}
           :reaction (fn [editor hints token]
-                      (when (not= token (::token @editor))
-                        (object/merge! editor {::token token})
-                        (object/raise editor :editor.julia.hints.update!))
-                        (concat (::hints @editor) hints)))
+                      (object/merge! editor {::token token})
+                      (object/raise editor :editor.julia.hints.update!)
+                      (concat (::hints @editor) hints)))
+
+(behavior ::textual-hints
+          :triggers #{:hints+}
+          :reaction (fn [editor hints]
+                      (println (::no-textual-hints @editor))
+                      (if-not (::no-textual-hints @editor)
+                        (concat (:lt.plugins.auto-complete/hints @editor) hints)
+                        hints)))
 
 ;; Docs
 

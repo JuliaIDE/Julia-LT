@@ -10,5 +10,7 @@
                     (:lt.object/add-tag :docable)]
 
      :editor.julia.hints [:lt.objs.langs.julia/use-local-hints
-                          :lt.objs.langs.julia/trigger-update-hints]
-     }}
+                          :lt.objs.langs.julia/trigger-update-hints
+                          :lt.objs.langs.julia/textual-hints]
+     }
+ :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]}}
