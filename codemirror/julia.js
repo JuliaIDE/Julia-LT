@@ -1,4 +1,4 @@
-CodeMirror.defineMode("julia", function(_conf, parserConf) {
+CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var ERRORCLASS = 'error';
 
   function wordRegexp(words) {
@@ -258,4 +258,4 @@ CodeMirror.defineMode("julia", function(_conf, parserConf) {
   return external;
 });
 
-CodeMirror.defineMIME("text/julia", "julia");
+CodeMirror.defineMIME("text/julia", "julia2");
