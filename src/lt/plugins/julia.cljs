@@ -83,13 +83,14 @@
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
 (defn connect []
-  (notifos/working "Connecting...")
+  (notifos/working "Connecting to Julia...")
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
     (proc/exec {:command (or (@julia :path) "julia")
                 :args [init tcp/port (clients/->id client)]
                 :obj obj})
-    (clients/send client :julia.set-global-client {} :only julia)))
+    (clients/send client :julia.set-global-client {} :only julia)
+    client))
 
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
@@ -125,28 +126,34 @@
   :reaction (fn [editor res]
               (notifos/done-working)
               (condp = (res :cmd)
-                "result" (object/raise editor (if (res :under)
-                                                :editor.result.under
-                                                :editor.result)
-                                              (if (res :html)
-                                                (-> res :value crate/raw)
-                                                (-> res :value))
-                                              {:start-line (-> res :start dec)
-                                               :line (-> res :end dec)})
-                "error" (object/raise editor :editor.exception
-                                             (res :value)
-                                             {:start-line (-> res :start dec)
-                                              :line (-> res :end dec)})
+                "result" (do
+                           (notifos/done-working "")
+                           (object/raise editor
+                                         (if (res :under)
+                                           :editor.result.under
+                                           :editor.result)
+                                         (if (res :html)
+                                           (-> res :value crate/raw)
+                                           (-> res :value))
+                                         {:start-line (-> res :start dec)
+                                          :line (-> res :end dec)}))
+                "error" (do
+                          (notifos/done-working "")
+                          (object/raise editor
+                                        :editor.exception
+                                        (res :value)
+                                        {:start-line (-> res :start dec)
+                                         :line (-> res :end dec)}))
                 "hints" (do
                           (object/merge! editor {::no-textual-hints (:notextual res)})
                           (object/merge! editor {::hints (map #(do #js {:completion %}) (:hints res))})
                           (object/raise auto-complete/hinter :refresh!))
                 "doc"   (doc/inline-doc editor
                                         (crate/html
-                                          [:div.inline-doc
-                                            (if (res :html)
-                                              (crate/raw (res :doc))
-                                              [:pre (res :doc)])])
+                                         [:div.inline-doc
+                                          (if (res :html)
+                                            (crate/raw (res :doc))
+                                            [:pre (res :doc)])])
                                         {} (:loc res)))))
 
 ;; Global commands
@@ -160,7 +167,9 @@
                                        :buttons (res :buttons)})
                 "print" (console/log (res :value)
                                      (if (res :error) "error"))
-                "done"  (notifos/done-working)
+                "done"  (if (res :msg)
+                          (notifos/done-working (res :msg))
+                          (notifos/done-working))
                 "notify" (notifos/set-msg! (res :msg) {:class (res :class)}))))
 
 (object/object* ::julia-lang
@@ -174,12 +183,11 @@
 (behavior ::eval.one
   :triggers #{:eval.one}
   :reaction (fn [editor]
-              ; This seems to return nil at first - not ideal.
-              (when-let [client (eval/get-client! {:command :editor.eval.julia
-                                                   :origin editor
-                                                   :info {}
-                                                   :create connect})]
-                (notifos/working "")
+              (let [client (eval/get-client! {:command :editor.eval.julia
+                                              :origin editor
+                                              :info {}
+                                              :create connect})]
+                (notifos/working "Running...")
                 (clients/send client
                               :editor.eval.julia
                               {:code (current-buffer-content)
@@ -188,16 +196,14 @@
                               :only
                               editor))))
 
-; Could be DRYer
 (behavior ::eval.all
   :triggers #{:eval}
   :reaction (fn [editor]
-              ; This seems to return nil at first - not ideal.
-              (when-let [client (eval/get-client! {:command :editor.eval.julia
-                                                   :origin editor
-                                                   :info {}
-                                                   :create connect})]
-                (notifos/working "")
+              (let [client (eval/get-client! {:command :editor.eval.julia
+                                              :origin editor
+                                              :info {}
+                                              :create connect})]
+                (notifos/working "Loading file...")
                 (clients/send client
                               :editor.eval.julia
                               {:code (current-buffer-content)
@@ -243,6 +249,7 @@
 (behavior ::doc
           :triggers #{:editor.doc}
           :reaction (fn [editor]
+                      (notifos/working "Loading docs...")
                       (clients/send (eval/get-client! {:command :editor.julia.doc
                                                        :info {}
                                                        :origin editor
@@ -255,6 +262,7 @@
 (behavior ::methods
           :triggers #{:editor.methods}
           :reaction (fn [editor]
+                      (notifos/working "Loading methods...")
                       (clients/send (eval/get-client! {:command :editor.julia.doc
                                                        :info {}
                                                        :origin editor
