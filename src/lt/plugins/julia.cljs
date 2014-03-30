@@ -33,7 +33,7 @@
                       (let [out (.toString data)]
                         (object/update! this [:buffer] str out)
                         (when (= out "connected")
-                          (notifos/done-working)
+                          (when (@this :notify) (notifos/done-working "Connected to Julia"))
                           (object/merge! this {:connected true})))))
 
 (behavior ::proc-error
@@ -84,19 +84,23 @@
 
 (defn julia-path [] (or (@julia :path) "julia"))
 
-(defn connect []
+(defn connect [notify]
+  (when notify (notifos/working "Spinning up a Julia client..."))
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
+    (object/merge! obj {:notify notify})
     (proc/exec {:command (julia-path)
                 :args [init tcp/port (clients/->id client)]
                 :obj obj})
     (clients/send client :julia.set-global-client {} :only julia)
     client))
 
+(defn connect-notify [] (connect true))
+
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
     (popup/popup! {:header "Connect Julia to Light Table"
-                   :body (str "Jewel.server(" tcp/port ", " (clients/->id client) ")")
+                   :body (str "@async Jewel.server(" tcp/port ", " (clients/->id client) ")")
                    :buttons [{:label "Done"}]})
     (clients/send client :julia.set-global-client {} :only julia)
     client))
@@ -294,3 +298,30 @@
           :exclusive true
           :reaction (fn [this exe]
                       (object/merge! julia {:path exe})))
+
+(defn wait-until [cond callback]
+  (if (cond)
+    (callback)
+    (js/setTimeout #(wait-until cond callback) 100)))
+
+(behavior ::connect-on-startup
+          :triggers #{:init}
+          :desc "Julia: Spin up a client when Light Table starts"
+          :type :user
+          :exclusive true
+          :reaction (fn []
+                      (wait-until #(not= tcp/port 0)
+                        #(eval/get-client! {:command :editor.julia.eval
+                                            :info {}
+                                            :origin julia
+                                            :create connect-notify}))))
+
+(behavior ::connect-on-open
+          :triggers #{:object.instant}
+          :desc "Julia: Automatically connect editors to a Julia client."
+          :type :user
+          :reaction (fn [editor]
+                      (eval/get-client! {:command :editor.eval.julia
+                                         :origin editor
+                                         :info {}
+                                         :create connect-notify})))
