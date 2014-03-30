@@ -1,5 +1,5 @@
 port, id = map(parseint, ARGS)
 
-using Jewel
+require("Jewel")
 
 Jewel.server(port, id)
