@@ -8,7 +8,7 @@ Light Table is shaping up well as a Julia IDE - it's already become my go-to env
 
 ## Instructions
 
-* Intall the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager", search for "julia" or "jewel").
+* Install the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager", search for "julia" or "jewel").
 * Once Jewel is installed, restart LT.
 * `Pkg.add("Jewel")` in the Julia repl.
 * Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia-readline.exe")`.
