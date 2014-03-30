@@ -2,38 +2,54 @@
 
 [![Gitter chat](https://badges.gitter.im/one-more-minute/Jewel.png)](https://gitter.im/one-more-minute/Jewel) - feel free to ask questions here.
 
-This is a plugin for Light Table supporting Julia. The Julia side of this project lives [here](https://github.com/one-more-minute/Jewel.jl). My only goal with the current code was to get it working, so it's definitely due for a rewrite.
+This is a plugin for Light Table supporting Julia. The Julia side of this project lives [here](https://github.com/one-more-minute/Jewel.jl). The long-term goal is to mold Light Table into a MATLAB-like environment for Julia.
 
-The plan is to build a powerful environment for technical computing, to rival the likes of Mathematica/Matlab for interactivity and ease of use. It's currently usable but doesn't replace the standard REPL by a long way.
+Light Table is shaping up well as a Julia IDE - it's already become my go-to environment for writing Julia packages, including the plugin itself. See "Current Features" to find out what it can do.
 
 ## Instructions
 
-* Intall the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager").
-* `Pkg.clone("Jewel")` in the Julia repl.
-* Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia")`.
-* Open a .jl file
-* ctrl+enter with the cursor on the line you want to evaluate.
+* Intall the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager", search for "julia" or "jewel").
+* `Pkg.add("Jewel")` in the Julia repl.
+* Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia-readline.exe")`.
+* Alternatively, clone Jewel and Jewel.jl into the appropriate folders for the latest and greatest (and possibly brokenest).
 
 ## Current Features
 
 * Evalling in a Julia file - the client is booted up automagically.
+
 * Reasonable error handling.
-* Printing and warnings work well.
+
+* Printing and warnings are properly redirected to LT's console.
+
 * Limited interaction with LT from Julia (popup messages etc.)
-* Some support for modules - opening a file starting with `module X` will eval code in the context of that module, so you can change modules at run time.
 
-## Current Anti-Features
+* Support for modules - Jewel will look for a `module X` or `#jewel module X` declaration above the code you wish to evaluate and do so in the context of that module, allowing you to modify modules at runtime rather than having to replace them wholesale.
 
-* Shelling out (and by extension e.g. `Pkg`, `PyPlot`) doesn't work on some windows systems - this seems to be to do with the way Node.js handles processes.
+* Autocompletion: Jewel will provide hints for all accessible names by default. `Module.` hints the names accessibly within module. `using ` and `Pkg.add/rm()` will hint installed/available packages as appropriate. `Ctrl+;` forces autocompletion.
+  * Note that autocompletion will only work when an editor has a client attached; evaluate something or press `Ctrl+d` to connect to a client.
+  * Autocompletion is also extensible, so DSLs (for example) could be supported in future.
+
+* Inline Docs: `Ctrl+d` (`Cmd` on OSX) and `Ctrl+m` toggle docs (as in `help()`) and methods (as in `methods()`) respectively. For Base methods, a link to the source on GitHub is given; soon local files will open in LT, too.
+
+## Useful Shortcuts
+
+`C` = `Ctrl` (Windows, Linux), `Cmd` (Mac)
+
+* `C-d`: Toggle docs
+* `C-m`: Toggle methods
+* `C-j`: New Julia file
+* `C-;`: Show autocomplete
+* `C-/`: Toggle comment lines
 
 ## Coming Up Soon
 
-* Autocomplete
 * Images / Plots
+* Richer display of built-in types
+* Better syntax highlighting, themes, and UI improvements
 
 ## General Roadmap
 
-* Basic IDE functionality - project management etc.
+* Better syntax highlighting, new theme, general UI improvements
 * Instrepl - evaluating forms within a file, even as they are written
   * Would enable a “reactive” (spreadsheet-y) style of programming; edit data or a formula deep within your code and plots/output instantly update
 * Instant access to documentation within the editor.
