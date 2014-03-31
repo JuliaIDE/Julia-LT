@@ -16,8 +16,7 @@ Note: to execute commands, `Ctrl+Space` the type the command's name.
 * Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia")`.
   * (Use the "user behaviors" command. See [here](https://gist.github.com/one-more-minute/9882389) for an example of setting the Julia path)
 * Open a `.jl` file (or press `Ctrl-j` for a new one), type something, `Ctrl+Enter` to evaluate the line.
-* Alternatively, clone Jewel and Jewel.jl into the appropriate folders for the latest and greatest (and possibly brokenest).
-* To update: First `Pkg.update()` in Julia, then execute the "update all outdated" command in Light Table
+* To update: First `Pkg.update()` in Julia, then use the "update all outdated" command in Light Table
 
 ## Current Features
 
