@@ -8,13 +8,16 @@ Light Table is shaping up well as a Julia IDE - it's already become my go-to env
 
 ## Instructions
 
-* Install the plugin with Light Table's plugin manager (ctrl+space, search for "show plugin manager", search for "julia" or "jewel").
+Note: to execute commands, `Ctrl+Space` the type the command's name.
+
+* Install the plugin with Light Table's plugin manager ("show plugin manager" command, search for "julia" or "jewel").
 * Once Jewel is installed, restart LT.
 * `Pkg.add("Jewel")` in the Julia repl.
 * Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia")`.
-  * Set your behaviours using `Ctrl+Space`, typing `user behaviors` and pressing enter. See [here](https://gist.github.com/one-more-minute/9882389) for an example of setting the Julia path.
+  * (Use the "user behaviors" command. See [here](https://gist.github.com/one-more-minute/9882389) for an example of setting the Julia path)
 * Open a `.jl` file (or press `Ctrl-j` for a new one), type something, `Ctrl+Enter` to evaluate the line.
 * Alternatively, clone Jewel and Jewel.jl into the appropriate folders for the latest and greatest (and possibly brokenest).
+* To update: First `Pkg.update()` in Julia, then execute the "update all outdated" command in Light Table
 
 ## Current Features
 
