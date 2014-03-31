@@ -49,7 +49,7 @@
           :triggers #{:proc.exit}
           :reaction (fn [this data]
                       (when-not (:connected @this)
-                        (notifos/done-working)
+                        (notifos/done-working "")
                         (when (@this :complain)
                           (popup/popup! {:header "Couldn't connect to Julia"
                                          :body [:pre (:buffer @this)]
@@ -330,4 +330,4 @@
                       (eval/get-client! {:command :editor.eval.julia
                                          :origin editor
                                          :info {}
-                                         :create (fn [] (connect :notify true))})))
+                                         :create (fn [] (connect :notify true :complain false))})))
