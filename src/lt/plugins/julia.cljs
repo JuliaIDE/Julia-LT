@@ -34,7 +34,8 @@
                         (object/update! this [:buffer] str out)
                         (when (= out "connected")
                           (when (@this :notify) (notifos/done-working "Connected to Julia"))
-                          (object/merge! this {:connected true})))))
+                          (object/merge! this {:connected true
+                                               :just-connected true})))))
 
 (behavior ::proc-error
           :triggers #{:proc.error}
@@ -57,7 +58,9 @@
 (behavior ::pipe-out
            :triggers #{:proc.out}
            :reaction (fn [this data]
-                       (object/update! this [:out-buffer] str data)
+                       (if (:just-connected @this)
+                         (object/merge! this {:just-connected false})
+                         (object/update! this [:out-buffer] str data))
                        (let [out (@this :out-buffer)]
                          (when (= (last out) "\n")
                            (console/log out)
