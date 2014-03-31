@@ -30,18 +30,20 @@
 (behavior ::proc-out
           :triggers #{:proc.out}
           :reaction (fn [this data]
-                      (let [out (.toString data)]
-                        (object/update! this [:buffer] str out)
-                        (when (= out "connected")
-                          (when (@this :notify) (notifos/done-working "Connected to Julia"))
-                          (object/merge! this {:connected true
-                                               :just-connected true})))))
+                      (when-not (@this :connected)
+                        (let [out (.toString data)]
+                          (object/update! this [:buffer] str out)
+                          (when (= out "connected")
+                            (when (@this :notify) (notifos/done-working "Connected to Julia"))
+                            (object/merge! this {:connected true
+                                                 :just-connected true}))))))
 
 (behavior ::proc-error
           :triggers #{:proc.error}
           :reaction (fn [this data]
-                      (let [out (.toString data)]
-                        (object/update! this [:buffer] str out))))
+                      (when-not (@this :connected)
+                        (let [out (.toString data)]
+                          (object/update! this [:buffer] str out)))))
 
 (behavior ::proc-exit
           :triggers #{:proc.exit}
@@ -318,7 +320,7 @@
                         #(eval/get-client! {:command :editor.julia.eval
                                             :info {}
                                             :origin julia
-                                            :create (fn [] (connect :notify true :complain false))}))))
+                                            :create (fn [] (connect :notify true))}))))
 
 (behavior ::connect-on-open
           :triggers #{:object.instant}
@@ -328,4 +330,4 @@
                       (eval/get-client! {:command :editor.eval.julia
                                          :origin editor
                                          :info {}
-                                         :create (fn [] (connect :notify true :complain false))})))
+                                         :create (fn [] (connect :notify true))})))
