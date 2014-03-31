@@ -48,9 +48,10 @@
           :reaction (fn [this data]
                       (when-not (:connected @this)
                         (notifos/done-working)
-                        (popup/popup! {:header "Couldn't connect to Julia"
-                                       :body [:pre (:buffer @this)]
-                                       :buttons [{:label "close"}]})
+                        (when (@this :complain)
+                          (popup/popup! {:header "Couldn't connect to Julia"
+                                         :body [:pre (:buffer @this)]
+                                         :buttons [{:label "Close"}]}))
                         (clients/rem! (:client @this)))
                       (proc/kill-all (:procs @this))
                       (object/destroy! this)))
@@ -87,18 +88,18 @@
 
 (defn julia-path [] (or (@julia :path) "julia"))
 
-(defn connect [notify]
+; notify -- set the status bar (not used by e.g. eval which notifies itself)
+; complain -- show a popup if we can't connect
+(defn connect [& {:keys [notify complain] :or {notify false complain true}}]
   (when notify (notifos/working "Spinning up a Julia client..."))
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
-    (object/merge! obj {:notify notify})
+    (object/merge! obj {:notify notify :complain complain})
     (proc/exec {:command (julia-path)
                 :args [init tcp/port (clients/->id client)]
                 :obj obj})
     (clients/send client :julia.set-global-client {} :only julia)
     client))
-
-(defn connect-notify [] (connect true))
 
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
@@ -317,7 +318,7 @@
                         #(eval/get-client! {:command :editor.julia.eval
                                             :info {}
                                             :origin julia
-                                            :create connect-notify}))))
+                                            :create (fn [] (connect :notify true :complain false))}))))
 
 (behavior ::connect-on-open
           :triggers #{:object.instant}
@@ -327,4 +328,4 @@
                       (eval/get-client! {:command :editor.eval.julia
                                          :origin editor
                                          :info {}
-                                         :create connect-notify})))
+                                         :create (fn [] (connect :notify true :complain false))})))
