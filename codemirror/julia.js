@@ -255,7 +255,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     fold: "indent",
 //     electricChars: "edlsifyh]}"
 
-    "hint-pattern": /[@a-zA-Z\_]/
+    "hint-pattern": /[@a-zA-Z0-9_]/
   };
   return external;
 });
