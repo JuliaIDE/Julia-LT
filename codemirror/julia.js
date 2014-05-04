@@ -1,3 +1,8 @@
+// TODO:
+// Support the indenting style
+//   foo(a, b
+//       c, d)
+
 CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var ERRORCLASS = 'error';
 
@@ -7,24 +12,24 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
   var operators = parserConf.operators || /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3})/;
   var delimiters = parserConf.delimiters || /^[;,()[\]{}]/;
-  var identifiers = parserConf.identifiers|| /^[_A-Za-z][_A-Za-z0-9]*!*/;
+  var identifiers = parserConf.identifiers|| /^[_A-Za-z][_A-Za-z0-9!]*/;
   var blockOpeners = ["begin", "function", "type", "immutable", "let", "macro", "for", "while", "quote", "if", "else", "elseif", "try", "finally", "catch", "do"];
   var blockClosers = ["end", "else", "elseif", "catch", "finally"];
   var keywordList = ['if', 'else', 'elseif', 'while', 'for', 'begin', 'let', 'end', 'do', 'try', 'catch', 'finally', 'return', 'break', 'continue', 'global', 'local', 'const', 'export', 'import', 'importall', 'using', 'function', 'macro', 'module', 'baremodule', 'type', 'immutable', 'quote', 'typealias', 'abstract', 'bitstype', 'ccall'];
   var builtinList = ['true', 'false', 'enumerate', 'open', 'close', 'nothing', 'NaN', 'Inf', 'print', 'println', 'Int8', 'Uint8', 'Int16', 'Uint16', 'Int32', 'Uint32', 'Int64', 'Uint64', 'Int128', 'Uint128', 'Bool', 'Char', 'Float16', 'Float32', 'Float64', 'Array', 'Vector', 'Matrix', 'String', 'UTF8String', 'ASCIIString', 'error', 'warn', 'info', '@printf'];
 
-  //var stringPrefixes = new RegExp("^[br]?('|\")")
-  var stringPrefixes = /^[br]?('|"{3}|")/;
+  // TODO: support unicode chars
+  var stringPrefixes = /^[a-zA-Z]?('|"{3}|")/;
   var keywords = wordRegexp(keywordList);
   var builtins = wordRegexp(builtinList);
   var openers = wordRegexp(blockOpeners);
   var closers = wordRegexp(blockClosers);
-  var macro = /@[_A-Za-z][_A-Za-z0-9]*!*/;
+  var macro = /@[_A-Za-z][_A-Za-z0-9!\.]*/;
   var indentInfo = null;
 
   function in_array(state) {
     var ch = cur_scope(state);
-    if(ch=="[" || ch=="{") {
+    if(ch=="[" || ch=="{" || ch == "(") {
       return true;
     }
     else {
@@ -71,6 +76,10 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       state.scopes.push("{");
     }
 
+    if(ch==='(') {
+      state.scopes.push("(");
+    }
+
     var scope=cur_scope(state);
 
     if(scope==='[' && ch===']') {
@@ -83,8 +92,13 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       state.leaving_expr=true;
     }
 
+    if(scope==='(' && ch===')') {
+      state.scopes.pop();
+      state.leaving_expr=true;
+    }
+
     var match;
-    if(match=stream.match(openers, false)) {
+    if(!in_array(state) && (match=stream.match(openers, false))) {
       state.scopes.push(match);
     }
 
@@ -213,18 +227,6 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     indentInfo = null;
     var style = state.tokenize(stream, state);
     var current = stream.current();
-
-    // Handle '.' connected identifiers
-    if (current === '.') {
-      style = stream.match(identifiers, false) ? null : ERRORCLASS;
-      if (style === null && state.lastStyle === 'meta') {
-          // Apply 'meta' style to '.' connected identifiers when
-          // appropriate.
-        style = 'meta';
-      }
-      return style;
-    }
-
     return style;
   }
 
@@ -243,17 +245,19 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       return style;
     },
 
-//     indent: function(state, textAfter) {
-//       var delta = 0;
-//       if(textAfter=="end" || textAfter=="]" || textAfter=="}" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
-//         delta = -1;
-//       }
-//       return (state.scopes.length + delta) * 2;
-//     },
+    indent: function(state, textAfter) {
+      var delta = 0;
+      if(textAfter=="end" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
+        delta = -1;
+      }
+      return (state.scopes.length + delta) * 2;
+    },
 
     lineComment: "#",
     fold: "indent",
-//     electricChars: "edlsifyh]}"
+    // Not working for some reason
+    //electricInput: /\s*end$/,
+    electricChars: "edlsifyh]})",
 
     "hint-pattern": /[@a-zA-Z0-9_]/
   };
