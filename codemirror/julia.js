@@ -1,5 +1,3 @@
-// TODO: Tuples should be treated as arrays.
-
 CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var ERRORCLASS = 'error';
 
@@ -26,7 +24,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
   function in_array(state) {
     var ch = cur_scope(state);
-    if(ch=="[" || ch=="{") {
+    if(ch=="[" || ch=="{" || ch == "(") {
       return true;
     }
     else {
@@ -73,6 +71,10 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       state.scopes.push("{");
     }
 
+    if(ch==='(') {
+      state.scopes.push("(");
+    }
+
     var scope=cur_scope(state);
 
     if(scope==='[' && ch===']') {
@@ -81,6 +83,11 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     }
 
     if(scope==='{' && ch==='}') {
+      state.scopes.pop();
+      state.leaving_expr=true;
+    }
+
+    if(scope==='(' && ch===')') {
       state.scopes.pop();
       state.leaving_expr=true;
     }
@@ -235,7 +242,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
     indent: function(state, textAfter) {
       var delta = 0;
-      if(textAfter=="end" || textAfter=="]" || textAfter=="}" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
+      if(textAfter=="end" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
         delta = -1;
       }
       return (state.scopes.length + delta) * 2;
@@ -245,7 +252,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     fold: "indent",
     // Not working for some reason
     //electricInput: /\s*end$/,
-    electricChars: "edlsifyh]}"
+    electricChars: "edlsifyh]})",
 
     "hint-pattern": /[@a-zA-Z0-9_]/
   };
