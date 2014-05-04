@@ -213,18 +213,6 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     indentInfo = null;
     var style = state.tokenize(stream, state);
     var current = stream.current();
-
-    // Handle '.' connected identifiers
-    if (current === '.') {
-      style = stream.match(identifiers, false) ? null : ERRORCLASS;
-      if (style === null && state.lastStyle === 'meta') {
-          // Apply 'meta' style to '.' connected identifiers when
-          // appropriate.
-        style = 'meta';
-      }
-      return style;
-    }
-
     return style;
   }
 
