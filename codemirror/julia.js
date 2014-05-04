@@ -1,3 +1,8 @@
+// TODO:
+// Support the indenting style
+//   foo(a, b
+//       c, d)
+
 CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var ERRORCLASS = 'error';
 
