@@ -231,13 +231,13 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       return style;
     },
 
-//     indent: function(state, textAfter) {
-//       var delta = 0;
-//       if(textAfter=="end" || textAfter=="]" || textAfter=="}" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
-//         delta = -1;
-//       }
-//       return (state.scopes.length + delta) * 2;
-//     },
+    indent: function(state, textAfter) {
+      var delta = 0;
+      if(textAfter=="end" || textAfter=="]" || textAfter=="}" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
+        delta = -1;
+      }
+      return (state.scopes.length + delta) * 2;
+    },
 
     lineComment: "#",
     fold: "indent",
