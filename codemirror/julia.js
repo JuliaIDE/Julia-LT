@@ -1,3 +1,5 @@
+// TODO: Tuples should be treated as arrays.
+
 CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var ERRORCLASS = 'error';
 
@@ -241,6 +243,9 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
     lineComment: "#",
     fold: "indent",
+    // Not working for some reason
+    //electricInput: /\s*end$/,
+    electricChars: "edlsifyh]}"
 
     "hint-pattern": /[@a-zA-Z0-9_]/
   };
