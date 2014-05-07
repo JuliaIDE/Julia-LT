@@ -2,6 +2,14 @@
 // Support the indenting style
 //   foo(a, b
 //       c, d)
+// Highlight mismatching ends/brackets
+// Support Unicode properly
+// Auto place end statements
+// Refactor brackets matching
+// Use underscore.js
+// Handle #= comments
+// Support all string prefixes
+// Handle string interpolation
 
 CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var ERRORCLASS = 'error';
@@ -18,8 +26,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var keywordList = ['if', 'else', 'elseif', 'while', 'for', 'begin', 'let', 'end', 'do', 'try', 'catch', 'finally', 'return', 'break', 'continue', 'global', 'local', 'const', 'export', 'import', 'importall', 'using', 'function', 'macro', 'module', 'baremodule', 'type', 'immutable', 'quote', 'typealias', 'abstract', 'bitstype', 'ccall'];
   var builtinList = ['true', 'false', 'enumerate', 'open', 'close', 'nothing', 'NaN', 'Inf', 'print', 'println', 'Int8', 'Uint8', 'Int16', 'Uint16', 'Int32', 'Uint32', 'Int64', 'Uint64', 'Int128', 'Uint128', 'Bool', 'Char', 'Float16', 'Float32', 'Float64', 'Array', 'Vector', 'Matrix', 'String', 'UTF8String', 'ASCIIString', 'error', 'warn', 'info', '@printf'];
 
-  // TODO: support unicode chars
-  var stringPrefixes = /^[a-zA-Z]?('|"{3}|")/;
+  var stringPrefixes = /^[rub]?('|"{3}|")/;
   var keywords = wordRegexp(keywordList);
   var builtins = wordRegexp(builtinList);
   var openers = wordRegexp(blockOpeners);
@@ -255,8 +262,8 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
     lineComment: "#",
     fold: "indent",
-    // Not working for some reason
-    //electricInput: /\s*end$/,
+    // Use this in CodeMirror 4
+    //electricInput: /end$/,
     electricChars: "edlsifyh]})",
 
     "hint-pattern": /[@a-zA-Z0-9_]/
