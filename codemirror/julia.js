@@ -2,12 +2,9 @@
 // Support the indenting style
 //   foo(a, b
 //       c, d)
-// Highlight mismatching ends/brackets
 // Support Unicode properly
 // Auto place end statements
 // Refactor brackets matching
-// Use underscore.js
-// Handle #= comments
 // Support all string prefixes
 // Handle string interpolation
 
@@ -18,7 +15,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     return new RegExp("^((" + words.join(")|(") + "))\\b");
   }
 
-  var operators = parserConf.operators || /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3})/;
+  var operators = parserConf.operators || /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
   var delimiters = parserConf.delimiters || /^[;,()[\]{}]/;
   var identifiers = parserConf.identifiers|| /^[_A-Za-z][_A-Za-z0-9!]*/;
   var blockOpeners = ["begin", "function", "type", "immutable", "let", "macro", "for", "while", "quote", "if", "else", "elseif", "try", "finally", "catch", "do"];
@@ -31,7 +28,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var builtins = wordRegexp(builtinList);
   var openers = wordRegexp(blockOpeners);
   var closers = wordRegexp(blockClosers);
-  var macro = /@[_A-Za-z][_A-Za-z0-9!\.]*/;
+  var macro = /^@[_A-Za-z][_A-Za-z0-9!\.]*/;
   var indentInfo = null;
 
   function in_array(state) {
@@ -53,9 +50,40 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
   // tokenizers
   function tokenBase(stream, state) {
+
+    if (stream.eatSpace()) {
+      return null;
+    }
+
+    // Multiline Comments
+
+    if (stream.match('#=')) {
+      state.scopes.push('multiline-comment')
+    }
+
+   if (cur_scope(state) == 'multiline-comment') {
+      if (stream.match(/^.*?#=/)) {
+        state.scopes.push('multiline-comment');
+      } else if (stream.match(/^.*?=#/)) {
+        state.scopes.pop();
+        return 'comment';
+      } else {
+        stream.skipToEnd();
+        return 'comment';
+      }
+    }
+
+    // End comment out of place
+    if (stream.match('=#')) {
+      return 'error'
+    }
+
     // Handle scope changes
     var leaving_expr = state.leaving_expr;
     state.leaving_expr = false;
+    var last_keyword = state.last_keyword;
+    state.last_keyword = undefined;
+
     if(leaving_expr) {
       if(stream.match(/^'+/)) {
         return 'operator';
@@ -63,10 +91,6 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       if(stream.match("...")) {
         return 'operator';
       }
-    }
-
-    if (stream.eatSpace()) {
-      return null;
     }
 
     var ch = stream.peek();
@@ -113,12 +137,14 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       state.scopes.pop();
     }
 
-    if(in_array(state)) {
-      if(stream.match("end")) {
+    if (stream.match("end"))
+      if (scope === '[')
         return 'number';
-      }
+      else if (in_array(state) || scope == null)
+        return 'error';
+      else
+        return 'qualifier';
 
-    }
     if(stream.match("=>")) {
       return 'operator';
     }
@@ -175,6 +201,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     }
 
     if (stream.match(keywords)) {
+      state.last_keyword = stream.current()
       return 'keyword';
     }
 
@@ -188,7 +215,10 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
     if (stream.match(identifiers)) {
       state.leaving_expr=true;
-      return 'variable';
+      if (last_keyword == 'function' || last_keyword == 'const')
+        return 'def'
+      else
+        return 'variable';
     }
     // Handle non-detected items
     stream.next();
@@ -253,6 +283,8 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     },
 
     indent: function(state, textAfter) {
+      if (cur_scope(state) == 'multiline-comment')
+        return CodeMirror.Pass
       var delta = 0;
       if(textAfter=="end" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
         delta = -1;
