@@ -1,0 +1,44 @@
+#multi.theme-june .content { background: #f8f8f8; }
+#multi.theme-june .list .active, #multi.theme-june .list li:hover { background:#f8f8f8; color:#555; }
+#multi.theme-june .list .dirty { color:#f50; }
+
+/* .cm-s-june { background: #f8f8f8; } */
+.cm-s-june { background: white; }
+.cm-s-june span.cm-keyword {color: black; font-weight:bold;}
+.cm-s-june span.cm-atom {color: #219;}
+.cm-s-june span.cm-number {color: #009999;}
+.cm-s-june span.cm-def {color: #833; font-weight: bold;}
+.cm-s-june span.cm-variable {color: black;}
+.cm-s-june span.cm-variable-2 {color: #05a;}
+.cm-s-june span.cm-variable-3 {color: #085;}
+.cm-s-june span.cm-property {color: black;}
+.cm-s-june span.cm-operator {color: black;}
+.cm-s-june span.cm-comment {color: #999988; font-style: italic;}
+.cm-s-june span.cm-string {color: #900;}
+.cm-s-june span.cm-string-2 {color: #dd1144;}
+.cm-s-june span.cm-meta {color: #900; font-weight:bold;}
+.cm-s-june span.cm-error {color: #f00; background: #fdd;}
+.cm-s-june span.cm-qualifier {color: #BBB;}
+.cm-s-june span.cm-builtin {color: #30a;}
+.cm-s-june span.cm-bracket {color: #997;}
+.cm-s-june span.cm-tag {color: #170;}
+.cm-s-june span.cm-attribute {color: #00c;}
+.cm-s-june span.cm-header {color: blue;}
+.cm-s-june span.cm-quote {color: #090;}
+.cm-s-june span.cm-hr {color: #999;}
+.cm-s-june span.cm-link {color: #00c;}
+.cm-s-june span.cm-symbol {color: black; }
+
+.CodeMirror div.CodeMirror-cursor
+{
+  border-left: 1px solid black;
+}
+
+/* Light Table stuff */
+
+.inline-result, .underline-result, .inline-doc {
+  background: white;
+  color: black;
+  border: 1px solid #e1e1e1;
+  -webkit-border-radius: 5px;
+}
