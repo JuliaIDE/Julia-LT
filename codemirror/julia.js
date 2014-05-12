@@ -192,7 +192,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     }
     // Handle non-detected items
     stream.next();
-    return ERRORCLASS;
+    return 'variable';
   }
 
   function tokenStringFactory(delimiter) {
