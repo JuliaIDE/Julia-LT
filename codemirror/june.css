@@ -29,16 +29,30 @@
 .cm-s-june span.cm-link {color: #00c;}
 .cm-s-june span.cm-symbol {color: black; }
 
-.CodeMirror div.CodeMirror-cursor
+.cm-s-june div.CodeMirror-cursor
 {
   border-left: 1px solid black;
 }
 
 /* Light Table stuff */
 
-.inline-result, .underline-result, .inline-doc {
+.theme-june .inline-result, .theme-june .underline-result {
   background: white;
   color: black;
   border: 1px solid #e1e1e1;
   -webkit-border-radius: 5px;
+}
+
+.theme-june .inline-doc {
+  background: white;
+  color: black;
+}
+
+.theme-june .inline-exception pre {
+  background: #fdd;
+  color: #d00;
+}
+
+.theme-june .inline-doc pre {
+  color: black;
 }
