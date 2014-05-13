@@ -16,7 +16,8 @@
                     (:lt.objs.editor/tab-settings false 2 2)
                     (:lt.object/add-tag :editor.julia.hints)
                     (:lt.object/add-tag :docable)
-                    :lt.objs.langs.julia/connect-on-open]
+                    :lt.objs.langs.julia/connect-on-open
+                    (:lt.objs.style/set-theme "june")]
 
      :editor.julia.hints [:lt.objs.langs.julia/use-local-hints
                           :lt.objs.langs.julia/trigger-update-hints
