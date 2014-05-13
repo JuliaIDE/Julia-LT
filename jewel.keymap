@@ -5,4 +5,4 @@
                                            :tags [:editor.julia]})]}
   :editor.julia {"pmeta-/" [:toggle-comment-selection]
                  "pmeta-;" [:auto-complete.force]
-                 "pmeta-m" [:editor.methods.toggle]}}}
+                 "ctrl-m" [:editor.methods.toggle]}}}
