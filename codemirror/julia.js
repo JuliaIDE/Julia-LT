@@ -84,6 +84,12 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     // Handle scope changes
     var leaving_expr = state.leaving_expr;
     state.leaving_expr = false;
+
+    // If a comma, don't remove last keyword
+    // This is so that `using A, B` works
+    if (stream.match(/,\s*/))
+      return null;
+
     var last_keyword = state.last_keyword;
     state.last_keyword = undefined;
 
