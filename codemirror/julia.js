@@ -7,6 +7,9 @@
 // Refactor brackets matching
 // Support all string prefixes
 // Handle string interpolation
+// Function calls
+// Short-form definition
+// Negative numbers
 
 CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var ERRORCLASS = 'error';
