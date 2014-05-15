@@ -149,7 +149,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     if (stream.match("end"))
       if (scope === '[')
         return 'number';
-      else if (in_array(state) || scope == null)
+      else if (in_array(state))
         return 'error';
       else
         return 'qualifier';
