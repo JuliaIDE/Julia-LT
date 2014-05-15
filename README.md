@@ -42,11 +42,12 @@ When an update is available, first `Pkg.update()` in Julia, then use the "update
 
 `C` = `Ctrl` (Windows, Linux), `Cmd` (Mac)
 
-* `C-d`: Toggle docs
-* `C-m`: Toggle methods
+* `Ctrl-d`: Toggle docs
+* `Ctrl-m`: Toggle methods
 * `C-j`: New Julia file
 * `C-;`: Show autocomplete
-* `C-/`: Toggle comment lines
+* `C-/`: Toggle comments
+* `C-Enter`: Evaluate current block
 * `C-Shift-Enter`: Evaluate whole file
 
 ## Coming Up Soon
