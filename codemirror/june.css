@@ -2,14 +2,13 @@
 #multi.theme-june .list .active, #multi.theme-june .list li:hover { background:#f8f8f8; color:#555; }
 #multi.theme-june .list .dirty { color:#f50; }
 
-/* .cm-s-june { background: #f8f8f8; } */
 .cm-s-june { background: white; }
 .cm-s-june span.cm-keyword {color: black; font-weight:bold;}
 .cm-s-june span.cm-atom {color: #219;}
 .cm-s-june span.cm-number {color: #009999;}
 .cm-s-june span.cm-def {color: #833; font-weight: bold;}
 .cm-s-june span.cm-variable {color: black;}
-.cm-s-june span.cm-variable-2 {color: #55a; font-weight: bold;}
+.cm-s-june span.cm-variable-2 {color: #30a;}
 .cm-s-june span.cm-variable-3 {color: #085;}
 .cm-s-june span.cm-property {color: black;}
 .cm-s-june span.cm-operator {color: black;}
@@ -31,7 +30,16 @@
 
 .cm-s-june div.CodeMirror-cursor
 {
-  border-left: 1px solid black;
+  /* Override the skin setting */
+  border-left: 1px solid black !important;
+}
+
+.CodeMirror-matchingbracket {
+  background: #eee;
+}
+
+.CodeMirror-nonmatchingbracket {
+  color: #f00; background: #fdd;
 }
 
 /* Light Table stuff */
