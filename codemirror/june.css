@@ -14,7 +14,7 @@
 .cm-s-june span.cm-string-2 {color: #dd1144;}
 .cm-s-june span.cm-meta {color: #900; font-weight:bold;}
 .cm-s-june span.cm-error {color: #f00; background: #fdd;}
-.cm-s-june span.cm-qualifier {color: #BBB;}
+/* .cm-s-june span.cm-qualifier {color: #BBB;} */
 .cm-s-june span.cm-builtin {color: #30a;}
 .cm-s-june span.cm-bracket {color: #997;}
 .cm-s-june span.cm-tag {color: #170;}
@@ -35,6 +35,11 @@
 .cm-s-june span.cm-variable-7 {color: #1F0099;}
 .cm-s-june span.cm-variable-8 {color: #7A0099;}
 .cm-s-june span.cm-variable-9 {color: #99005C;}
+
+.cm-s-june span.cm-qualifier {
+  color: transparent;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
 
 .cm-s-june div.CodeMirror-cursor
 {
