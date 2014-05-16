@@ -10,8 +10,24 @@
 // Function calls
 // Short-form definition
 // Negative numbers
+// Keywords (being careful of ranges and types)
 
 CodeMirror.defineMode("julia2", function(_conf, parserConf) {
+
+  function hash(str) {
+    var res = 0,
+        len = str.length;
+    for (var i = 0; i < len; i++) {
+      res = res * 31 + str.charCodeAt(i);
+    }
+    return Math.abs(res);
+  };
+
+  function variable_class(str) {
+    h = hash(str)%10
+    return 'variable-' + h
+  };
+
   var ERRORCLASS = 'error';
 
   function wordRegexp(words) {
@@ -21,10 +37,11 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var operators = parserConf.operators || /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
   var delimiters = parserConf.delimiters || /^[;,()[\]{}]/;
   var identifiers = parserConf.identifiers|| /^[_A-Za-z][_A-Za-z0-9!]*/;
+  var keyword = /^:[_A-Za-z][_A-Za-z0-9!]*/
   var blockOpeners = ["begin", "function", "type", "immutable", "let", "macro", "for", "while", "quote", "if", "else", "elseif", "try", "finally", "catch", "do"];
   var blockClosers = ["end", "else", "elseif", "catch", "finally"];
   var keywordList = ['if', 'else', 'elseif', 'while', 'for', 'begin', 'let', 'end', 'do', 'try', 'catch', 'finally', 'return', 'break', 'continue', 'global', 'local', 'const', 'export', 'import', 'importall', 'using', 'function', 'macro', 'module', 'baremodule', 'type', 'immutable', 'quote', 'typealias', 'abstract', 'bitstype', 'ccall'];
-  var builtinList = ['true', 'false', 'enumerate', 'open', 'close', 'nothing', 'NaN', 'Inf', 'print', 'println', 'Int8', 'Uint8', 'Int16', 'Uint16', 'Int32', 'Uint32', 'Int64', 'Uint64', 'Int128', 'Uint128', 'Bool', 'Char', 'Float16', 'Float32', 'Float64', 'Array', 'Vector', 'Matrix', 'String', 'UTF8String', 'ASCIIString', 'error', 'warn', 'info', '@printf'];
+  var builtinList = ['true', 'false', 'NaN', 'Inf', 'Int8', 'Uint8', 'Int16', 'Uint16', 'Int32', 'Uint32', 'Int64', 'Uint64', 'Int128', 'Uint128', 'Bool', 'Char', 'Float16', 'Float32', 'Float64', 'Array', 'Vector', 'Matrix', 'String', 'UTF8String', 'ASCIIString'];
 
   var stringPrefixes = /^[rub]?('|"{3}|")/;
   var keywords = wordRegexp(keywordList);
@@ -146,7 +163,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       state.scopes.pop();
     }
 
-    if (stream.match("end"))
+    if (stream.match(/end\b/))
       if (scope === '[')
         return 'number';
       else if (in_array(state))
@@ -228,14 +245,10 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
         if (stream.match(',', false))
           state.last_keyword = last_keyword;
         return 'def'
-      } else if (stream.match('(', false)) {
-        if (stream.column() == 0) {
-          return 'def';
-        } else {
-          return 'variable-2';
-        }
+      } else if (stream.match('(', false) && stream.column() == 0) {
+        return 'def';
       } else {
-        return 'variable';
+        return variable_class(stream.current());
       }
     }
     // Handle non-detected items

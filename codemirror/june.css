@@ -2,14 +2,11 @@
 #multi.theme-june .list .active, #multi.theme-june .list li:hover { background:#f8f8f8; color:#555; }
 #multi.theme-june .list .dirty { color:#f50; }
 
-.cm-s-june { background: white; }
+.cm-s-june { background: white; color: black; }
 .cm-s-june span.cm-keyword {color: black; font-weight:bold;}
 .cm-s-june span.cm-atom {color: #219;}
 .cm-s-june span.cm-number {color: #009999;}
 .cm-s-june span.cm-def {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable {color: black;}
-.cm-s-june span.cm-variable-2 {color: #30a;}
-.cm-s-june span.cm-variable-3 {color: #085;}
 .cm-s-june span.cm-property {color: black;}
 .cm-s-june span.cm-operator {color: black;}
 .cm-s-june span.cm-comment {color: #999988; font-style: italic;}
@@ -27,6 +24,17 @@
 .cm-s-june span.cm-hr {color: #999;}
 .cm-s-june span.cm-link {color: #00c;}
 .cm-s-june span.cm-symbol {color: black; }
+
+.cm-s-june span.cm-variable-0 {color: #990000;}
+.cm-s-june span.cm-variable-1 {color: #995C00;}
+.cm-s-june span.cm-variable-2 {color: #7A9900;}
+.cm-s-june span.cm-variable-3 {color: #1F9900;}
+.cm-s-june span.cm-variable-4 {color: #00993D;}
+.cm-s-june span.cm-variable-5 {color: #009999;}
+.cm-s-june span.cm-variable-6 {color: #003D99;}
+.cm-s-june span.cm-variable-7 {color: #1F0099;}
+.cm-s-june span.cm-variable-8 {color: #7A0099;}
+.cm-s-june span.cm-variable-9 {color: #99005C;}
 
 .cm-s-june div.CodeMirror-cursor
 {
@@ -62,5 +70,5 @@
 }
 
 .theme-june .inline-doc pre {
-  color: black;
+  color: black !important;
 }
