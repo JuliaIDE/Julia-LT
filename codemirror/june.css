@@ -38,7 +38,7 @@
 
 .cm-s-june span.cm-qualifier {
   color: transparent;
-  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  text-shadow: 0 0 2px rgba(0,0,0,0.3);
 }
 
 .cm-s-june div.CodeMirror-cursor
