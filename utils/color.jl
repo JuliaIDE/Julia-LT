@@ -2,7 +2,10 @@ using Color, Lazy
 
 color_range(n) = [0:360/10:360.][1:n]
 
-hexes = @>> color_range(10) map(h->HSV(h, 1, 0.6)) map(hex)
+saturation = 1
+value = 0.6
+
+hexes = @>> color_range(10) map(h->HSV(h, saturation, value)) map(hex)
 
 styles = map(enumerate(hexes)) do t
   i, h = t
