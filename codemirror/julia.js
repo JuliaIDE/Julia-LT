@@ -2,9 +2,6 @@
 // Auto place end statements
 // Refactor brackets matching
 // Support all string prefixes
-// Handle string interpolation
-// Function calls
-// Short-form definition
 // Negative numbers
 // Keywords (being careful of ranges and types)
 

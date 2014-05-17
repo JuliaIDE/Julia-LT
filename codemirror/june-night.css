@@ -2,6 +2,8 @@
 #multi.theme-june-night .list .active, #multi.theme-june-night .list li:hover { background:#f8f8f8; color:#555; }
 #multi.theme-june-night .list .dirty { color:#f50; } */
 
+/* Todo: errors */
+
 .cm-s-june-night { background: #303333; color: white; }
 .cm-s-june-night span.cm-keyword {color: #aaa; font-weight:bold;}
 .cm-s-june-night span.cm-atom {color: #219;}
