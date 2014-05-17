@@ -1,7 +1,3 @@
-// TODO:
-// Support the indenting style
-//   foo(a, b
-//       c, d)
 // Support Unicode properly
 // Auto place end statements
 // Refactor brackets matching
@@ -37,7 +33,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
   // It's safe to call push_scope(name, index)
   function push_scope(state, name, indent) {
-    state.scopes.push({'name': name, 'index': indent});
+    state.scopes.push({'name': name, 'indent': indent});
   }
 
   function wordRegexp(words) {
@@ -155,7 +151,11 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (ch==='[' || ch==='{' || ch==='(') {
       stream.next()
-      push_scope(state, ch, stream.column());
+      if (stream.match(/^\s*$/)) {
+        push_scope(state, ch);
+      } else {
+        push_scope(state, ch, stream.column()+1);
+      }
       return 'bracket';
     }
 
@@ -325,12 +325,19 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     indent: function(state, textAfter) {
       if (cur_scope(state) == 'multiline-comment')
-        return CodeMirror.Pass
-      var delta = 0;
-      if(textAfter.match(closers)) {
-        delta = -1;
+        return CodeMirror.Pass;
+      var indent = 0;
+      for (i = 0; i < state.scopes.length; i++) {
+        if (state.scopes[i].indent) {
+          indent = state.scopes[i].indent;
+        } else {
+          indent += indentUnit;
+        }
       }
-      return (state.scopes.length + delta) * indentUnit;
+      if(textAfter.match(closers)) {
+        indent -= indentUnit;
+      }
+      return indent;
     },
 
     lineComment: "#",
