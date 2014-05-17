@@ -249,7 +249,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
       if (last_keyword == 'function' || last_keyword == 'const' || last_keyword == 'using' || last_keyword == 'import') {
         if (stream.match(',', false))
           state.last_keyword = last_keyword;
-        return 'def'
+          return def_class(stream.current());
       } else if (stream.match('(', false) && stream.column() == 0) {
         return def_class(stream.current());
       } else {
