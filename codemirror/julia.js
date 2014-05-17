@@ -22,17 +22,22 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       res = res * 31 + str.charCodeAt(i);
     }
     return Math.abs(res);
-  };
+  }
 
   function variable_class(str) {
     h = hash(str)%20
     return 'variable-' + h
-  };
+  }
 
   function def_class(str) {
     h = hash(str)%100
     return 'def-' + h
-  };
+  }
+
+  // It's safe to call push_scope(name, index)
+  function push_scope(state, name, index) {
+    state.scopes.push({'name': name, 'index': index});
+  }
 
   function wordRegexp(words) {
     return new RegExp("^((" + words.join(")|(") + "))\\b");
@@ -84,7 +89,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     if(state.scopes.length==0) {
       return null;
     }
-    return state.scopes[state.scopes.length - 1];
+    return state.scopes[state.scopes.length - 1].name;
   }
 
   // tokenizers
@@ -97,12 +102,12 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     // Multiline Comments
 
     if (stream.match('#=')) {
-      state.scopes.push('multiline-comment')
+      push_scope(state, 'multiline-comment');
     }
 
    if (cur_scope(state) == 'multiline-comment') {
       if (stream.match(/^.*?#=/)) {
-        state.scopes.push('multiline-comment');
+        push_scope(state, 'multiline-comment');
       } else if (stream.match(/^.*?=#/)) {
         state.scopes.pop();
         return 'comment';
@@ -145,15 +150,15 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         return 'comment';
     }
     if(ch==='[') {
-      state.scopes.push("[");
+      push_scope(state, "[");
     }
 
     if(ch==='{') {
-      state.scopes.push("{");
+      push_scope(state, "{");
     }
 
     if(ch==='(') {
-      state.scopes.push("(");
+      push_scope(state, "(");
     }
 
     var scope=cur_scope(state);
@@ -175,7 +180,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     var match;
     if(!in_array(state) && (match=stream.match(openers, false))) {
-      state.scopes.push(match);
+      push_scope(state, match);
     }
 
     if(!in_array(state) && stream.match(closers, false)) {
