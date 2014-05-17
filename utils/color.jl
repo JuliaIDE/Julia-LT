@@ -1,30 +1,24 @@
 using Color, Lazy
 
-color_range(n) = [0:360/n:360.][1:n]
+hue_range(n) = [0:360/n:360.][1:n]
 
-# theme = "june-night"
-# saturation = 0.3
-# value = 1
+# hexes = @>> [hex(HSV(h, 0.2, 1)) for h in hue_range(20)]
 
-theme = "june"
-saturation = 1
-value = 0.4
+hexes = @>> [hex(HSV(h, 1, 0.5)) for h in hue_range(20)]
 
-hexes = @>> color_range(100) map(h->HSV(h, saturation, value)) map(hex)
-
-styles = map(enumerate(hexes)) do t
-  i, h = t
-  """
-  .cm-s-june span.cm-variable-$(i-1) {color: #$h;}
-  .cm-s-june span.cm-def-$(i-1) {color: #$h; font-weight: bold;}
-  """
-end
+# styles = map(enumerate(hexes)) do t
+#   i, h = t
+#   """
+#   .cm-s-june-night span.cm-variable-$(i-1) {color: #$h;}
+#   .cm-s-june-night span.cm-def-$(i-1)      {color: #$h; font-weight: bold;}
+#   """
+# end
 
 styles = map(enumerate(hexes)) do t
   i, h = t
   """
   .cm-s-june span.cm-variable-$(i-1) {color: #$h;}
-  .cm-s-june span.cm-def-$(i-1) {color: #833; font-weight: bold;}
+  .cm-s-june span.cm-def-$(i-1)      {color: #833; font-weight: bold;}
   """
 end
 
