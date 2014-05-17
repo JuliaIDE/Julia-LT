@@ -246,7 +246,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
 
     if (stream.match(identifiers)) {
       state.leaving_expr=true;
-      if (last_keyword == 'function' || last_keyword == 'const' || last_keyword == 'using' || last_keyword == 'import') {
+      if (last_keyword == 'function' || last_keyword == 'const' || last_keyword == 'using') {
         if (stream.match(',', false))
           state.last_keyword = last_keyword;
           return def_class(stream.current());

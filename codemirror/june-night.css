@@ -3,7 +3,7 @@
 #multi.theme-june-night .list .dirty { color:#f50; } */
 
 .cm-s-june-night { background: #303333; color: white; }
-.cm-s-june-night span.cm-keyword {color: #F0DFAF; font-weight:bold;}
+.cm-s-june-night span.cm-keyword {color: #aaa; font-weight:bold;}
 .cm-s-june-night span.cm-atom {color: #219;}
 .cm-s-june-night span.cm-number {color: #DCDCCC;}
 .cm-s-june-night span.cm-def {color: #DCDCCC; font-weight: bold;}
@@ -64,7 +64,7 @@
 }
 
 .theme-june-night .inline-exception pre {
-  background: #fdd;
+  background: #322;
   color: #b55;
 }
 
