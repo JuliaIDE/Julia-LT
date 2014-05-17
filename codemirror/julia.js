@@ -12,8 +12,9 @@
 // Negative numbers
 // Keywords (being careful of ranges and types)
 
-CodeMirror.defineMode("julia2", function(_conf, parserConf) {
+CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
+  // Hash functions – should be put in a seperate plugin
   function hash(str) {
     var res = 0,
         len = str.length;
@@ -33,20 +34,39 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
     return 'def-' + h
   };
 
-  var ERRORCLASS = 'error';
-
   function wordRegexp(words) {
     return new RegExp("^((" + words.join(")|(") + "))\\b");
   }
 
-  var operators = parserConf.operators || /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
-  var delimiters = parserConf.delimiters || /^[;,()[\]{}]/;
-  var identifiers = parserConf.identifiers|| /^[_A-Za-z][_A-Za-z0-9!]*/;
-  var keyword = /^:[_A-Za-z][_A-Za-z0-9!]*/
-  var blockOpeners = ["begin", "function", "type", "immutable", "let", "macro", "for", "while", "quote", "if", "else", "elseif", "try", "finally", "catch", "do"];
+  var operators   = /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
+  var delimiters  = /^[;,()[\]{}]/;
+  var identifiers = /^[_A-Za-z][_A-Za-z0-9!]*/;
+  var keyword     = /^:[_A-Za-z][_A-Za-z0-9!]*/
+
+  var blockOpeners = ["begin", "function", "type", "immutable",
+                      "let", "macro", "for", "while",
+                      "quote", "if", "else", "elseif",
+                      "try", "finally", "catch", "do"];
+
   var blockClosers = ["end", "else", "elseif", "catch", "finally"];
-  var keywordList = ['if', 'else', 'elseif', 'while', 'for', 'begin', 'let', 'end', 'do', 'try', 'catch', 'finally', 'return', 'break', 'continue', 'global', 'local', 'const', 'export', 'import', 'importall', 'using', 'function', 'macro', 'module', 'baremodule', 'type', 'immutable', 'quote', 'typealias', 'abstract', 'bitstype', 'ccall'];
-  var builtinList = ['true', 'false', 'NaN', 'Inf', 'Int8', 'Uint8', 'Int16', 'Uint16', 'Int32', 'Uint32', 'Int64', 'Uint64', 'Int128', 'Uint128', 'Bool', 'Char', 'Float16', 'Float32', 'Float64', 'Array', 'Vector', 'Matrix', 'String', 'UTF8String', 'ASCIIString'];
+
+  var keywordList = ['if', 'else', 'elseif', 'while',
+                     'for', 'begin', 'let', 'end',
+                     'do', 'try', 'catch', 'finally',
+                     'return', 'break', 'continue', 'global',
+                     'local', 'const', 'export', 'import',
+                     'importall', 'using', 'function', 'macro',
+                     'module', 'baremodule', 'type', 'immutable',
+                     'quote', 'typealias', 'abstract', 'bitstype',
+                     'ccall'];
+
+  var builtinList = ['true', 'false', 'NaN', 'Inf',
+                     'Int8', 'Uint8', 'Int16', 'Uint16',
+                     'Int32', 'Uint32', 'Int64', 'Uint64',
+                     'Int128', 'Uint128', 'Bool', 'Char',
+                     'Float16', 'Float32', 'Float64', 'Array',
+                     'Vector', 'Matrix', 'String', 'UTF8String',
+                     'ASCIIString'];
 
   var stringPrefixes = /^[rub]?('|"{3}|")/;
   var keywords = wordRegexp(keywordList);
@@ -54,7 +74,6 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   var openers = wordRegexp(blockOpeners);
   var closers = wordRegexp(blockClosers);
   var macro = /^@[_A-Za-z][_A-Za-z0-9!\.]*/;
-  var indentInfo = null;
 
   function in_array(state) {
     var ch = cur_scope(state);
@@ -284,11 +303,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
         }
       }
       if (singleline) {
-        if (parserConf.singleLineStringErrors) {
-            return ERRORCLASS;
-        } else {
-            state.tokenize = tokenBase;
-        }
+        state.tokenize = tokenBase;
       }
       return OUTCLASS;
     }
@@ -297,10 +312,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   }
 
   function tokenLexer(stream, state) {
-    indentInfo = null;
-    var style = state.tokenize(stream, state);
-    var current = stream.current();
-    return style;
+    return state.tokenize(stream, state);
   }
 
   var external = {
