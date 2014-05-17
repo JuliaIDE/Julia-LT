@@ -13,6 +13,7 @@
 // Keywords (being careful of ranges and types)
 
 CodeMirror.defineMode("julia2", function(config, parserConfig) {
+  var indentUnit = config.indentUnit || 2;
 
   // Hash functions – should be put in a seperate plugin
   function hash(str) {
@@ -337,7 +338,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       if(textAfter=="end" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
         delta = -1;
       }
-      return (state.scopes.length + delta) * 2;
+      return (state.scopes.length + delta) * indentUnit;
     },
 
     lineComment: "#",
