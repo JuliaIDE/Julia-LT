@@ -24,8 +24,13 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
   };
 
   function variable_class(str) {
-    h = hash(str)%10
+    h = hash(str)%100
     return 'variable-' + h
+  };
+
+  function def_class(str) {
+    h = hash(str)%100
+    return 'def-' + h
   };
 
   var ERRORCLASS = 'error';
@@ -246,7 +251,7 @@ CodeMirror.defineMode("julia2", function(_conf, parserConf) {
           state.last_keyword = last_keyword;
         return 'def'
       } else if (stream.match('(', false) && stream.column() == 0) {
-        return 'def';
+        return def_class(stream.current());
       } else {
         return variable_class(stream.current());
       }

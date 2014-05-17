@@ -1,6 +1,6 @@
-#multi.theme-june .content { background: #f8f8f8; }
+/* #multi.theme-june .content { background: #f8f8f8; }
 #multi.theme-june .list .active, #multi.theme-june .list li:hover { background:#f8f8f8; color:#555; }
-#multi.theme-june .list .dirty { color:#f50; }
+#multi.theme-june .list .dirty { color:#f50; } */
 
 .cm-s-june { background: white; color: black; }
 .cm-s-june span.cm-keyword {color: black; font-weight:bold;}
@@ -47,11 +47,11 @@
   border-left: 1px solid black !important;
 }
 
-.CodeMirror-matchingbracket {
+.cm-s-june .CodeMirror-matchingbracket {
   background: #eee;
 }
 
-.CodeMirror-nonmatchingbracket {
+.cm-s-june .CodeMirror-nonmatchingbracket {
   color: #f00; background: #fdd;
 }
 
