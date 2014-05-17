@@ -39,6 +39,15 @@
   color: #f00; background: #fdd;
 }
 
+.cm-s-june .CodeMirror-gutter {
+  background: #eee !important;
+  border-right: 1px solid #bbb;
+}
+
+.cm-s-june .CodeMirror-selected {
+  background: #eee;
+}
+
 /* Light Table stuff */
 
 .theme-june .inline-result, .theme-june .underline-result {
