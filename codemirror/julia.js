@@ -70,7 +70,6 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
                      'Vector', 'Matrix', 'String', 'UTF8String',
                      'ASCIIString'];
 
-  var stringPrefixes = /^[rub]?('|"{3}|")/;
   var keywords = wordRegexp(keywordList);
   var builtins = wordRegexp(builtinList);
   var openers = wordRegexp(blockOpeners);
@@ -96,6 +95,37 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return null;
     }
 
+    scope = cur_scope(state);
+
+    // Strings
+
+    if (scope == '"""' || scope == 'string') {
+      delimiter = scope == 'string' ? '"' : '"""';
+      while (!stream.eol()) {
+        stream.eatWhile(/[^\$'"\\]/);
+        if (stream.eat('\\')) {
+            stream.next();
+            if (stream.eol()) {
+              return 'string';
+            }
+        } else if (stream.match("$") && stream.match("(")) { // Both checks || infinite loops
+//           if (stream.match(/^\s*$/, false)) {
+//             push_scope(state, 'splice');
+//           } else {
+//             push_scope(state, 'splice', stream.column()+1);
+//           }
+          push_scope(state, 'splice', stream.column()+stream.current().length);
+          return 'string';
+        } else if (stream.match(delimiter)) {
+          state.scopes.pop();
+          return 'string';
+        } else {
+            stream.eat(/['"]/);
+        }
+      }
+      return 'string';
+    }
+
     // Multiline Comments
 
     if (stream.match('#=')) {
@@ -103,6 +133,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     }
 
    if (cur_scope(state) == 'multiline-comment') {
+     // TODO: this doesn't handle `=#=#` properly
       if (stream.match(/^.*?#=/)) {
         push_scope(state, 'multiline-comment');
       } else if (stream.match(/^.*?=#/)) {
@@ -151,7 +182,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (ch==='[' || ch==='{' || ch==='(') {
       stream.next()
-      if (stream.match(/^\s*$/)) {
+      if (stream.match(/^\s*$/, false)) {
         push_scope(state, ch);
       } else {
         push_scope(state, ch, stream.column()+1);
@@ -166,6 +197,9 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       state.leaving_expr=true;
       stream.next();
       return 'bracket';
+    } else if (ch === ')' && scope == 'splice') {
+      state.scopes.pop();
+      return 'bracket'
     } else if (ch===')' || ch==='}' || ch===']') {
       stream.next()
       return 'error';
@@ -228,10 +262,13 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       }
     }
 
-    // Handle Strings
-    if (stream.match(stringPrefixes)) {
-      state.tokenize = tokenStringFactory(stream.current());
-      return state.tokenize(stream, state);
+    // Open strings
+    if (stream.match('"""')) {
+      push_scope(state, '"""');
+      return 'string';
+    } else if (stream.match('"')) {
+      push_scope(state, 'string');
+      return 'string';
     }
 
     // Handle operators and Delimiters
@@ -273,37 +310,6 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     return 'variable';
   }
 
-  function tokenStringFactory(delimiter) {
-    while ('rub'.indexOf(delimiter.charAt(0).toLowerCase()) >= 0) {
-      delimiter = delimiter.substr(1);
-    }
-    var singleline = delimiter.length == 1;
-    var OUTCLASS = 'string';
-
-    function tokenString(stream, state) {
-      while (!stream.eol()) {
-        stream.eatWhile(/[^'"\\]/);
-        if (stream.eat('\\')) {
-            stream.next();
-            if (singleline && stream.eol()) {
-              return OUTCLASS;
-            }
-        } else if (stream.match(delimiter)) {
-            state.tokenize = tokenBase;
-            return OUTCLASS;
-        } else {
-            stream.eat(/['"]/);
-        }
-      }
-      if (singleline) {
-        state.tokenize = tokenBase;
-      }
-      return OUTCLASS;
-    }
-    tokenString.isString = true;
-    return tokenString;
-  }
-
   function tokenLexer(stream, state) {
     return state.tokenize(stream, state);
   }
@@ -324,11 +330,15 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     },
 
     indent: function(state, textAfter) {
-      if (cur_scope(state) == 'multiline-comment')
+      var scope = cur_scope(state);
+      if (scope == 'multiline-comment' ||
+          scope == '"""' ||
+          scope == 'string')
         return CodeMirror.Pass;
       var indent = 0;
       for (i = 0; i < state.scopes.length; i++) {
-        if (state.scopes[i].indent) {
+//         console.log(state.scopes[i].name, state.scopes[i].indent)
+        if (state.scopes[i].indent >= 0) {
           indent = state.scopes[i].indent;
         } else {
           indent += indentUnit;
