@@ -222,41 +222,10 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     if(stream.match("=>")) {
       return 'operator';
     }
-    // Handle Number Literals
-    if (stream.match(/^[0-9\.]/, false)) {
-      var imMatcher = RegExp(/^im\b/);
-      var floatLiteral = false;
-      // Floats
-      if (stream.match(/^\d*\.\d+([ef][\+\-]?\d+)?/i)) { floatLiteral = true; }
-      if (stream.match(/^\d+\.\d*/)) { floatLiteral = true; }
-      if (stream.match(/^\.\d+/)) { floatLiteral = true; }
-      if (floatLiteral) {
-          // Float literals may be "imaginary"
-          stream.match(imMatcher);
-          return 'number';
-      }
-      // Integers
-      var intLiteral = false;
-      // Hex
-      if (stream.match(/^0x[0-9a-f]+/i)) { intLiteral = true; }
-      // Binary
-      if (stream.match(/^0b[01]+/i)) { intLiteral = true; }
-      // Octal
-      if (stream.match(/^0o[0-7]+/i)) { intLiteral = true; }
-      // Decimal
-      if (stream.match(/^[1-9]\d*(e[\+\-]?\d+)?/)) {
-          // Decimal literals may be "imaginary"
-          stream.eat(/J/i);
-          // TODO - Can you have imaginary longs?
-          intLiteral = true;
-      }
-      // Zero by itself with no other piece of number.
-      if (stream.match(/^0(?![\dx])/i)) { intLiteral = true; }
-      if (intLiteral) {
-          // Integer literals may be "long"
-          stream.match(imMatcher);
-          return 'number';
-      }
+
+    // Number Literals
+    if (stream.match(/([0-9]+\.|\.[0-9]+|[0-9]+)[0-9]*([ef][+-]?[0-9]+)?(im)?/i)) {
+      return 'number';
     }
 
     // Open strings
