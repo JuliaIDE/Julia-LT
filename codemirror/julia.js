@@ -36,12 +36,12 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
   }
 
   // It's safe to call push_scope(name, index)
-  function push_scope(state, name, index) {
-    state.scopes.push({'name': name, 'index': index});
+  function push_scope(state, name, indent) {
+    state.scopes.push({'name': name, 'index': indent});
   }
 
   function wordRegexp(words) {
-    return new RegExp("^((" + words.join(")|(") + "))\\b");
+    return new RegExp("^(" + words.join("|") + ")\\b");
   }
 
   var operators   = /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
@@ -129,8 +129,8 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     // If a comma, don't remove last keyword
     // This is so that `using A, B` works
-    if (stream.match(/,\s*/))
-      return null;
+    if (stream.match(','))
+      return 'delimiter';
 
     var last_keyword = state.last_keyword;
     state.last_keyword = undefined;
@@ -150,33 +150,25 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         stream.skipToEnd();
         return 'comment';
     }
-    if(ch==='[') {
-      push_scope(state, "[");
-    }
 
-    if(ch==='{') {
-      push_scope(state, "{");
-    }
+    // Lists
 
-    if(ch==='(') {
-      push_scope(state, "(");
+    if (ch==='[' || ch==='{' || ch==='(') {
+      stream.next()
+      push_scope(state, ch, stream.column());
+      return 'bracket';
     }
 
     var scope=cur_scope(state);
 
-    if(scope==='[' && ch===']') {
+    if (scope==='[' && ch===']' || scope==='{' && ch==='}' || scope==='(' && ch===')') {
       state.scopes.pop();
       state.leaving_expr=true;
-    }
-
-    if(scope==='{' && ch==='}') {
-      state.scopes.pop();
-      state.leaving_expr=true;
-    }
-
-    if(scope==='(' && ch===')') {
-      state.scopes.pop();
-      state.leaving_expr=true;
+      stream.next();
+      return 'bracket';
+    } else if (ch===')' || ch==='}' || ch===']') {
+      stream.next()
+      return 'error';
     }
 
     var match;
@@ -335,7 +327,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       if (cur_scope(state) == 'multiline-comment')
         return CodeMirror.Pass
       var delta = 0;
-      if(textAfter=="end" || textAfter=="else" || textAfter=="elseif" || textAfter=="catch" || textAfter=="finally") {
+      if(textAfter.match(closers)) {
         delta = -1;
       }
       return (state.scopes.length + delta) * indentUnit;
