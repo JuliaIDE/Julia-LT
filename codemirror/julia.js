@@ -1,8 +1,5 @@
 // Support Unicode properly
-// Auto place end statements
-// Refactor brackets matching
-// Support all string prefixes
-// Negative numbers
+// Support string prefixes
 // Keywords (being careful of ranges and types)
 
 CodeMirror.defineMode("julia2", function(config, parserConfig) {
@@ -224,7 +221,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     }
 
     // Number Literals
-    if (stream.match(/([0-9]+\.|\.[0-9]+|[0-9]+)[0-9]*([ef][+-]?[0-9]+)?(im)?/i)) {
+    if (stream.match(/[+-]?([0-9]+\.|\.[0-9]+|[0-9]+)[0-9]*([ef][+-]?[0-9]+)?(im)?/i)) {
       return 'number';
     }
 
