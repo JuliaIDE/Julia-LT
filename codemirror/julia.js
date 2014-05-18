@@ -72,6 +72,10 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
   function in_array(state) {
     var ch = cur_scope(state);
+    return (ch=="[" || ch=="{");
+  }
+  function in_list(state) {
+    var ch = cur_scope(state);
     return (ch=="[" || ch=="{" || ch == "(");
   }
 
