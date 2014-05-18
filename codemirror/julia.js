@@ -242,7 +242,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         return 'number';
       } else if (scope && scope.match(openers)) {
         finalise_leavingexpr(state, stream);
-        return 'qualifier';
+        return 'keyword fade';
       } else {
         return 'error';
       }

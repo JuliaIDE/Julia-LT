@@ -1,6 +1,6 @@
 .cm-s-june-night { background: #303333; color: white; }
 .cm-s-june-night span.cm-keyword {color: #aaa; font-weight:bold;}
-.cm-s-june-night span.cm-atom {color: #219;}
+.cm-s-june-night span.cm-atom {color: #bfebbf;}
 .cm-s-june-night span.cm-number {color: #DCDCCC;}
 .cm-s-june-night span.cm-def {color: #DCDCCC; font-weight: bold;}
 .cm-s-june-night span.cm-variable {color: #aff;}
@@ -10,19 +10,20 @@
 .cm-s-june-night span.cm-operator {color: #F0EFD0;}
 .cm-s-june-night span.cm-comment {color: #7F9F7F; font-style: italic;}
 .cm-s-june-night span.cm-string {color: #CC9393;}
-.cm-s-june-night span.cm-string-2 {color: #dd1144;}
+.cm-s-june-night span.cm-string-2 {color: #cc9393;}
 .cm-s-june-night span.cm-meta {color: #F0DFAF; font-weight:bold;}
 .cm-s-june-night span.cm-error {background: #633; color: #f99;}
-.cm-s-june-night span.cm-qualifier {color: #777;}
+.cm-s-june-night span.cm-qualifier {color: #7cb8bb;}
 .cm-s-june-night span.cm-builtin {color: #DCDCCC;}
 .cm-s-june-night span.cm-bracket {color: #997;}
-.cm-s-june-night span.cm-tag {color: #170;}
+.cm-s-june-night span.cm-tag {color: #93e0e3;}
 .cm-s-june-night span.cm-attribute {color: #00c;}
 .cm-s-june-night span.cm-header {color: blue;}
 .cm-s-june-night span.cm-quote {color: #090;}
 .cm-s-june-night span.cm-hr {color: #999;}
 .cm-s-june-night span.cm-link {color: #00c;}
 .cm-s-june-night span.cm-symbol {color: black; }
+.cm-s-june-night span.cm-fade {font-weight: normal; color: #777;}
 
 .cm-s-june-night div.CodeMirror-cursor
 {
