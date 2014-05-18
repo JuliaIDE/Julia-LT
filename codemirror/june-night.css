@@ -2,8 +2,6 @@
 #multi.theme-june-night .list .active, #multi.theme-june-night .list li:hover { background:#f8f8f8; color:#555; }
 #multi.theme-june-night .list .dirty { color:#f50; } */
 
-/* Todo: errors */
-
 .cm-s-june-night { background: #303333; color: white; }
 .cm-s-june-night span.cm-keyword {color: #aaa; font-weight:bold;}
 .cm-s-june-night span.cm-atom {color: #219;}
@@ -15,7 +13,7 @@
 .cm-s-june-night span.cm-string {color: #CC9393;}
 .cm-s-june-night span.cm-string-2 {color: #dd1144;}
 .cm-s-june-night span.cm-meta {color: #F0DFAF; font-weight:bold;}
-.cm-s-june-night span.cm-error {color: #f00; background: #fdd;}
+.cm-s-june-night span.cm-error {background: #633; color: #f99;}
 .cm-s-june-night span.cm-qualifier {color: #777;}
 .cm-s-june-night span.cm-builtin {color: #DCDCCC;}
 .cm-s-june-night span.cm-bracket {color: #997;}
@@ -66,8 +64,11 @@
 }
 
 .theme-june-night .inline-exception pre {
-  background: #322;
-  color: #b55;
+  background: #733;
+  color: #fbb;
+  border: 1px solid #222;
+  -webkit-border-radius: 5px;
+  box-shadow: 2px 2px 0px #222;
 }
 
 .theme-june-night .inline-doc pre {
