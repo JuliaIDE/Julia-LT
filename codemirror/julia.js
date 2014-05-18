@@ -21,7 +21,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
   }
 
   function def_class(str) {
-    h = hash(str)%100
+    h = hash(str)%20
     return 'def-' + h
   }
 
