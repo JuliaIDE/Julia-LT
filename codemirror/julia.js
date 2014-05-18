@@ -42,7 +42,8 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
   var blockOpeners = ["begin", "function", "type", "immutable",
                       "let", "macro", "for", "while",
                       "quote", "if", "else", "elseif",
-                      "try", "finally", "catch", "do"];
+                      "try", "finally", "catch", "do",
+                     "module"];
 
   var blockClosers = ["end", "else", "elseif", "catch", "finally"];
 
@@ -205,7 +206,12 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     var match;
     if(!in_array(state) && (match=stream.match(openers, false))) {
-      push_scope(state, match);
+      match = match[0]
+      if (match == 'module') {
+        push_scope(state, match, stream.column());
+      } else {
+        push_scope(state, match);
+      }
     }
 
     if(!in_array(state) && stream.match(closers, false)) {
@@ -215,10 +221,10 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     if (stream.match(/end\b/))
       if (scope === '[')
         return 'number';
-      else if (in_array(state))
-        return 'error';
-      else
+      else if (scope && scope.match(openers))
         return 'qualifier';
+      else
+        return 'error';
 
     if(stream.match("=>")) {
       return 'operator';
@@ -262,10 +268,13 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (stream.match(identifiers)) {
       state.leaving_expr=true;
-      if (last_keyword == 'function' || last_keyword == 'const' || last_keyword == 'using') {
+      if (last_keyword == 'function' ||
+          last_keyword == 'const' ||
+          last_keyword == 'using' ||
+          last_keyword == 'module') {
         if (stream.match(',', false))
           state.last_keyword = last_keyword;
-          return def_class(stream.current());
+        return def_class(stream.current());
       } else if (stream.match('(', false) && stream.column() == 0) {
         return def_class(stream.current());
       } else {
