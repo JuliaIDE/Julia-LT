@@ -13,7 +13,7 @@
 .cm-s-june span.cm-string-2 {color: #dd1144;}
 .cm-s-june span.cm-meta {color: #900; font-weight:bold;}
 .cm-s-june span.cm-error {color: #f00; background: #fdd;}
-.cm-s-june span.cm-qualifier {color: #BBB;}
+.cm-s-june span.cm-qualifier {color: #555;}
 .cm-s-june span.cm-builtin {color: #30a;}
 .cm-s-june span.cm-bracket {color: #997;}
 .cm-s-june span.cm-tag {color: #170;}
@@ -23,6 +23,7 @@
 .cm-s-june span.cm-hr {color: #999;}
 .cm-s-june span.cm-link {color: #00c;}
 .cm-s-june span.cm-symbol {color: black; }
+.cm-s-june span.cm-fade {font-weight: normal; color: #bbb;}
 
 .cm-s-june div.CodeMirror-cursor
 {
