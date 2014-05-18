@@ -1,12 +1,11 @@
-/* #multi.theme-june-night .content { background: #f8f8f8; }
-#multi.theme-june-night .list .active, #multi.theme-june-night .list li:hover { background:#f8f8f8; color:#555; }
-#multi.theme-june-night .list .dirty { color:#f50; } */
-
 .cm-s-june-night { background: #303333; color: white; }
 .cm-s-june-night span.cm-keyword {color: #aaa; font-weight:bold;}
 .cm-s-june-night span.cm-atom {color: #219;}
 .cm-s-june-night span.cm-number {color: #DCDCCC;}
 .cm-s-june-night span.cm-def {color: #DCDCCC; font-weight: bold;}
+.cm-s-june-night span.cm-variable {color: #aff;}
+.cm-s-june-night span.cm-variable-2 {color: #ffc;}
+.cm-s-june-night span.cm-variable-3 {color: #fff;}
 .cm-s-june-night span.cm-property {color: white;}
 .cm-s-june-night span.cm-operator {color: #F0EFD0;}
 .cm-s-june-night span.cm-comment {color: #7F9F7F; font-style: italic;}
@@ -75,43 +74,63 @@
   color: black !important;
 }
 
-.cm-s-june-night span.cm-variable-0 {color: #FFCCCC;}
-.cm-s-june-night span.cm-def-0      {color: #FFCCCC; font-weight: bold;}
-.cm-s-june-night span.cm-variable-1 {color: #FFDBCC;}
-.cm-s-june-night span.cm-def-1      {color: #FFDBCC; font-weight: bold;}
-.cm-s-june-night span.cm-variable-2 {color: #FFEBCC;}
-.cm-s-june-night span.cm-def-2      {color: #FFEBCC; font-weight: bold;}
-.cm-s-june-night span.cm-variable-3 {color: #FFFACC;}
-.cm-s-june-night span.cm-def-3      {color: #FFFACC; font-weight: bold;}
-.cm-s-june-night span.cm-variable-4 {color: #F5FFCC;}
-.cm-s-june-night span.cm-def-4      {color: #F5FFCC; font-weight: bold;}
-.cm-s-june-night span.cm-variable-5 {color: #E6FFCC;}
-.cm-s-june-night span.cm-def-5      {color: #E6FFCC; font-weight: bold;}
-.cm-s-june-night span.cm-variable-6 {color: #D6FFCC;}
-.cm-s-june-night span.cm-def-6      {color: #D6FFCC; font-weight: bold;}
-.cm-s-june-night span.cm-variable-7 {color: #CCFFD1;}
-.cm-s-june-night span.cm-def-7      {color: #CCFFD1; font-weight: bold;}
-.cm-s-june-night span.cm-variable-8 {color: #CCFFE0;}
-.cm-s-june-night span.cm-def-8      {color: #CCFFE0; font-weight: bold;}
-.cm-s-june-night span.cm-variable-9 {color: #CCFFF0;}
-.cm-s-june-night span.cm-def-9      {color: #CCFFF0; font-weight: bold;}
-.cm-s-june-night span.cm-variable-10 {color: #CCFFFF;}
-.cm-s-june-night span.cm-def-10      {color: #CCFFFF; font-weight: bold;}
-.cm-s-june-night span.cm-variable-11 {color: #CCF0FF;}
-.cm-s-june-night span.cm-def-11      {color: #CCF0FF; font-weight: bold;}
-.cm-s-june-night span.cm-variable-12 {color: #CCE0FF;}
-.cm-s-june-night span.cm-def-12      {color: #CCE0FF; font-weight: bold;}
-.cm-s-june-night span.cm-variable-13 {color: #CCD1FF;}
-.cm-s-june-night span.cm-def-13      {color: #CCD1FF; font-weight: bold;}
-.cm-s-june-night span.cm-variable-14 {color: #D6CCFF;}
-.cm-s-june-night span.cm-def-14      {color: #D6CCFF; font-weight: bold;}
-.cm-s-june-night span.cm-variable-15 {color: #E6CCFF;}
-.cm-s-june-night span.cm-def-15      {color: #E6CCFF; font-weight: bold;}
-.cm-s-june-night span.cm-variable-16 {color: #F5CCFF;}
-.cm-s-june-night span.cm-def-16      {color: #F5CCFF; font-weight: bold;}
-.cm-s-june-night span.cm-variable-17 {color: #FFCCFA;}
-.cm-s-june-night span.cm-def-17      {color: #FFCCFA; font-weight: bold;}
-.cm-s-june-night span.cm-variable-18 {color: #FFCCEB;}
-.cm-s-june-night span.cm-def-18      {color: #FFCCEB; font-weight: bold;}
-.cm-s-june-night span.cm-variable-19 {color: #FFCCDB;}
-.cm-s-june-night span.cm-def-19      {color: #FFCCDB; font-weight: bold;}
+.cm-s-june-night span.cm-variable.cm-hash-0,
+.cm-s-june-night span.cm-variable-2.cm-hash-0,
+.cm-s-june-night span.cm-def.cm-hash-0 {color: #FFCCCC;}
+.cm-s-june-night span.cm-variable.cm-hash-1,
+.cm-s-june-night span.cm-variable-2.cm-hash-1,
+.cm-s-june-night span.cm-def.cm-hash-1 {color: #FFDBCC;}
+.cm-s-june-night span.cm-variable.cm-hash-2,
+.cm-s-june-night span.cm-variable-2.cm-hash-2,
+.cm-s-june-night span.cm-def.cm-hash-2 {color: #FFEBCC;}
+.cm-s-june-night span.cm-variable.cm-hash-3,
+.cm-s-june-night span.cm-variable-2.cm-hash-3,
+.cm-s-june-night span.cm-def.cm-hash-3 {color: #FFFACC;}
+.cm-s-june-night span.cm-variable.cm-hash-4,
+.cm-s-june-night span.cm-variable-2.cm-hash-4,
+.cm-s-june-night span.cm-def.cm-hash-4 {color: #F5FFCC;}
+.cm-s-june-night span.cm-variable.cm-hash-5,
+.cm-s-june-night span.cm-variable-2.cm-hash-5,
+.cm-s-june-night span.cm-def.cm-hash-5 {color: #E6FFCC;}
+.cm-s-june-night span.cm-variable.cm-hash-6,
+.cm-s-june-night span.cm-variable-2.cm-hash-6,
+.cm-s-june-night span.cm-def.cm-hash-6 {color: #D6FFCC;}
+.cm-s-june-night span.cm-variable.cm-hash-7,
+.cm-s-june-night span.cm-variable-2.cm-hash-7,
+.cm-s-june-night span.cm-def.cm-hash-7 {color: #CCFFD1;}
+.cm-s-june-night span.cm-variable.cm-hash-8,
+.cm-s-june-night span.cm-variable-2.cm-hash-8,
+.cm-s-june-night span.cm-def.cm-hash-8 {color: #CCFFE0;}
+.cm-s-june-night span.cm-variable.cm-hash-9,
+.cm-s-june-night span.cm-variable-2.cm-hash-9,
+.cm-s-june-night span.cm-def.cm-hash-9 {color: #CCFFF0;}
+.cm-s-june-night span.cm-variable.cm-hash-10,
+.cm-s-june-night span.cm-variable-2.cm-hash-10,
+.cm-s-june-night span.cm-def.cm-hash-10 {color: #CCFFFF;}
+.cm-s-june-night span.cm-variable.cm-hash-11,
+.cm-s-june-night span.cm-variable-2.cm-hash-11,
+.cm-s-june-night span.cm-def.cm-hash-11 {color: #CCF0FF;}
+.cm-s-june-night span.cm-variable.cm-hash-12,
+.cm-s-june-night span.cm-variable-2.cm-hash-12,
+.cm-s-june-night span.cm-def.cm-hash-12 {color: #CCE0FF;}
+.cm-s-june-night span.cm-variable.cm-hash-13,
+.cm-s-june-night span.cm-variable-2.cm-hash-13,
+.cm-s-june-night span.cm-def.cm-hash-13 {color: #CCD1FF;}
+.cm-s-june-night span.cm-variable.cm-hash-14,
+.cm-s-june-night span.cm-variable-2.cm-hash-14,
+.cm-s-june-night span.cm-def.cm-hash-14 {color: #D6CCFF;}
+.cm-s-june-night span.cm-variable.cm-hash-15,
+.cm-s-june-night span.cm-variable-2.cm-hash-15,
+.cm-s-june-night span.cm-def.cm-hash-15 {color: #E6CCFF;}
+.cm-s-june-night span.cm-variable.cm-hash-16,
+.cm-s-june-night span.cm-variable-2.cm-hash-16,
+.cm-s-june-night span.cm-def.cm-hash-16 {color: #F5CCFF;}
+.cm-s-june-night span.cm-variable.cm-hash-17,
+.cm-s-june-night span.cm-variable-2.cm-hash-17,
+.cm-s-june-night span.cm-def.cm-hash-17 {color: #FFCCFA;}
+.cm-s-june-night span.cm-variable.cm-hash-18,
+.cm-s-june-night span.cm-variable-2.cm-hash-18,
+.cm-s-june-night span.cm-def.cm-hash-18 {color: #FFCCEB;}
+.cm-s-june-night span.cm-variable.cm-hash-19,
+.cm-s-june-night span.cm-variable-2.cm-hash-19,
+.cm-s-june-night span.cm-def.cm-hash-19 {color: #FFCCDB;}

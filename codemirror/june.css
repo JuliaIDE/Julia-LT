@@ -1,14 +1,11 @@
-/* #multi.theme-june .content { background: #f8f8f8; }
-#multi.theme-june .list .active, #multi.theme-june .list li:hover { background:#f8f8f8; color:#555; }
-#multi.theme-june .list .dirty { color:#f50; } */
-
 .cm-s-june { background: white; color: black; }
 .cm-s-june span.cm-keyword {color: black; font-weight:bold;}
 .cm-s-june span.cm-atom {color: #219;}
 .cm-s-june span.cm-number {color: #009999;}
 .cm-s-june span.cm-def {color: #833; font-weight: bold;}
 .cm-s-june span.cm-variable {color: black;}
-.cm-s-june span.cm-variable-2 {color: #008;}
+.cm-s-june span.cm-variable-2 {color: black;}
+.cm-s-june span.cm-variable-3 {color: black;}
 .cm-s-june span.cm-property {color: black;}
 .cm-s-june span.cm-operator {color: black;}
 .cm-s-june span.cm-comment {color: #999988; font-style: italic;}
@@ -34,7 +31,9 @@
 }
 
 .cm-s-june .CodeMirror-matchingbracket {
-  background: #eee;
+  background: none;
+/*   text-decoration: underline; */
+  border: 1px black;
 }
 
 .cm-s-june .CodeMirror-nonmatchingbracket {
