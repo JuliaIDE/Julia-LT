@@ -5,7 +5,8 @@
 CodeMirror.defineMode("julia2", function(config, parserConfig) {
   var indentUnit = config.indentUnit || 2;
 
-  // Hash functions – should be put in a seperate plugin
+  // ––––––––––––––––––––––––
+  // Hashing utils – this should be a seperate plugin
   function hash(str) {
     var res = 0,
         len = str.length;
@@ -15,15 +16,11 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     return Math.abs(res);
   }
 
-  function variable_class(str) {
+  function hash_class(str) {
     h = hash(str)%20
-    return 'variable-' + h
+    return 'hash-' + h
   }
-
-  function def_class(str) {
-    h = hash(str)%20
-    return 'def-' + h
-  }
+  // ––––––––––––––––––––––––
 
   function whitespace_only(stream) {
     return stream.match(/^\s*$/, false)
@@ -48,7 +45,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
                       "let", "macro", "for", "while",
                       "quote", "if", "else", "elseif",
                       "try", "finally", "catch", "do",
-                     "module"];
+                      "module"];
 
   var blockClosers = ["end", "else", "elseif", "catch", "finally"];
 
@@ -307,11 +304,11 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
           last_keyword == 'module') {
         if (stream.match(',', false))
           state.last_keyword = last_keyword;
-        return def_class(stream.current());
+        return 'def ' + hash_class(stream.current());
       } else if (stream.match('(', false) && stream.column() == 0) {
-        return def_class(stream.current());
+        return 'def' + hash_class(stream.current());
       } else {
-        return variable_class(stream.current());
+        return 'variable ' + hash_class(stream.current());
       }
     }
     // Handle non-detected items
@@ -368,7 +365,9 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     "hint-pattern": /[@a-zA-Z0-9_]/
   };
+
   return external;
+
 });
 
 CodeMirror.defineMIME("text/julia", "julia2");
