@@ -31,9 +31,7 @@
 }
 
 .cm-s-june .CodeMirror-matchingbracket {
-  background: none;
-/*   text-decoration: underline; */
-  border: 1px black;
+  text-decoration: underline;
 }
 
 .cm-s-june .CodeMirror-nonmatchingbracket {
