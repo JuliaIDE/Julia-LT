@@ -7,6 +7,8 @@
 .cm-s-june span.cm-atom {color: #219;}
 .cm-s-june span.cm-number {color: #009999;}
 .cm-s-june span.cm-def {color: #833; font-weight: bold;}
+.cm-s-june span.cm-variable {color: black;}
+.cm-s-june span.cm-variable-2 {color: #008;}
 .cm-s-june span.cm-property {color: black;}
 .cm-s-june span.cm-operator {color: black;}
 .cm-s-june span.cm-comment {color: #999988; font-style: italic;}
@@ -76,44 +78,3 @@
 .theme-june .inline-doc pre {
   color: black !important;
 }
-
-.cm-s-june span.cm-variable-0 {color: #800000;}
-.cm-s-june span.cm-def-0      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-1 {color: #802600;}
-.cm-s-june span.cm-def-1      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-2 {color: #804D00;}
-.cm-s-june span.cm-def-2      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-3 {color: #807300;}
-.cm-s-june span.cm-def-3      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-4 {color: #668000;}
-.cm-s-june span.cm-def-4      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-5 {color: #408000;}
-.cm-s-june span.cm-def-5      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-6 {color: #198000;}
-.cm-s-june span.cm-def-6      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-7 {color: #00800D;}
-.cm-s-june span.cm-def-7      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-8 {color: #008033;}
-.cm-s-june span.cm-def-8      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-9 {color: #008059;}
-.cm-s-june span.cm-def-9      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-10 {color: #008080;}
-.cm-s-june span.cm-def-10      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-11 {color: #005980;}
-.cm-s-june span.cm-def-11      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-12 {color: #003380;}
-.cm-s-june span.cm-def-12      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-13 {color: #000D80;}
-.cm-s-june span.cm-def-13      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-14 {color: #1A0080;}
-.cm-s-june span.cm-def-14      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-15 {color: #400080;}
-.cm-s-june span.cm-def-15      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-16 {color: #660080;}
-.cm-s-june span.cm-def-16      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-17 {color: #800073;}
-.cm-s-june span.cm-def-17      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-18 {color: #80004C;}
-.cm-s-june span.cm-def-18      {color: #833; font-weight: bold;}
-.cm-s-june span.cm-variable-19 {color: #800026;}
-.cm-s-june span.cm-def-19      {color: #833; font-weight: bold;}

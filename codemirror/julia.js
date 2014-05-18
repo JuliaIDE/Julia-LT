@@ -305,8 +305,8 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         if (stream.match(',', false))
           state.last_keyword = last_keyword;
         return 'def ' + hash_class(stream.current());
-      } else if (stream.match('(', false) && stream.column() == 0) {
-        return 'def' + hash_class(stream.current());
+      } else if (stream.match('(', false)) {
+        return (stream.column() == 0 ? 'def ' : 'variable-2 ') + hash_class(stream.current());
       } else {
         return 'variable ' + hash_class(stream.current());
       }

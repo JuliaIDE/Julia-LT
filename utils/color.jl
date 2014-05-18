@@ -17,8 +17,8 @@ hexes = @>> [hex(HSV(h, 1, 0.5)) for h in hue_range(20)]
 styles = map(enumerate(hexes)) do t
   i, h = t
   """
-  .cm-s-june span.cm-variable-$(i-1) {color: #$h;}
-  .cm-s-june span.cm-def-$(i-1)      {color: #833; font-weight: bold;}
+  .cm-s-june span.cm-variable.cm-hash-$(i-1), .cm-s-june span.cm-variable-2.cm-hash-$(i-1)
+    {color: #$h;}
   """
 end
 
