@@ -25,6 +25,10 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     return 'def-' + h
   }
 
+  function whitespace_only(stream) {
+    return stream.match(/^\s*$/, false)
+  }
+
   // It's safe to call push_scope(name, index)
   function push_scope(state, name, indent) {
     state.scopes.push({'name': name, 'indent': indent});
@@ -34,6 +38,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     return new RegExp("^(" + words.join("|") + ")\\b");
   }
 
+  var binary_operatos = /^(?:&|&&|\||\|\||==|!=|=|[<>]=?|\?|\:|[*\/\+-]=?)/
   var operators   = /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
   var delimiters  = /^[;,()[\]{}]/;
   var identifiers = /^[_A-Za-z][_A-Za-z0-9!]*/;
@@ -85,6 +90,22 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return null;
     }
     return state.scopes[state.scopes.length - 1].name;
+  }
+
+  // Perform any last operations on scope etc.
+  // before returning a class.
+  function finalise(state, stream) {
+    if (state.leaving_expr &&
+        whitespace_only(stream)) {
+      while (cur_scope(state) == 'binary_operator') {
+        state.scopes.pop();
+      }
+    }
+  }
+
+  function finalise_leavingexpr(state, stream) {
+    state.leaving_expr = true;
+    finalise(state, stream);
   }
 
   // tokenizers
@@ -193,11 +214,12 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (scope==='[' && ch===']' || scope==='{' && ch==='}' || scope==='(' && ch===')') {
       state.scopes.pop();
-      state.leaving_expr=true;
       stream.next();
+      finalise_leavingexpr(state, stream);
       return 'bracket';
     } else if (ch === ')' && scope == 'splice') {
       state.scopes.pop();
+      finalise_leavingexpr(state, stream);
       return 'bracket'
     } else if (ch===')' || ch==='}' || ch===']') {
       stream.next()
@@ -219,12 +241,14 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     }
 
     if (stream.match(/end\b/))
-      if (scope === '[')
+      if (scope === '[') {
         return 'number';
-      else if (scope && scope.match(openers))
+      } else if (scope && scope.match(openers)) {
+        finalise_leavingexpr(state, stream);
         return 'qualifier';
-      else
+      } else {
         return 'error';
+      }
 
     if(stream.match("=>")) {
       return 'operator';
@@ -232,6 +256,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     // Number Literals
     if (stream.match(/[+-]?([0-9]+\.|\.[0-9]+|[0-9]+)[0-9]*([ef][+-]?[0-9]+)?(im)?/i)) {
+      finalise_leavingexpr(state, stream);
       return 'number';
     }
 
@@ -245,6 +270,13 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     }
 
     // Handle operators and Delimiters
+    if (leaving_expr && stream.match(binary_operatos)) {
+      if (stream.match(/^\s*$/)) {
+        push_scope(state, 'binary_operator');
+      }
+      return 'operator';
+    }
+
     if (stream.match(operators)) {
       return 'operator';
     }
@@ -255,6 +287,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (stream.match(keywords)) {
       state.last_keyword = stream.current()
+      finalise_leavingexpr(state, stream)
       return 'keyword';
     }
 
@@ -267,7 +300,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     }
 
     if (stream.match(identifiers)) {
-      state.leaving_expr=true;
+      finalise_leavingexpr(state, stream);
       if (last_keyword == 'function' ||
           last_keyword == 'const' ||
           last_keyword == 'using' ||
@@ -311,6 +344,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
           scope == '"""' ||
           scope == 'string')
         return CodeMirror.Pass;
+
       var indent = 0;
       for (i = 0; i < state.scopes.length; i++) {
 //         console.log(state.scopes[i].name, state.scopes[i].indent)
