@@ -1,6 +1,5 @@
 // Support Unicode properly
 // Support string prefixes
-// Keywords (being careful of ranges and types)
 
 CodeMirror.defineMode("julia2", function(config, parserConfig) {
   var indentUnit = config.indentUnit || 2;
@@ -39,7 +38,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
   var operators   = /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
   var delimiters  = /^[;,()[\]{}]/;
   var identifiers = /^[_A-Za-z][_A-Za-z0-9!]*/;
-  var keyword     = /^:[_A-Za-z][_A-Za-z0-9!]*/
+  var symbol      = /^:[_A-Za-z][_A-Za-z0-9!]*/;
 
   var blockOpeners = ["begin", "function", "type", "immutable",
                       "let", "macro", "for", "while",
@@ -112,7 +111,9 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return null;
     }
 
-    scope = cur_scope(state);
+    var scope = cur_scope(state);
+    var colon_operator = state.colon_operator;
+    delete state.colon_operator;
 
     // Strings
 
@@ -266,26 +267,8 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return 'string';
     }
 
-    // Handle operators and Delimiters
-    if (leaving_expr && stream.match(binary_operatos)) {
-      if (stream.match(/^\s*$/)) {
-        push_scope(state, 'binary_operator');
-      }
-      return 'operator';
-    }
-
-    if (stream.match(operators)) {
-      return 'operator';
-    }
-
     if (stream.match(delimiters)) {
       return null;
-    }
-
-    if (stream.match(keywords)) {
-      state.last_keyword = stream.current()
-      finalise_leavingexpr(state, stream)
-      return 'keyword';
     }
 
     if (stream.match(builtins)) {
@@ -296,8 +279,14 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return 'meta';
     }
 
-    if (stream.match(identifiers)) {
+    if (!colon_operator && stream.match(symbol)) {
       finalise_leavingexpr(state, stream);
+      return 'symbol';
+    }
+
+    if (stream.match(identifiers)) {
+      stream.match(":", false) && (state.colon_operator = true) // Used to avoid treating a colon operator as a keyword
+//       finalise_leavingexpr(state, stream);
       if (last_keyword == 'function' ||
           last_keyword == 'const' ||
           last_keyword == 'using' ||
@@ -311,6 +300,25 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         return 'variable ' + hash_class(stream.current());
       }
     }
+
+    if (stream.match(keywords)) {
+      state.last_keyword = stream.current();
+      finalise_leavingexpr(state, stream);
+      return 'keyword';
+    }
+
+    // Handle operators and Delimiters
+    if (leaving_expr && stream.match(binary_operatos)) {
+      if (stream.match(/^\s*$/)) {
+        push_scope(state, 'binary_operator');
+      }
+      return 'operator';
+    }
+
+    if (stream.match(operators)) {
+      return 'operator';
+    }
+
     // Handle non-detected items
     stream.next();
     return 'variable';

@@ -22,7 +22,9 @@
 .cm-s-june span.cm-quote {color: #090;}
 .cm-s-june span.cm-hr {color: #999;}
 .cm-s-june span.cm-link {color: #00c;}
-.cm-s-june span.cm-symbol {color: black; }
+.cm-s-june span.cm-symbol {color: #077;}
+
+/* Unorthodox */
 .cm-s-june span.cm-fade {font-weight: normal; color: #bbb;}
 
 .cm-s-june div.CodeMirror-cursor
