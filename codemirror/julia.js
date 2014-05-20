@@ -234,6 +234,12 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       }
     }
 
+    if (stream.match(keywords)) {
+      state.last_keyword = stream.current();
+      finalise_leavingexpr(state, stream);
+      return 'keyword';
+    }
+
     if(!in_array(state) && stream.match(closers, false)) {
       state.scopes.pop();
     }
@@ -286,7 +292,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (stream.match(identifiers)) {
       stream.match(":", false) && (state.colon_operator = true) // Used to avoid treating a colon operator as a keyword
-//       finalise_leavingexpr(state, stream);
+      finalise_leavingexpr(state, stream);
       if (last_keyword == 'function' ||
           last_keyword == 'const' ||
           last_keyword == 'using' ||
@@ -299,12 +305,6 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       } else {
         return 'variable ' + hash_class(stream.current());
       }
-    }
-
-    if (stream.match(keywords)) {
-      state.last_keyword = stream.current();
-      finalise_leavingexpr(state, stream);
-      return 'keyword';
     }
 
     // Handle operators and Delimiters
