@@ -52,7 +52,7 @@
 
 /* Light Table stuff */
 
-.theme-june-night .inline-result, .theme-june-night .underline-result {
+.cm-s-june-night .inline-result, .cm-s-june-night .inline-doc {
   background: #404444;
   color: #DCDCCC;
   border: 1px solid #222;
@@ -60,21 +60,16 @@
   box-shadow: 2px 2px 0px #222;
 }
 
-.theme-june-night .inline-doc {
-  background: white;
-  color: black;
+.cm-s-june-night .inline-doc pre {
+  color: #DCDCCC;
 }
 
-.theme-june-night .inline-exception pre {
+.cm-s-june-night .inline-exception pre {
   background: #966;
-  color: #fff;
-  border: 1px solid #222;
+  color: #dee;
+  border: 1px solid #744;
   -webkit-border-radius: 5px;
-  box-shadow: 2px 2px 0px #222;
-}
-
-.theme-june-night .inline-doc pre {
-  color: black !important;
+  box-shadow: 2px 2px 0px #744;
 }
 
 .cm-s-june-night span.cm-variable.cm-hash-0,
