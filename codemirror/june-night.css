@@ -53,7 +53,7 @@
 /* Light Table stuff */
 
 .theme-june-night .inline-result, .theme-june-night .underline-result {
-  background: #303333;
+  background: #404444;
   color: #DCDCCC;
   border: 1px solid #222;
   -webkit-border-radius: 5px;
@@ -66,8 +66,8 @@
 }
 
 .theme-june-night .inline-exception pre {
-  background: #703535;
-  color: #fbb;
+  background: #966;
+  color: #fff;
   border: 1px solid #222;
   -webkit-border-radius: 5px;
   box-shadow: 2px 2px 0px #222;
