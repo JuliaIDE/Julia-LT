@@ -234,17 +234,11 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       }
     }
 
-    if (stream.match(keywords)) {
-      state.last_keyword = stream.current();
-      finalise_leavingexpr(state, stream);
-      return 'keyword';
-    }
-
     if(!in_array(state) && stream.match(closers, false)) {
       state.scopes.pop();
     }
 
-    if (stream.match(/end\b/))
+    if (stream.match(/end\b/)) {
       if (scope === '[') {
         return 'number';
       } else if (scope && scope.match(openers)) {
@@ -253,6 +247,13 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       } else {
         return 'error';
       }
+    }
+
+    if (stream.match(keywords)) {
+      state.last_keyword = stream.current();
+      finalise_leavingexpr(state, stream);
+      return 'keyword';
+    }
 
     if(stream.match("=>")) {
       return 'operator';
