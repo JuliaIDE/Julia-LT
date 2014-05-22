@@ -35,6 +35,7 @@
 
 .cm-s-june-night .CodeMirror-matchingbracket {
   text-decoration: underline;
+  color:white !important;
 }
 
 .cm-s-june-night .CodeMirror-nonmatchingbracket {
