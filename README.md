@@ -2,9 +2,9 @@
 
 [![Gitter chat](https://badges.gitter.im/one-more-minute/Jewel-LT.png)](https://gitter.im/one-more-minute/Jewel-LT) - feel free to ask questions here.
 
-This is a plugin for Light Table supporting Julia. The Julia side of this project lives [here](https://github.com/one-more-minute/Jewel.jl). The long-term goal is to mold Light Table into a MATLAB-like environment for Julia.
+This is a Julia language plugin for Light Table, base on the [Jewel.jl](https://github.com/one-more-minute/Jewel.jl) editor backend.
 
-Light Table is shaping up well as a Julia IDE - it's already become my go-to environment for writing Julia packages, including the plugin itself. See "Current Features" to find out what it can do.
+Jewel-LT provides basic editor support, but if you don't use Light Table already and are looking for a more full-featured IDE experience check out [Jupiter](http://github.com/one-more-minute/Jupiter-LT)
 
 ## Instructions
 
@@ -15,9 +15,9 @@ Note: to execute commands, `Ctrl+Space` the type the command's name.
 * Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia")`.
   * (Use the "user behaviors" command. See [here](https://gist.github.com/one-more-minute/9882389) for an example of setting the Julia path)
 
-* Now restart LT. You should see a working indicator as the Julia client boots up – this may take a while the first time. Use the "toggle console" command to see output.
+* Now restart LT.
 
-* Open a `.jl` file (or press `Ctrl-j` for a new one), type something, `Ctrl+Enter` to evaluate the line.
+* Open a `.jl` file, type something, `Ctrl+Enter` to evaluate the line.
 
 When an update is available, first `Pkg.update()` in Julia, then use the "update all outdated" command in Light Table
 
