@@ -1,11 +1,5 @@
 {:+ {:app [(:lt.objs.plugins/load-js ["codemirror/julia.js" "jewel_compiled.js"])
-           (:lt.objs.plugins/load-css "codemirror/DejaVu.css")
-           (:lt.objs.style/provide-theme "june" "codemirror/june.css")
-           (:lt.objs.style/provide-theme "june-night" "codemirror/june-night.css")
-           (:lt.objs.plugins/load-keymap "jewel.keymap")
-           :lt.objs.langs.julia/connect-on-startup
-           (:lt.objs.style/font-settings ["DejaVu Sans Mono", "Consolas", "Liberation Mono", "Courier", "monospace"] 9 1.5)
-           ]
+           (:lt.objs.plugins/load-keymap "jewel.keymap")]
 
      :files [(:lt.objs.files/file-types [{:name "Julia"
                                           :exts [:jl]
@@ -20,9 +14,7 @@
                     (:lt.objs.editor/tab-settings false 2 2)
                     (:lt.object/add-tag :editor.julia.hints)
                     (:lt.object/add-tag :docable)
-                    :lt.objs.langs.julia/connect-on-open
-                    (:lt.objs.style/set-theme "june")
-                    :lt.objs.editor/line-numbers]
+                    :lt.objs.langs.julia/connect-on-open]
 
      :editor.julia.hints [:lt.objs.langs.julia/use-local-hints
                           :lt.objs.langs.julia/trigger-update-hints
