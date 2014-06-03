@@ -34,7 +34,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     return new RegExp("^(" + words.join("|") + ")\\b");
   }
 
-  var binary_operatos = /^(?:&&|\|\||::|==|!=|=|[<>]=?|\?|\:|[*\/\+-]=?|[≤≥=&\|])/
+  var binary_operatos = /^(?:&&|\|\||::|<:|==|!=|=|[<>]=?|\?|\:|[*\/\+-]=?|[≤≥=&\|])/
   var operators   = /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|::|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
   var delimiters  = /^[;,()[\]{}]/;
   var identifiers = /^[_A-Za-z][_A-Za-z0-9!]*/;
