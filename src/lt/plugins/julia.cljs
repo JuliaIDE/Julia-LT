@@ -331,27 +331,3 @@
                                          :origin editor
                                          :info {}
                                          :create (fn [] (connect :notify true :complain false))})))
-
-; Fix LightTable#1413
-(set! proc/simple-spawn*
-  (fn [obj {:keys [command args]} cwd? env]
-    (let [proc (proc/spawn command
-                      (when (seq args) (clj->js args))
-                      (js-obj "cwd" cwd?
-                              "env" (proc/merge-env env)))]
-      (proc/add! proc)
-      (.on proc "exit" (partial proc/rem! proc))
-      (.on proc "error" #(when @obj
-                           (println (str %) (> (.indexOf (str %) "ENOENT") -1))
-                           (if (> (.indexOf (str %) "ENOENT") -1)
-                             (do
-                               (object/raise obj :proc.error (str "Could not find command: " command))
-                               (object/raise obj :proc.exit)
-                               (.kill proc))
-                             (object/raise obj :proc.error %))))
-      (.stderr.on proc "data" #(if-not @obj
-                                 (println "ERROR running: " command)
-                                 (object/raise obj :proc.error %)))
-      (.stdout.on proc "data" #(do
-                                 (when @obj (object/raise obj :proc.out %))))
-      (.on proc "exit" #(when @obj (object/raise obj :proc.exit %)) proc))))
