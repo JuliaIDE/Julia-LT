@@ -35,7 +35,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
   }
 
   var binary_operatos = /^(?:&&|\|\||::|==|!=|=|[<>]=?|\?|\:|[*\/\+-]=?|[≤≥=&\|])/
-  var operators   = /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
+  var operators   = /^(?:\.?[|&^\\%*+\-<>!=\/]=?|\?|~|::|:|\$|<:|\.[<>]|<<=?|>>>?=?|\.[<>=]=|->?|\/\/|\bin\b|\.{3}|\.)/;
   var delimiters  = /^[;,()[\]{}]/;
   var identifiers = /^[_A-Za-z][_A-Za-z0-9!]*/;
   var symbol      = /^:[_A-Za-z][_A-Za-z0-9!]*/;
@@ -311,7 +311,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return 'operator';
     }
 
-    if (!colon_operator && stream.match(symbol)) {
+    if (!leaving_expr && stream.match(symbol)) {
       finalise_leavingexpr(state, stream);
       return 'symbol';
     }
