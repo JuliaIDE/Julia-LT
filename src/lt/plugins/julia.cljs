@@ -90,8 +90,8 @@
 
 (defn julia-path [] (or (@julia :path) "julia"))
 
-; notify -- set the status bar (not used by e.g. eval which notifies itself)
-; complain -- show a popup if we can't connect
+; notify – set the status bar (not used by e.g. eval which notifies itself)
+; complain – show a popup if we can't connect
 (defn connect [& {:keys [notify complain] :or {notify false complain true}}]
   (when notify (notifos/working "Spinning up a Julia client..."))
   (let [client (clients/client! :julia.client)
@@ -100,6 +100,7 @@
     (proc/exec {:command (julia-path)
                 :args [init tcp/port (clients/->id client)]
                 :obj obj})
+    (object/merge! client {:proc (-> @obj :procs first)})
     (clients/send client :julia.set-global-client {} :only julia)
     client))
 
@@ -292,6 +293,22 @@
                           (if-let [cur (doc/doc-on-line? ed (:line loc))]
                             (doc/remove! ed cur)
                             (object/raise ed :editor.methods)))))})
+
+(cmd/command {:command :editor.interrupt-clients
+              :desc "Editor: Interrupt clients attached to editor"
+              :exec (fn []
+                      (when-let [ed (pool/last-active)]
+                        (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
+                          (.kill proc "SIGINT"))
+                        (notifos/done-working)))})
+
+(cmd/command {:command :editor.kill-clients
+              :desc "Editor: Kill clients attached to editor"
+              :exec (fn []
+                      (when-let [ed (pool/last-active)]
+                        (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
+                            (.kill proc))
+                        (notifos/done-working)))})
 
 ;; Settings
 
