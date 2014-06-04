@@ -295,7 +295,7 @@
                             (object/raise ed :editor.methods)))))})
 
 (cmd/command {:command :editor.interrupt-clients
-              :desc "Editor: Interrupt clients attached to editor"
+              :desc "Editor: Interrupt the current clients"
               :exec (fn []
                       (when-let [ed (pool/last-active)]
                         (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
@@ -303,7 +303,7 @@
                         (notifos/done-working)))})
 
 (cmd/command {:command :editor.kill-clients
-              :desc "Editor: Kill clients attached to editor"
+              :desc "Editor: Kill the current clients"
               :exec (fn []
                       (when-let [ed (pool/last-active)]
                         (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
