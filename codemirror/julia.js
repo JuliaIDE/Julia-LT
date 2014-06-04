@@ -368,9 +368,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     lineComment: "#",
     fold: "indent",
-    // Use this in CodeMirror 4
-    //electricInput: /end$/,
-    electricChars: "edlsifyh]})",
+    electricInput: /(?:end|else|elseif|catch|finally)$/,
 
     "hint-pattern": /[\\@a-zA-Z0-9_]/
   };
