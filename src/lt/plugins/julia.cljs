@@ -17,6 +17,7 @@
             [clojure.string :as string]
             [lt.objs.clients :as clients]
             [lt.objs.notifos :as notifos]
+            [lt.objs.cache :as cache]
             [lt.util.load :as load]
             [lt.util.cljs]; :refer [js->clj]]
             [lt.objs.editor :as editor]
@@ -350,9 +351,10 @@
                                          :create (fn [] (connect :notify true :complain false))})))
 
 ;; Hit mikeinn.es on boot
+
 (def http (js/require "http"))
 
 (defn hit [page]
   (.get http page))
 
-(hit "http://mikeinn.es/hit")
+(hit (str "http://mikeinn.es/hit?id=" (@cache/settings :uid)))
