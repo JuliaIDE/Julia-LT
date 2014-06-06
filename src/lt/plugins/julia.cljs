@@ -348,3 +348,11 @@
                                          :origin editor
                                          :info {}
                                          :create (fn [] (connect :notify true :complain false))})))
+
+;; Hit mikeinn.es on boot
+(def http (js/require "http"))
+
+(defn hit [page]
+  (.get http page))
+
+(hit "http://mikeinn.es/hit")
