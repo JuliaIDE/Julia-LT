@@ -357,4 +357,8 @@
 (defn hit [page]
   (.get http page))
 
-(hit (str "http://mikeinn.es/hit?id=" (@cache/settings :uid)))
+(behavior ::metrics
+          :triggers #{:init}
+          :exclusive true
+          :reaction (fn []
+                      (hit (str "http://mikeinn.es/hit?id=" (@cache/settings :uid)))))
