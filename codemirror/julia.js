@@ -287,23 +287,6 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return 'meta';
     }
 
-    if (stream.match(identifiers)) {
-      stream.match(":", false) && (state.colon_operator = true) // Used to avoid treating a colon operator as a keyword
-      finalise_leavingexpr(state, stream);
-      if (last_keyword == 'function' ||
-          last_keyword == 'const' ||
-          last_keyword == 'using' ||
-          last_keyword == 'module') {
-        if (stream.match(',', false))
-          state.last_keyword = last_keyword;
-        return 'def ' + hash_class(stream.current());
-      } else if (stream.match('(', false)) {
-        return (stream.column() == 0 ? 'def ' : 'variable-2 ') + hash_class(stream.current());
-      } else {
-        return 'variable ' + hash_class(stream.current());
-      }
-    }
-
     // Handle operators and Delimiters
     if (leaving_expr && stream.match(binary_operatos)) {
       if (stream.match(/^\s*$/)) {
@@ -319,6 +302,23 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (stream.match(operators)) {
       return 'operator';
+    }
+
+    if (stream.match(identifiers)) {
+      stream.match(":", false) && (state.colon_operator = true) // Used to avoid treating a colon operator as a keyword
+      finalise_leavingexpr(state, stream);
+      if (last_keyword == 'function' ||
+          last_keyword == 'const' ||
+          last_keyword == 'using' ||
+          last_keyword == 'module') {
+        if (stream.match(',', false))
+          state.last_keyword = last_keyword;
+        return 'def ' + hash_class(stream.current());
+      } else if (stream.match('(', false)) {
+        return (stream.column() == 0 ? 'def ' : 'variable-2 ') + hash_class(stream.current());
+      } else {
+        return 'variable ' + hash_class(stream.current());
+      }
     }
 
     // Handle non-detected items
