@@ -24,7 +24,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     return stream.match(/^\s*$/, false)
   }
 
-  // It's safe to call push_scope(name, index)
+  // It's safe to call push_scope(state, name)
   function push_scope(state, name, indent) {
     state.scopes.push({'name': name, 'indent': indent});
   }
