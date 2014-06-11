@@ -81,6 +81,17 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     var ch = cur_scope(state);
     return (ch=="[" || ch=="{" || ch == "(");
   }
+  function in_index(state) {
+    return cur_scope(state) == "[";
+    for (var i = state.scopes.length-1; i >= 0; --i) {
+      var ch = state.scopes[i].name;
+      if (ch == "[") {
+        return true;
+      } else if (!(ch=="{" || ch == "(")) {
+        return false;
+      }
+    }
+  }
 
   function cur_scope(state) {
     if(state.scopes.length==0) {
@@ -240,7 +251,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     }
 
     if (stream.match(/end\b/)) {
-      if (scope === '[') {
+      if (in_index(state)) {
         return 'number';
       } else if (scope && scope.match(openers)) {
         finalise_leavingexpr(state, stream);
