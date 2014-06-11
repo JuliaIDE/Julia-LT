@@ -3,7 +3,7 @@ ops = JuliaParser.Lexer.operator_chars |> collect
 
 brackets = "()[]{}" |> collect
 
-other = " " |> collect
+other = " ," |> collect
 
 escape = "'(){}[]\\\$-" |> collect
 
