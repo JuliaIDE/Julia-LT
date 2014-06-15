@@ -146,15 +146,18 @@
               (condp = (res :cmd)
                 "result" (do
                            (notifos/done-working "")
-                           (object/raise editor
-                                         (if (res :under)
-                                           :editor.result.under
-                                           :editor.result)
-                                         (if (res :html)
-                                           (-> res :value crate/raw)
-                                           (-> res :value))
-                                         {:start-line (-> res :start dec)
-                                          :line (-> res :end dec)}))
+                           (let [val (if (res :html)
+                                       (-> res :value crate/raw)
+                                       (-> res :value))]
+                             (object/raise editor
+                                           (if (res :under)
+                                             :editor.result.underline
+                                             :editor.result)
+                                           val
+                                           {:start-line (-> res :start dec)
+                                            :line (-> res :end dec)}))
+                           ; We have to reparse because DocumentFragment children are removed
+                           (if (res :html) (-> res :value crate/raw eval-scripts)))
                 "error" (do
                           (notifos/done-working "")
                           (object/raise editor
@@ -190,8 +193,13 @@
                           (notifos/done-working))
                 "notify" (notifos/set-msg! (res :msg) {:class (res :class)})
                 "console" (if (res :html)
-                            (-> res :value console/verbatim crate/raw)
+                            (let [val (-> res :value crate/raw)]
+                              (console/verbatim val)
+                              ; Reparse, DocumentFragment nodes will be moved
+                              (eval-scripts (-> res :value crate/raw)))
                             (-> res :value console/log)))))
+
+;; (console/verbatim (crate/raw "<b>hi</b>"))
 
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
@@ -368,5 +376,17 @@
 (behavior ::metrics
           :triggers #{:init}
           :exclusive true
-          :reaction (fn []
-                      (hit (str "http://mikeinn.es/hit?id=" (@cache/settings :uid)))))
+          :reaction #(hit (str "http://mikeinn.es/hit?id=" (@cache/settings :uid))))
+
+(defn html-string [dom]
+  (let [el (js/document.createElement "div")]
+    (.appendChild el dom)
+    (.-innerHTML el)))
+
+(defn eval-scripts [dom]
+  (let [scripts (if (= (type dom) js/HTMLScriptElement)
+                  [dom]
+                  (.querySelectorAll dom "script"))]
+    (doseq [script scripts]
+      (when (contains? #{"text/javascript" ""} (.-type script))
+        (js/eval (.-text script))))))
