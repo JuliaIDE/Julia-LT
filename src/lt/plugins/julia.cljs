@@ -188,7 +188,10 @@
                 "done"  (if (res :msg)
                           (notifos/done-working (res :msg))
                           (notifos/done-working))
-                "notify" (notifos/set-msg! (res :msg) {:class (res :class)}))))
+                "notify" (notifos/set-msg! (res :msg) {:class (res :class)})
+                "console" (if (res :html)
+                            (-> res :value console/verbatim crate/raw)
+                            (-> res :value console/log)))))
 
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
