@@ -389,4 +389,4 @@
                   (.querySelectorAll dom "script"))]
     (doseq [script scripts]
       (when (contains? #{"text/javascript" ""} (.-type script))
-        (js/eval (.-text script))))))
+        (js/window.eval (.-text script))))))
