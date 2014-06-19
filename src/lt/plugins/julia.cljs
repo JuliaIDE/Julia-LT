@@ -166,8 +166,9 @@
                                         {:start-line (-> res :start dec)
                                          :line (-> res :end dec)}))
                 "hints" (do
-                          (object/merge! editor {::no-textual-hints (:notextual res)})
-                          (object/merge! editor {::hints (map process-hint (:hints res))})
+                          (object/merge! editor {::hints (map process-hint (:hints res))
+                                                 ::no-textual-hints (:notextual res)
+                                                 ::fresh-hints true})
                           (object/raise auto-complete/hinter :refresh!))
                 "doc"   (doc/inline-doc editor
                                         (crate/html
@@ -245,7 +246,7 @@
 
 (behavior ::trigger-update-hints
           :triggers #{:editor.julia.hints.update!}
-          :debounce 100
+;;           :debounce 100
           :reaction (fn [editor res]
                       (when-let [default-client (-> @editor :client :default)] ;; dont eval unless we're already connected
                         (when @default-client
@@ -254,16 +255,16 @@
                                                            :origin editor
                                                            :create connect})
                                         :editor.julia.hints
-                                        {:token (::token @editor)
-                                         :cursor (cursor editor)
+                                        {:cursor (cursor editor)
                                          :code (current-buffer-content)}
                                         :only editor)))))
 
 (behavior ::use-local-hints
           :triggers #{:hints+}
           :reaction (fn [editor hints token]
-                      (object/merge! editor {::token token})
-                      (object/raise editor :editor.julia.hints.update!)
+                      (if (::fresh-hints @editor)
+                        (object/merge! editor {::fresh-hints false})
+                        (object/raise editor :editor.julia.hints.update!))
                       (concat (::hints @editor) hints)))
 
 (behavior ::textual-hints
