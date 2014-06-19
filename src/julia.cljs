@@ -27,11 +27,7 @@
 
 ;; Util
 
-(defn current-buffer-content []
-  "Returns content of the current buffer"
-  (let [cm (editor/->cm-ed (pool/last-active))]
-    (.getRange cm #js {:line 0 :ch 0} #js {:line (.lineCount cm) :ch 0})))
-
+; Use 1-based indexing for Julia
 (defn cursor
   ([editor] (cursor editor "start"))
   ([editor pos]
@@ -128,7 +124,7 @@
                 (notifos/working "Running...")
                 (clients/send client
                               :editor.eval.julia
-                              {:code (current-buffer-content)
+                              {:code (editor/->val editor)
                                :start (cursor editor "start") :end (cursor editor "end")
                                :path (-> @editor :info :path)}
                               :only
@@ -144,7 +140,7 @@
                 (notifos/working "Loading file...")
                 (clients/send client
                               :editor.eval.julia
-                              {:code (current-buffer-content)
+                              {:code (editor/->val editor)
                                :all true
                                :path (-> @editor :info :path)}
                               :only
@@ -164,7 +160,7 @@
                                                            :create connect})
                                         :editor.julia.hints
                                         {:cursor (cursor editor)
-                                         :code (current-buffer-content)}
+                                         :code (editor/->val editor)}
                                         :only editor)))))
 
 (behavior ::use-local-hints
@@ -194,7 +190,7 @@
                                                        :create connect})
                                     :editor.julia.doc
                                     {:cursor (cursor editor)
-                                     :code (current-buffer-content)}
+                                     :code (editor/->val editor)}
                                     :only editor)))
 
 (behavior ::methods
@@ -207,7 +203,7 @@
                                                        :create connect})
                                     :editor.julia.doc
                                     {:cursor (cursor editor)
-                                     :code (current-buffer-content)
+                                     :code (editor/->val editor)
                                      :type :methods}
                                     :only editor)))
 
