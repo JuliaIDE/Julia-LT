@@ -9,7 +9,8 @@
             [lt.objs.popup :as popup]
             [lt.objs.plugins :as plugins]
             [lt.objs.clients :as clients]
-            [lt.objs.notifos :as notifos])
+            [lt.objs.notifos :as notifos]
+            [lt.objs.eval :as eval])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Connection Monitors
