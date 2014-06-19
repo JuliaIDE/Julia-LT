@@ -234,15 +234,15 @@
 
 ;; Settings
 
-;; (behavior ::julia-path
-;;           :triggers #{:object.instant}
-;;           :desc "Julia: Set the path to the Julia executable"
-;;           :type :user
-;;           :params [{:label "path"
-;;                     :type :path}]
-;;           :exclusive true
-;;           :reaction (fn [this exe]
-;;                       (object/merge! julia {:path exe})))
+(behavior ::julia-path
+          :triggers #{:object.instant}
+          :desc "Julia: Set the path to the Julia executable"
+          :type :user
+          :params [{:label "path"
+                    :type :path}]
+          :exclusive true
+          :reaction (fn [this exe]
+                      (object/merge! julia {:path exe})))
 
 (defn html-string [dom]
   (let [el (js/document.createElement "div")]
