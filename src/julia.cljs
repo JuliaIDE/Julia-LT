@@ -104,8 +104,6 @@
                               (eval-scripts (-> res :value crate/raw)))
                             (-> res :value console/log)))))
 
-;; (console/verbatim (crate/raw "<b>hi</b>"))
-
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
                 :behaviors [::commands])
