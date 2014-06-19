@@ -2,7 +2,7 @@
 
 [![Gitter chat](https://badges.gitter.im/one-more-minute/Jewel-LT.png)](https://gitter.im/one-more-minute/Jewel) - feel free to ask questions here. Please also see the [wiki](https://github.com/one-more-minute/Jewel/wiki) for some more documentation.
 
-This is a Julia language plugin for Light Table, base on the [Jewel.jl](https://github.com/one-more-minute/Jewel.jl) editor backend.
+This is a Julia language plugin for Light Table, base on the [Jewel.jl](https://github.com/one-more-minute/Jewel.jl) editor backend. If you want more than just the basic language support you should look at installing [Jupiter](https://github.com/one-more-minute/Jupiter-LT).
 
 ## Instructions
 
