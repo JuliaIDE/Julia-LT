@@ -76,6 +76,10 @@
 
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
+; Not pretty, but it needs to be backwards compatible for now
+(defn init-script [port id]
+  (str "ARGS = [\"" port "\", \"" id "\"]; include(\"" init "\");"))
+
 (defn julia-path [] (or (@julia :path) "julia"))
 
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
@@ -86,7 +90,8 @@
         obj (object/create ::connecting-notifier client)]
     (object/merge! obj {:notify notify :complain complain})
     (proc/exec {:command (julia-path)
-                :args [init tcp/port (clients/->id client)]
+;;                 :args [init tcp/port (clients/->id client)]
+                :args ["-e" (init-script tcp/port (clients/->id client))]
                 :obj obj})
     (object/merge! client {:proc (-> @obj :procs first)})
     (clients/send client :julia.set-global-client {} :only julia)
