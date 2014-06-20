@@ -17,8 +17,8 @@
                     (:lt.object/add-tag :docable)
                     :lt.objs.langs.julia/connect-on-open]
 
-     :editor.julia.hints [:lt.objs.langs.julia/use-local-hints
-                          :lt.objs.langs.julia/trigger-update-hints
-                          :lt.objs.langs.julia/textual-hints]
+     :editor.julia.hints [:lt.objs.langs.julia.completions/use-local-hints
+                          :lt.objs.langs.julia.completions/trigger-update-hints
+                          :lt.objs.langs.julia.completions/textual-hints]
      }
  :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]}}

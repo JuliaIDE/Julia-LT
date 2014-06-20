@@ -1,5 +1,6 @@
 (ns lt.objs.langs.julia
-  (:require [lt.object :as object]
+  (:require [lt.objs.langs.julia.util :as util]
+            [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.console :as console]
             [lt.objs.command :as cmd]
@@ -24,16 +25,6 @@
             [lt.plugins.doc :as doc]
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
-
-;; Util
-
-; Use 1-based indexing for Julia
-(defn cursor
-  ([editor] (cursor editor "start"))
-  ([editor pos]
-    (let [cursor (ed/->cursor editor pos)]
-      {:line (-> cursor :line inc)
-       :col  (-> cursor :ch   inc)})))
 
 ;; Editor commands
 
@@ -70,9 +61,9 @@
                                         {:start-line (-> res :start dec)
                                          :line (-> res :end dec)}))
                 "hints" (do
-                          (object/merge! editor {::hints (map process-hint (:hints res))
-                                                 ::no-textual-hints (:notextual res)
-                                                 ::fresh-hints true})
+                          (object/merge! editor {:lt.objs.langs.julia.completions/hints (map process-hint (:hints res))
+                                                 :lt.objs.langs.julia.completions/no-textual-hints (:notextual res)
+                                                 :lt.objs.langs.julia.completions/fresh-hints true})
                           (object/raise auto-complete/hinter :refresh!))
                 "doc"   (doc/inline-doc editor
                                         (crate/html
@@ -123,7 +114,7 @@
                 (clients/send client
                               :editor.eval.julia
                               {:code (editor/->val editor)
-                               :start (cursor editor "start") :end (cursor editor "end")
+                               :start (util/cursor editor "start") :end (util/cursor editor "end")
                                :path (-> @editor :info :path)}
                               :only
                               editor))))
@@ -144,38 +135,6 @@
                               :only
                               editor))))
 
-;; Autocomplete
-
-(behavior ::trigger-update-hints
-          :triggers #{:editor.julia.hints.update!}
-;;           :debounce 100
-          :reaction (fn [editor res]
-                      (when-let [default-client (-> @editor :client :default)] ;; dont eval unless we're already connected
-                        (when @default-client
-                          (clients/send (eval/get-client! {:command :editor.julia.hints
-                                                           :info {}
-                                                           :origin editor
-                                                           :create connect})
-                                        :editor.julia.hints
-                                        {:cursor (cursor editor)
-                                         :code (editor/->val editor)}
-                                        :only editor)))))
-
-(behavior ::use-local-hints
-          :triggers #{:hints+}
-          :reaction (fn [editor hints token]
-                      (if (::fresh-hints @editor)
-                        (object/merge! editor {::fresh-hints false})
-                        (object/raise editor :editor.julia.hints.update!))
-                      (concat (::hints @editor) hints)))
-
-(behavior ::textual-hints
-          :triggers #{:hints+}
-          :reaction (fn [editor hints]
-                      (if-not (::no-textual-hints @editor)
-                        (concat (:lt.plugins.auto-complete/hints @editor) hints)
-                        hints)))
-
 ;; Docs
 
 (behavior ::doc
@@ -187,7 +146,7 @@
                                                        :origin editor
                                                        :create connect})
                                     :editor.julia.doc
-                                    {:cursor (cursor editor)
+                                    {:cursor (util/cursor editor)
                                      :code (editor/->val editor)}
                                     :only editor)))
 
@@ -200,7 +159,7 @@
                                                        :origin editor
                                                        :create connect})
                                     :editor.julia.doc
-                                    {:cursor (cursor editor)
+                                    {:cursor (util/cursor editor)
                                      :code (editor/->val editor)
                                      :type :methods}
                                     :only editor)))
