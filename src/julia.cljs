@@ -28,11 +28,6 @@
 
 ;; Editor commands
 
-(defn process-hint [hint]
-  (if (string? hint)
-    #js {:completion hint}
-    (clj->js hint)))
-
 ; Should really factor these into behaviours
 (behavior ::editor-commands
   :triggers #{:editor.eval.julia.editor-command}
@@ -60,11 +55,6 @@
                                         (res :value)
                                         {:start-line (-> res :start dec)
                                          :line (-> res :end dec)}))
-                "hints" (do
-                          (object/merge! editor {:lt.objs.langs.julia.completions/hints (map process-hint (:hints res))
-                                                 :lt.objs.langs.julia.completions/no-textual-hints (:notextual res)
-                                                 :lt.objs.langs.julia.completions/fresh-hints true})
-                          (object/raise auto-complete/hinter :refresh!))
                 "doc"   (doc/inline-doc editor
                                         (crate/html
                                          [:div.inline-doc

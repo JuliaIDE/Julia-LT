@@ -19,6 +19,7 @@
 
      :editor.julia.hints [:lt.objs.langs.julia.completions/use-local-hints
                           :lt.objs.langs.julia.completions/trigger-update-hints
-                          :lt.objs.langs.julia.completions/textual-hints]
+                          :lt.objs.langs.julia.completions/textual-hints
+                          :lt.objs.langs.julia.completions/update-hints]
      }
  :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]}}
