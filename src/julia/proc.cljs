@@ -125,3 +125,13 @@
                                             :info {}
                                             :origin julia
                                             :create (fn [] (connect :notify true))}))))
+
+(behavior ::connect-on-open
+          :triggers #{:object.instant}
+          :desc "Julia: Automatically connect editors to a Julia client"
+          :type :user
+          :reaction (fn [editor]
+                      (eval/get-client! {:command :editor.eval.julia
+                                         :origin editor
+                                         :info {}
+                                         :create (fn [] (connect :notify true :complain false))})))

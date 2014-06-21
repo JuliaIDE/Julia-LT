@@ -15,7 +15,7 @@
                     (:lt.objs.editor/tab-settings false 2 2)
                     (:lt.object/add-tag :editor.julia.hints)
                     (:lt.object/add-tag :docable)
-                    :lt.objs.langs.julia/connect-on-open]
+                    :lt.objs.langs.julia.proc/connect-on-open]
 
      :editor.julia.hints [:lt.objs.langs.julia.completions/use-local-hints
                           :lt.objs.langs.julia.completions/trigger-update-hints
