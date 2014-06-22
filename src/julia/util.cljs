@@ -50,3 +50,34 @@
     (doseq [script scripts]
       (when (contains? #{"text/javascript" ""} (.-type script))
         (js/window.eval (.-text script))))))
+
+(defn into-div [dom]
+  (let [div (crate/html [:div])]
+    (.appendChild div dom)
+    div))
+
+(defn parse-div [html]
+  (-> html crate/raw into-div))
+
+; Link processing
+
+(defn all-links [dom]
+  (into [] (.getElementsByTagName dom "a")))
+
+(def url-pattern
+  (if (platform/win?)
+    #"^((?:\w+:)[/\\][A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?$"
+    #"^(/[A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?$"))
+
+(defn process-link! [link editor]
+  (when-let [[_ file line] (re-find url-pattern (.-text link))]
+    (set! (.-href link) "javascript:void(0);")
+    (set! (.-onclick link) #(object/raise lt.objs.jump-stack/jump-stack
+                                          :jump-stack.push!
+                                          editor
+                                          file
+                                          {:line (dec (js/parseInt line)) :ch 0}))))
+
+(defn process-links! [dom editor]
+  (->> dom all-links (map #(process-link! % editor)) dorun)
+  dom)
