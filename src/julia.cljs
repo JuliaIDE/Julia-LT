@@ -105,7 +105,8 @@
                               :editor.eval.julia
                               {:code (editor/->val editor)
                                :start (util/cursor editor "start") :end (util/cursor editor "end")
-                               :path (-> @editor :info :path)}
+                               :path (-> @editor :info :path)
+                               :module (-> @editor :lt.objs.langs.julia.module/module)}
                               :only
                               editor))))
 
@@ -121,7 +122,8 @@
                               :editor.eval.julia
                               {:code (editor/->val editor)
                                :all true
-                               :path (-> @editor :info :path)}
+                               :path (-> @editor :info :path)
+                               :module (-> @editor :lt.objs.langs.julia.module/module)}
                               :only
                               editor))))
 

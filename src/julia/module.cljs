@@ -10,7 +10,7 @@
 ;; Status bar object
 
 (defn ->module-str [{:keys [module]}]
-  [:span.module (str module)])
+  [:span.module (str module "\t")])
 
 (object/object* ::statusbar.module
                 :triggers #{}
