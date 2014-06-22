@@ -37,6 +37,15 @@
                         (concat (:lt.plugins.auto-complete/hints @editor) hints)
                         hints)))
 
+(behavior ::line-change
+          :triggers #{:line-change}
+          :reaction (fn [hinter l c]
+                      (when (:active @hinter)
+                        (let [pos (editor/->cursor (:ed @hinter))
+                              token (auto-complete/get-token (:ed @hinter) pos)]
+                          (when (= (token :string) nil)
+                            (object/raise hinter :refresh!))))))
+
 (defn process-hint [hint]
   (if (string? hint)
     #js {:completion hint}
@@ -49,7 +58,9 @@
                                              ::no-textual-hints notextual
                                              ::fresh-hints true
                                              :token-pattern (when pattern (js/RegExp. (str pattern "$")))})
-                      (object/raise auto-complete/hinter :refresh!)))
+                      (let [pos (editor/->cursor editor)
+                            token (auto-complete/get-token editor pos)]
+                        (object/raise auto-complete/hinter :change! (:string token)))))
 
 (set! _get-token auto-complete/get-token)
 

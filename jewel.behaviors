@@ -21,6 +21,8 @@
                     :lt.objs.langs.julia.module/get-module
                     :lt.objs.langs.julia.module/update-module]
 
+     :hinter [:lt.objs.langs.julia.completions/line-change]
+
      :editor.julia.hints [:lt.objs.langs.julia.completions/use-local-hints
                           :lt.objs.langs.julia.completions/trigger-update-hints
                           :lt.objs.langs.julia.completions/textual-hints
