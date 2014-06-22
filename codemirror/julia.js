@@ -263,7 +263,6 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if (stream.match(keywords)) {
       state.last_keyword = stream.current();
-      finalise_leavingexpr(state, stream);
       return 'keyword';
     }
 
