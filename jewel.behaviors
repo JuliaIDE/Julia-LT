@@ -7,6 +7,8 @@
                                           :mime "text/julia"
                                           :tags [:editor.julia]}])]
 
+     :editor [:lt.objs.langs.julia.module/update-module-statusbar]
+
      :editor.julia [:lt.objs.langs.julia/eval.one
                     :lt.objs.langs.julia/eval.all
                     :lt.objs.langs.julia/editor-commands
@@ -15,7 +17,9 @@
                     (:lt.objs.editor/tab-settings false 2 2)
                     (:lt.object/add-tag :editor.julia.hints)
                     (:lt.object/add-tag :docable)
-                    :lt.objs.langs.julia.proc/connect-on-open]
+                    :lt.objs.langs.julia.proc/connect-on-open
+                    :lt.objs.langs.julia.module/get-module
+                    :lt.objs.langs.julia.module/update-module]
 
      :editor.julia.hints [:lt.objs.langs.julia.completions/use-local-hints
                           :lt.objs.langs.julia.completions/trigger-update-hints
