@@ -382,7 +382,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     fold: "indent",
     electricInput: /(?:end|else|elseif|catch|finally)$/,
 
-    "hint-pattern": /[\\@a-zA-Z0-9_]/
+    "hint-pattern": /[\\@a-zA-Z0-9_^]/
   };
 
   return external;

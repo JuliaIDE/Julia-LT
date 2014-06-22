@@ -44,8 +44,22 @@
 
 (behavior ::update-hints
           :triggers #{:editor.julia.hints.update}
-          :reaction (fn [editor {:keys [hints notextual] :as res}]
+          :reaction (fn [editor {:keys [hints notextual pattern] :as res}]
                       (object/merge! editor {::hints (map process-hint hints)
                                              ::no-textual-hints notextual
-                                             ::fresh-hints true})
+                                             ::fresh-hints true
+                                             :token-pattern (when pattern (js/RegExp. (str pattern "$")))})
                       (object/raise auto-complete/hinter :refresh!)))
+
+(set! _get-token auto-complete/get-token)
+
+(set! auto-complete/get-token
+  (fn [ed pos]
+    (if-let [pattern (@ed :token-pattern)]
+      (let [line (-> ed (editor/line (:line pos)) (.substring 0 (:ch pos)))
+            match (re-find pattern line)]
+        {:start (- (count line) (count match))
+         :end (:ch pos)
+         :line (:line pos)
+         :string match})
+      (_get-token ed pos))))
