@@ -91,42 +91,6 @@
 
 (def julia (object/create ::julia-lang))
 
-;; Eval
-
-(behavior ::eval.one
-  :triggers #{:eval.one}
-  :reaction (fn [editor]
-              (let [client (eval/get-client! {:command :editor.eval.julia
-                                              :origin editor
-                                              :info {}
-                                              :create connect})]
-                (notifos/working "Running...")
-                (clients/send client
-                              :editor.eval.julia
-                              {:code (editor/->val editor)
-                               :start (util/cursor editor "start") :end (util/cursor editor "end")
-                               :path (-> @editor :info :path)
-                               :module (-> @editor :lt.objs.langs.julia.module/module)}
-                              :only
-                              editor))))
-
-(behavior ::eval.all
-  :triggers #{:eval}
-  :reaction (fn [editor]
-              (let [client (eval/get-client! {:command :editor.eval.julia
-                                              :origin editor
-                                              :info {}
-                                              :create connect})]
-                (notifos/working "Loading file...")
-                (clients/send client
-                              :editor.eval.julia
-                              {:code (editor/->val editor)
-                               :all true
-                               :path (-> @editor :info :path)
-                               :module (-> @editor :lt.objs.langs.julia.module/module)}
-                              :only
-                              editor))))
-
 ;; Docs
 
 (behavior ::doc

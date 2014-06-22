@@ -25,8 +25,6 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-;; Util
-
 ; Use 1-based indexing for Julia
 (defn cursor
   ([editor] (cursor editor "start"))
@@ -34,3 +32,6 @@
     (let [cursor (ed/->cursor editor pos)]
       {:line (-> cursor :line inc)
        :col  (-> cursor :ch   inc)})))
+
+(defn module [editor]
+  (@editor :lt.objs.langs.julia.module/module))
