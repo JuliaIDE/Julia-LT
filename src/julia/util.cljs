@@ -35,3 +35,18 @@
 
 (defn module [editor]
   (@editor :lt.objs.langs.julia.module/module))
+
+; DOM manipulation
+
+(defn html-string [dom]
+  (let [el (js/document.createElement "div")]
+    (.appendChild el dom)
+    (.-innerHTML el)))
+
+(defn eval-scripts [dom]
+  (let [scripts (if (= (type dom) js/HTMLScriptElement)
+                  [dom]
+                  (.querySelectorAll dom "script"))]
+    (doseq [script scripts]
+      (when (contains? #{"text/javascript" ""} (.-type script))
+        (js/window.eval (.-text script))))))
