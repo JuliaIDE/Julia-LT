@@ -103,7 +103,8 @@
                                                        :create connect})
                                     :editor.julia.doc
                                     {:cursor (util/cursor editor)
-                                     :code (editor/->val editor)}
+                                     :code (editor/->val editor)
+                                     :module (util/module editor)}
                                     :only editor)))
 
 (behavior ::methods
@@ -117,6 +118,7 @@
                                     :editor.julia.doc
                                     {:cursor (util/cursor editor)
                                      :code (editor/->val editor)
+                                     :module (util/module editor)
                                      :type :methods}
                                     :only editor)))
 
