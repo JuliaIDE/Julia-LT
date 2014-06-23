@@ -1,5 +1,7 @@
 .julia {
-  &.error-description {
-    font-weight: bold;
-  }
+  font-family: 'DejaVu Sans';
+}
+
+.julia.error-description {
+  font-weight: bold;
 }

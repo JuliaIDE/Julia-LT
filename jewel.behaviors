@@ -1,4 +1,5 @@
 {:+ {:app [(:lt.objs.plugins/load-js ["codemirror/julia.js" "jewel_compiled.js"])
+           (:lt.objs.plugins/load-css "css/common.css")
            (:lt.objs.plugins/load-keymap "jewel.keymap")
            :lt.objs.langs.julia.stats/metrics]
 
