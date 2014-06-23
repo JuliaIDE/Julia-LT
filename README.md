@@ -8,6 +8,8 @@ This is a Julia language plugin for Light Table, base on the [Jewel.jl](https://
 
 Note: to execute commands, `Ctrl+Space` the type the command's name.
 
+Please use a [v0.3](http://julialang.org/downloads/) version of Julia if you're not already (0.2 may or may not work well, I don't do loads of testing on it).
+
 * Install the plugin with Light Table's plugin manager ("show plugin manager" command, search for "julia" or "jewel").
 
 * Either make sure `julia` is on your path or set the :app behaviour `(:lt.objs.langs.julia/julia-path "/path/to/julia")`.
