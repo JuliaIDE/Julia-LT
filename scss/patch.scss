@@ -1,0 +1,6 @@
+// Skin changes
+.inline-exception > pre, .inline-exception > div { background: var(error-bg); color: var(error-fg); }
+
+// Structure changes
+.inline-exception > pre { display:inline-block; white-space:pre-wrap;  padding:4px 10px !important; padding-bottom:6px !important; border-radius:2px; vertical-align:top; overflow:hidden; }
+.inline-exception > div {display: inline-block; padding:4px 10px; padding-bottom:6px; border-radius:2px; }
