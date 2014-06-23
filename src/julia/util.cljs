@@ -66,8 +66,8 @@
 
 (def url-pattern
   (if (platform/win?)
-    #"^((?:\w+:)[/\\][A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?$"
-    #"^(/[A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?$"))
+    #"^\s*((?:\w+:)[/\\][A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?\s*$"
+    #"^\s*(/[A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?\s*$"))
 
 (defn process-link! [link editor]
   (when-let [[_ file line] (re-find url-pattern (.-text link))]
