@@ -52,7 +52,7 @@
                           (notifos/done-working "")
                           (object/raise editor
                                         :editor.exception
-                                        (-> res :value crate/raw)
+                                        (-> res :value util/parse-div (util/process-links! editor))
                                         {:start-line (-> res :start dec)
                                          :line (-> res :end dec)})))))
 
