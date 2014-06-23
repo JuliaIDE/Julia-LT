@@ -43,13 +43,21 @@
     (.appendChild el dom)
     (.-innerHTML el)))
 
-(defn eval-scripts [dom]
+(defn inner-text [dom]
+  (let [children (.-childNodes dom)]
+    (if (> (.-length children) 0)
+      (.-wholeText (nth children 0)))))
+
+(defn get-scripts [dom]
   (let [scripts (if (= (type dom) js/HTMLScriptElement)
                   [dom]
                   (.querySelectorAll dom "script"))]
-    (doseq [script scripts]
-      (when (contains? #{"text/javascript" ""} (.-type script))
-        (js/window.eval (.-text script))))))
+    (->> scripts (filter #(contains? #{"text/javascript" ""} (.-type %)))
+                 (map inner-text))))
+
+(defn eval-scripts [scripts]
+  (doseq [script scripts]
+    (js/window.eval script)))
 
 (defn into-div [dom]
   (let [div (crate/html [:div])]

@@ -38,16 +38,16 @@
                            (notifos/done-working "")
                            (let [val (if (res :html)
                                        (-> res :value crate/raw)
-                                       (-> res :value))]
+                                       (-> res :value))
+                                 scripts (when (res :html) (util/get-scripts val))]
                              (object/raise editor
                                            (if (res :under)
                                              :editor.result.underline
                                              :editor.result)
                                            val
                                            {:start-line (-> res :start dec)
-                                            :line (-> res :end dec)}))
-                           ; We have to reparse because DocumentFragment children are removed
-                           (if (res :html) (-> res :value crate/raw util/eval-scripts)))
+                                            :line (-> res :end dec)})
+                             (when scripts (util/eval-scripts scripts))))
                 "error" (do
                           (notifos/done-working "")
                           (object/raise editor
@@ -72,10 +72,10 @@
                           (notifos/done-working))
                 "notify" (notifos/set-msg! (res :msg) {:class (res :class)})
                 "console" (if (res :html)
-                            (let [val (-> res :value crate/raw)]
+                            (let [val (-> res :value crate/raw)
+                                  scripts (util/get-scripts scripts)]
                               (console/verbatim val)
-                              ; Reparse, DocumentFragment nodes will be moved
-                              (util/eval-scripts (-> res :value crate/raw)))
+                              (util/eval-scripts scripts))
                             (-> res :value console/log)))))
 
 (object/object* ::julia-lang
