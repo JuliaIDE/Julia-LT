@@ -52,7 +52,7 @@
                           (notifos/done-working "")
                           (object/raise editor
                                         :editor.exception
-                                        (res :value)
+                                        (-> res :value crate/raw)
                                         {:start-line (-> res :start dec)
                                          :line (-> res :end dec)})))))
 
