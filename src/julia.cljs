@@ -73,7 +73,7 @@
                 "notify" (notifos/set-msg! (res :msg) {:class (res :class)})
                 "console" (if (res :html)
                             (let [val (-> res :value crate/raw)
-                                  scripts (util/get-scripts scripts)]
+                                  scripts (util/get-scripts val)]
                               (console/verbatim val)
                               (util/eval-scripts scripts))
                             (-> res :value console/log)))))

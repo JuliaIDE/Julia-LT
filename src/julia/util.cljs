@@ -46,10 +46,11 @@
 (defn inner-text [dom]
   (let [children (.-childNodes dom)]
     (if (> (.-length children) 0)
-      (.-wholeText (nth children 0)))))
+      (.-wholeText (nth children 0))
+      "")))
 
 (defn get-scripts [dom]
-  (let [scripts (if (= (type dom) js/HTMLScriptElement)
+  (let [scripts (if (#{js/HTMLScriptElement js/SVGScriptElement} (type dom))
                   [dom]
                   (.querySelectorAll dom "script"))]
     (->> scripts (filter #(contains? #{"text/javascript" ""} (.-type %)))
