@@ -70,6 +70,17 @@
                 :behaviors [::proc-out ::proc-error ::proc-exit ::pipe-out ::pipe-err]
                 :init (fn [this client]
                         (object/merge! this {:client client :buffer ""})
+                        ((fn cb []
+                           (js/setTimeout (fn []
+                                            (when @this
+                                              (when (@this :out-buffer)
+                                                (console/log (@this :out-buffer))
+                                                (object/merge! this {:out-buffer ""}))
+                                              (when (@this :err-buffer)
+                                                (console/log (@this :err-buffer))
+                                                (object/merge! this {:err-buffer ""}))
+                                              (cb))))
+                                         500))
                         nil))
 
 ;; Connection
