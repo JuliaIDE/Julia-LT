@@ -1,5 +1,6 @@
 (ns lt.objs.langs.julia
   (:require [lt.objs.langs.julia.util :as util]
+            [lt.objs.langs.julia.light-lines :as lights]
             [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.console :as console]
@@ -50,11 +51,18 @@
                              (when scripts (util/eval-scripts scripts))))
                 "error" (do
                           (notifos/done-working "")
-                          (object/raise editor
-                                        :editor.exception
-                                        (-> res :value util/parse-div (util/process-links! editor))
-                                        {:start-line (-> res :start dec)
-                                         :line (-> res :end dec)})))))
+                          (let [dom (-> res :value util/parse-div)
+                                line (-> res :end dec)]
+                            (util/process-links! dom editor)
+                            (object/raise editor
+                                          :editor.exception
+                                          dom
+                                          {:start-line (-> res :start dec)
+                                           :line line})
+                            (lights/clear)
+                            (lights/add-lines (util/get-error-lines dom))
+                            (let [ex (-> @editor :widgets (get [(editor/line-handle editor line) :inline]))]
+                              (lights/listen ex)))))))
 
 ;; Global commands
 

@@ -19,7 +19,8 @@
                     (:lt.object/add-tag :editor.julia.doc)
                     :lt.objs.langs.julia.proc/connect-on-open
                     :lt.objs.langs.julia.module/get-module
-                    :lt.objs.langs.julia.module/update-module]
+                    :lt.objs.langs.julia.module/update-module
+                    :lt.objs.langs.julia.light-lines/highlight-lines]
 
      :hinter [:lt.objs.langs.julia.completions/line-change]
 

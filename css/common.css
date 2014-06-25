@@ -3,3 +3,9 @@
 
 .julia.error-description {
   font-weight: bold; }
+
+.CodeMirror-linebackground {
+  transition: all 0.2s linear; }
+
+.CodeMirror-linebackground.error {
+  background: rgba(255, 0, 0, 0.08); }

@@ -71,7 +71,7 @@
                 :init (fn [this client]
                         (object/merge! this {:client client :buffer ""})
                         ((fn cb []
-                           (js/setTimeout (fn []
+                           #_(js/setTimeout (fn []
                                             (when @this
                                               (when (@this :out-buffer)
                                                 (console/log (@this :out-buffer))
