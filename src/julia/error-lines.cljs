@@ -26,6 +26,8 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
+; Bug – need to use line handles to track lines, not numbers
+
 (object/object* ::light-lines
                 :tags #{:light-lines}
                 :class :error
