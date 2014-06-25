@@ -1,7 +1,6 @@
 (ns lt.objs.langs.julia.completions
   (:require [lt.objs.langs.julia.proc :as proc]
             [lt.objs.langs.julia.util :as util]
-            [lt.objs.langs.julia.module :refer [->module]]
             [lt.objs.clients :as clients]
             [lt.object :as object]
             [lt.objs.eval :as eval]
@@ -22,16 +21,14 @@
                                         :editor.julia.hints
                                         {:cursor (util/cursor editor)
                                          :code (editor/->val editor)
-                                         :module (->module editor)
+                                         :module (util/module editor)
                                          :path (-> @editor :info :path)}
                                         :only editor)))))
 
 (behavior ::use-local-hints
           :triggers #{:hints+}
           :reaction (fn [editor hints token]
-                      (if (::fresh-hints @editor)
-                        (object/merge! editor {::fresh-hints false})
-                        (object/raise editor :editor.julia.hints.trigger-update))
+                      (object/raise editor :editor.julia.hints.trigger-update)
                       (concat (::hints @editor) hints)))
 
 (defn process-hint [hint]
@@ -42,12 +39,12 @@
 (behavior ::update-hints
           :triggers #{:editor.julia.hints.update}
           :reaction (fn [editor {:keys [hints notextual pattern] :as res}]
-                      (object/merge! editor {::hints (map process-hint hints)
-                                             ::fresh-hints true
-                                             :token-pattern (when pattern (js/RegExp. (str pattern "$")))})
+                      (object/merge! editor {:token-pattern (when pattern (js/RegExp. (str pattern "$")))})
                       (let [pos (editor/->cursor editor)
                             token (auto-complete/get-token editor pos)]
-                        (object/raise auto-complete/hinter :change! (:string token)))))
+                        (object/merge! editor {::hints (remove #(= (:string token) (.-completion %))
+                                                               (map process-hint hints))})
+                        (object/raise auto-complete/hinter :refresh!))))
 
 (set! _get-token auto-complete/get-token)
 
