@@ -1,6 +1,7 @@
 (ns lt.objs.langs.julia.completions
   (:require [lt.objs.langs.julia.proc :as proc]
             [lt.objs.langs.julia.util :as util]
+            [lt.objs.langs.julia.module :refer [->module]]
             [lt.objs.clients :as clients]
             [lt.object :as object]
             [lt.objs.eval :as eval]
@@ -19,7 +20,8 @@
                                                            :create proc/connect})
                                         :editor.julia.hints
                                         {:cursor (util/cursor editor)
-                                         :code (editor/->val editor)}
+                                         :code (editor/->val editor)
+                                         :module (->module editor)}
                                         :only editor)))))
 
 (behavior ::use-local-hints
@@ -30,22 +32,6 @@
                         (object/raise editor :editor.julia.hints.trigger-update))
                       (concat (::hints @editor) hints)))
 
-(behavior ::textual-hints
-          :triggers #{:hints+}
-          :reaction (fn [editor hints]
-                      (if-not (::no-textual-hints @editor)
-                        (concat (:lt.plugins.auto-complete/hints @editor) hints)
-                        hints)))
-
-(behavior ::line-change
-          :triggers #{:line-change}
-          :reaction (fn [hinter l c]
-                      (when (:active @hinter)
-                        (let [pos (editor/->cursor (:ed @hinter))
-                              token (auto-complete/get-token (:ed @hinter) pos)]
-                          (when (= (token :string) nil)
-                            (object/raise hinter :refresh!))))))
-
 (defn process-hint [hint]
   (if (string? hint)
     #js {:completion hint}
@@ -55,7 +41,6 @@
           :triggers #{:editor.julia.hints.update}
           :reaction (fn [editor {:keys [hints notextual pattern] :as res}]
                       (object/merge! editor {::hints (map process-hint hints)
-                                             ::no-textual-hints notextual
                                              ::fresh-hints true
                                              :token-pattern (when pattern (js/RegExp. (str pattern "$")))})
                       (let [pos (editor/->cursor editor)

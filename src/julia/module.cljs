@@ -22,10 +22,13 @@
 (def statusbar-module (object/create ::statusbar.module))
 (statusbar/add-statusbar-item statusbar-module)
 
+(defn ->module [editor]
+  (::module @editor))
+
 (behavior ::update-module-statusbar
           :triggers #{:active :module-update}
           :reaction (fn [editor]
-                      (object/merge! statusbar-module {:module (::module @editor)})))
+                      (object/merge! statusbar-module {:module (->module editor)})))
 
 ;; Backend communication
 
