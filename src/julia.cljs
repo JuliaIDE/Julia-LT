@@ -60,7 +60,7 @@
                                           {:start-line (-> res :start dec)
                                            :line line})
                             (lights/clear)
-                            (lights/add-lines (util/get-error-lines dom))
+                            (lights/add (util/get-error-lines dom))
                             (let [ex (-> @editor :widgets (get [(editor/line-handle editor line) :inline]))]
                               (lights/listen ex)))))))
 

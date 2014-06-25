@@ -26,76 +26,57 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-; Bug – need to use line handles to track lines, not numbers
-
-(object/object* ::light-lines
-                :tags #{:light-lines}
-                :class :error
-                :lines []
-                :behaviors [::update ::clear ::add-lines])
+(def lines (atom []))
+(def clear-object (atom nil))
 
 (defn editor-for-file [file]
   (->> (pool/get-all) (filter #(-> @% :info :path (= file))) first))
 
-(defn toggle-background [ed line class toggle]
-  ((if toggle editor/+line-class editor/-line-class)
-   (editor/->cm-ed ed) (dec line) :background class))
+(defn toggle-background [ed handle class toggle]
+  (when-let [ed (editor/->cm-ed ed)]
+    ((if toggle editor/+line-class editor/-line-class)
+     ed handle :background class)))
 
-(behavior ::update
-          :triggers #{:update}
-          :reaction (fn [this]
-                      (doseq [line (@this :lines)]
-                        (when (and (:file line) (:line line))
-                          (when-let [ed (editor-for-file (:file line))]
-                            (let [line (:line line)
-                                  class (or (:class line) (:class @this))]
-                              (toggle-background ed line :light-line true)
-                              (toggle-background ed line class true)))))))
+(defn update []
+  (swap! lines
+         #(doall
+           (map (fn [{:keys [file line handle class] :as l}]
+                  (if handle
+                    l
+                    (if-let [ed (editor-for-file file)]
+                      (let [handle (editor/line-handle ed (dec line))
+                            class (or class :error)]
+                        (toggle-background ed handle :light-line true) ; Needed so that transitions work
+                        (toggle-background ed handle class true)
+                        (assoc l :handle handle :ed ed))
+                      l))) %)))
+  nil)
 
-(behavior ::clear
-          :triggers #{:clear}
-          :reaction (fn [this]
-                      (doseq [line (@this :lines)]
-                        (when (and (:file line) (:line line))
-                          (when-let [ed (editor-for-file (:file line))]
-                            (toggle-background ed
-                                               (:line line)
-                                               (or (:class line) (:class @this))
-                                               false)))
-                        (object/merge! this {:lines []}))))
+(defn add [new]
+  (swap! lines concat new)
+  (update))
 
-(behavior ::add-lines
-          :triggers #{:add-lines}
-          :reaction (fn [this lines]
-                      (object/update! this [:lines] concat lines)
-                      (object/raise this :update)))
+(defn clear []
+  (doseq [{:keys [file handle class ed]} @lines :when handle]
+    (toggle-background ed
+                       handle
+                       (or class :error)
+                       false))
+    (reset! lines []))
 
 (behavior ::clear-lights
           :triggers #{:clear!}
           :reaction (fn [this]
-                      (when (= this (@light-lines :clear-object))
-                        (object/raise light-lines :clear))))
-
-(def light-lines (object/create ::light-lines))
-
-(defn clear []
-  (object/raise light-lines :clear))
+                      (when (= this @clear-object)
+                        (clear))))
 
 (defn listen [ex]
-  (object/merge! light-lines {:clear-object ex})
+  (reset! clear-object ex)
   (object/add-behavior! ex ::clear-lights))
-
-(defn add-lines [lines]
-  (object/raise light-lines :add-lines lines))
 
 ;; Update editors on open
 
 (behavior ::highlight-lines
           :triggers #{:object.instant}
           :reaction (fn [editor]
-                      (object/raise light-lines :update)))
-
-;; (@light-lines :lines)
-
-;; (add-lines [{:file "/Users/mike/Dropbox/Programming/Julia/mandelbrot.jl"
-;;              :line 25}])
+                      (update)))
