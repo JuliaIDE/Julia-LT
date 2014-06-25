@@ -10,7 +10,8 @@
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 (behavior ::trigger-update-hints
-          :triggers #{:editor.julia.hints.trigger-update}
+          :triggers #{:editor.julia.hints.trigger-update :input}
+          :debounce 100
           :reaction (fn [editor res]
                       (when-let [default-client (-> @editor :client :default)] ;; dont eval unless we're already connected
                         (when @default-client
@@ -21,7 +22,8 @@
                                         :editor.julia.hints
                                         {:cursor (util/cursor editor)
                                          :code (editor/->val editor)
-                                         :module (->module editor)}
+                                         :module (->module editor)
+                                         :path (-> @editor :info :path)}
                                         :only editor)))))
 
 (behavior ::use-local-hints

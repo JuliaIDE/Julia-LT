@@ -41,8 +41,7 @@
                                :start (util/cursor editor "start") :end (util/cursor editor "end")
                                :path (-> @editor :info :path)
                                :module (util/module editor)}
-                              :only
-                              editor))))
+                              :only editor))))
 
 (behavior ::eval.all
   :triggers #{:eval}
@@ -58,5 +57,4 @@
                                :all true
                                :path (-> @editor :info :path)
                                :module (util/module editor)}
-                              :only
-                              editor))))
+                              :only editor))))
