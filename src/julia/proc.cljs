@@ -125,24 +125,27 @@
     (callback)
     (js/setTimeout #(wait-until cond callback) 100)))
 
+(defn when-connect [cb] (wait-until #(not= tcp/port 0) cb))
+
 (behavior ::connect-on-startup
           :triggers #{:init}
           :desc "Julia: Spin up a client when Light Table starts"
           :type :user
           :exclusive true
           :reaction (fn []
-                      (wait-until #(not= tcp/port 0)
-                        #(eval/get-client! {:command :editor.julia.eval
-                                            :info {}
-                                            :origin julia
-                                            :create (fn [] (connect :notify true))}))))
+                      (when-connect
+                       #(eval/get-client! {:command :editor.julia.eval
+                                           :info {}
+                                           :origin julia
+                                           :create (fn [] (connect :notify true))}))))
 
 (behavior ::connect-on-open
           :triggers #{:object.instant}
           :desc "Julia: Automatically connect editors to a Julia client"
           :type :user
           :reaction (fn [editor]
-                      (eval/get-client! {:command :editor.eval.julia
-                                         :origin editor
-                                         :info {}
-                                         :create (fn [] (connect :notify true :complain false))})))
+                      (when-connect
+                       #(eval/get-client! {:command :editor.eval.julia
+                                           :origin editor
+                                           :info {}
+                                           :create (fn [] (connect :notify true :complain false))}))))

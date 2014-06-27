@@ -35,14 +35,15 @@
 (behavior ::get-module
   :triggers #{:object.instant}
   :reaction (fn [editor]
-              (let [client (eval/get-client! {:command :editor.eval.julia
-                                              :origin editor
-                                              :info {}
-                                              :create proc/connect})]
-                (clients/send client
-                              :editor.julia.module.update
-                              {:path (-> @editor :info :path)}
-                              :only editor))))
+              (proc/when-connect
+               #(let [client (eval/get-client! {:command :editor.eval.julia
+                                                :origin editor
+                                                :info {}
+                                                :create proc/connect})]
+                  (clients/send client
+                                :editor.julia.module.update
+                                {:path (-> @editor :info :path)}
+                                :only editor)))))
 
 (behavior ::update-module
   :triggers #{:editor.julia.module.update}
