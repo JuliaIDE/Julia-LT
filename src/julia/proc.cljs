@@ -101,8 +101,8 @@
         obj (object/create ::connecting-notifier client)]
     (object/merge! obj {:notify notify :complain complain})
     (proc/exec {:command (julia-path)
-;;                 :args [init tcp/port (clients/->id client)]
-                :args ["-e" (init-script tcp/port (clients/->id client))]
+                :args [init tcp/port (clients/->id client)]
+;;                 :args ["-e" (init-script tcp/port (clients/->id client))]
                 :obj obj})
     (object/merge! client {:proc (-> @obj :procs first)})
     (clients/send client :julia.set-global-client {} :only julia)
