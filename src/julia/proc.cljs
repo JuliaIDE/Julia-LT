@@ -93,6 +93,8 @@
 
 (defn julia-path [] (or (@julia :path) "julia"))
 
+(def global-client* nil)
+
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
 ; complain – show a popup if we can't connect
 (defn connect [& {:keys [notify complain] :or {notify false complain true}}]
@@ -106,7 +108,13 @@
                 :obj obj})
     (object/merge! client {:proc (-> @obj :procs first)})
     (clients/send client :julia.set-global-client {} :only julia)
+    (set! global-client* client)
     client))
+
+(defn global-client []
+  (when-let [client global-client*]
+    (when (:connected @client)
+      client)))
 
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]

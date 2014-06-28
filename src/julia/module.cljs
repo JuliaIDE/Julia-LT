@@ -33,17 +33,13 @@
 ;; Backend communication
 
 (behavior ::get-module
-  :triggers #{:object.instant}
+  :triggers #{:active :save}
   :reaction (fn [editor]
-              (proc/when-connect
-               #(let [client (eval/get-client! {:command :editor.eval.julia
-                                                :origin editor
-                                                :info {}
-                                                :create proc/connect})]
-                  (clients/send client
-                                :editor.julia.module.update
-                                {:path (-> @editor :info :path)}
-                                :only editor)))))
+              (when-let [client (proc/global-client)]
+                (clients/send client
+                              :editor.julia.module.update
+                              {:path (-> @editor :info :path)}
+                              :only editor))))
 
 (behavior ::update-module
   :triggers #{:editor.julia.module.update}
