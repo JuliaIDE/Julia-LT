@@ -666,7 +666,23 @@ return lt.object.merge_BANG_.call(null,this$,new cljs.core.PersistentArrayMap(nu
 });
 lt.object.behavior_STAR_.call(null,new cljs.core.Keyword("lt.objs.langs.julia.proc","pipe-err","lt.objs.langs.julia.proc/pipe-err",2913231640),new cljs.core.Keyword(null,"reaction","reaction",4441361819),lt.objs.langs.julia.proc.__BEH__pipe_err,new cljs.core.Keyword(null,"triggers","triggers",2516997421),new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"proc.error","proc.error",4143512802),null], null), null));
 lt.object.object_STAR_.call(null,new cljs.core.Keyword("lt.objs.langs.julia.proc","connecting-notifier","lt.objs.langs.julia.proc/connecting-notifier",4154824301),new cljs.core.Keyword(null,"behaviors","behaviors",607554515),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("lt.objs.langs.julia.proc","proc-out","lt.objs.langs.julia.proc/proc-out",3354081193),new cljs.core.Keyword("lt.objs.langs.julia.proc","proc-error","lt.objs.langs.julia.proc/proc-error",3670223651),new cljs.core.Keyword("lt.objs.langs.julia.proc","proc-exit","lt.objs.langs.julia.proc/proc-exit",3482355335),new cljs.core.Keyword("lt.objs.langs.julia.proc","pipe-out","lt.objs.langs.julia.proc/pipe-out",2913224961),new cljs.core.Keyword("lt.objs.langs.julia.proc","pipe-err","lt.objs.langs.julia.proc/pipe-err",2913231640)], null),new cljs.core.Keyword(null,"init","init",1017141378),(function (this$,client){lt.object.merge_BANG_.call(null,this$,new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"client","client",3951159101),client,new cljs.core.Keyword(null,"buffer","buffer",3930752946),""], null));
-(function cb(){return 500;
+(function cb(){setTimeout((function (){if(cljs.core.truth_(cljs.core.deref.call(null,this$)))
+{if(cljs.core.truth_(cljs.core.deref.call(null,this$).call(null,new cljs.core.Keyword(null,"out-buffer","out-buffer",4159311633))))
+{lt.objs.console.log.call(null,cljs.core.deref.call(null,this$).call(null,new cljs.core.Keyword(null,"out-buffer","out-buffer",4159311633)));
+lt.object.merge_BANG_.call(null,this$,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"out-buffer","out-buffer",4159311633),""], null));
+} else
+{}
+if(cljs.core.truth_(cljs.core.deref.call(null,this$).call(null,new cljs.core.Keyword(null,"err-buffer","err-buffer",3766222106))))
+{lt.objs.console.log.call(null,cljs.core.deref.call(null,this$).call(null,new cljs.core.Keyword(null,"err-buffer","err-buffer",3766222106)));
+lt.object.merge_BANG_.call(null,this$,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"err-buffer","err-buffer",3766222106),""], null));
+} else
+{}
+return cb.call(null);
+} else
+{return null;
+}
+}));
+return 500;
 }).call(null);
 return null;
 }));
@@ -683,7 +699,7 @@ lt.objs.langs.julia.proc.julia_path = (function julia_path(){var or__6371__auto_
 * @param {...*} var_args
 */
 lt.objs.langs.julia.proc.connect = (function() { 
-var connect__delegate = function (p__8512){var map__8514 = p__8512;var map__8514__$1 = ((cljs.core.seq_QMARK_.call(null,map__8514))?cljs.core.apply.call(null,cljs.core.hash_map,map__8514):map__8514);var complain = cljs.core.get.call(null,map__8514__$1,new cljs.core.Keyword(null,"complain","complain",4709422171),true);var notify = cljs.core.get.call(null,map__8514__$1,new cljs.core.Keyword(null,"notify","notify",4269181627),false);if(cljs.core.truth_(notify))
+var connect__delegate = function (p__8508){var map__8510 = p__8508;var map__8510__$1 = ((cljs.core.seq_QMARK_.call(null,map__8510))?cljs.core.apply.call(null,cljs.core.hash_map,map__8510):map__8510);var complain = cljs.core.get.call(null,map__8510__$1,new cljs.core.Keyword(null,"complain","complain",4709422171),true);var notify = cljs.core.get.call(null,map__8510__$1,new cljs.core.Keyword(null,"notify","notify",4269181627),false);if(cljs.core.truth_(notify))
 {lt.objs.notifos.working.call(null,"Spinning up a Julia client...");
 } else
 {}
@@ -694,13 +710,13 @@ lt.objs.clients.send.call(null,client,new cljs.core.Keyword(null,"julia.set-glob
 return client;
 };
 var connect = function (var_args){
-var p__8512 = null;if (arguments.length > 0) {
-  p__8512 = cljs.core.array_seq(Array.prototype.slice.call(arguments, 0),0);} 
-return connect__delegate.call(this,p__8512);};
+var p__8508 = null;if (arguments.length > 0) {
+  p__8508 = cljs.core.array_seq(Array.prototype.slice.call(arguments, 0),0);} 
+return connect__delegate.call(this,p__8508);};
 connect.cljs$lang$maxFixedArity = 0;
-connect.cljs$lang$applyTo = (function (arglist__8515){
-var p__8512 = cljs.core.seq(arglist__8515);
-return connect__delegate(p__8512);
+connect.cljs$lang$applyTo = (function (arglist__8511){
+var p__8508 = cljs.core.seq(arglist__8511);
+return connect__delegate(p__8508);
 });
 connect.cljs$core$IFn$_invoke$arity$variadic = connect__delegate;
 return connect;
@@ -1790,7 +1806,7 @@ goog.require('lt.objs.langs.julia.proc');
 goog.require('lt.objs.langs.julia.proc');
 goog.require('lt.objs.eval');
 goog.require('lt.objs.clients');
-lt.objs.langs.julia.module.__GT_module_str = (function __GT_module_str(p__8522){var map__8524 = p__8522;var map__8524__$1 = ((cljs.core.seq_QMARK_.call(null,map__8524))?cljs.core.apply.call(null,cljs.core.hash_map,map__8524):map__8524);var module = cljs.core.get.call(null,map__8524__$1,new cljs.core.Keyword(null,"module","module",4240087518));return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span.module","span.module",4591083778),[cljs.core.str(module),cljs.core.str("\t")].join('')], null);
+lt.objs.langs.julia.module.__GT_module_str = (function __GT_module_str(p__8213){var map__8215 = p__8213;var map__8215__$1 = ((cljs.core.seq_QMARK_.call(null,map__8215))?cljs.core.apply.call(null,cljs.core.hash_map,map__8215):map__8215);var module = cljs.core.get.call(null,map__8215__$1,new cljs.core.Keyword(null,"module","module",4240087518));return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span.module","span.module",4591083778),[cljs.core.str(module),cljs.core.str("\t")].join('')], null);
 });
 lt.object.object_STAR_.call(null,new cljs.core.Keyword("lt.objs.langs.julia.module","statusbar.module","lt.objs.langs.julia.module/statusbar.module",830137210),new cljs.core.Keyword(null,"triggers","triggers",2516997421),cljs.core.PersistentHashSet.EMPTY,new cljs.core.Keyword(null,"behaviors","behaviors",607554515),new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword("lt.objs.langs.julia.module","update-module-status","lt.objs.langs.julia.module/update-module-status",2710240756),null], null), null),new cljs.core.Keyword(null,"module","module",4240087518),"Main",new cljs.core.Keyword(null,"init","init",1017141378),(function (this$){return lt.objs.statusbar.statusbar_item.call(null,crate.binding.bound.call(null,this$,lt.objs.langs.julia.module.__GT_module_str),"");
 }));

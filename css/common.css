@@ -8,4 +8,4 @@
   transition: all 0.2s linear; }
 
 .CodeMirror-linebackground.error {
-  background: rgba(255, 0, 0, 0.08); }
+  background: rgba(255, 100, 100, 0.3); }
