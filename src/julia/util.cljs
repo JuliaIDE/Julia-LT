@@ -75,18 +75,21 @@
 
 (def url-pattern
   (if (platform/win?)
-    #"^\s*((?:\w+:)[/\\][A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?\s*$"
-    #"^\s*(/[A-Za-z0-9_\//\.]*?\.jl)(?::([0-9]+))?\s*$"))
+    #"^\s*((?:\w+:)[/\\][A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"
+    #"^\s*(/[A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"))
 
 (defn process-link! [link editor]
   (let [[_ file line] (re-find url-pattern (.-text link))]
-    (when (and file line)
+    (when file
     (set! (.-href link) "javascript:void(0);")
     (set! (.-onclick link) #(object/raise lt.objs.jump-stack/jump-stack
                                           :jump-stack.push!
                                           editor
                                           file
-                                          {:line (dec (js/parseInt line)) :ch 0})))))
+                                          {:line (if line
+                                                   (dec (js/parseInt line))
+                                                   0)
+                                           :ch 0})))))
 
 (defn process-links! [dom editor]
   (->> dom all-links (map #(process-link! % editor)) dorun)
