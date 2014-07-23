@@ -42,8 +42,7 @@
                       (object/merge! editor {:token-pattern (when pattern (js/RegExp. (str pattern "$")))})
                       (let [pos (editor/->cursor editor)
                             token (auto-complete/get-token editor pos)]
-                        (object/merge! editor {::hints (remove #(= (:string token) (.-completion %))
-                                                               (map process-hint hints))})
+                        (object/merge! editor {::hints (map process-hint hints)})
                         (object/raise auto-complete/hinter :refresh!))))
 
 (set! _get-token auto-complete/get-token)
