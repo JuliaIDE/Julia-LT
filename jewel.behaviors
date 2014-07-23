@@ -13,6 +13,7 @@
 
      :editor.julia [:lt.objs.langs.julia.eval/eval.one
                     :lt.objs.langs.julia.eval/eval.all
+                    :lt.objs.langs.julia.proc/connect-on-open
                     :lt.objs.langs.julia/editor-commands
                     (:lt.objs.editor/tab-settings false 2 2)
                     (:lt.object/add-tag :editor.julia.hints)

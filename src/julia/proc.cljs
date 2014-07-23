@@ -90,17 +90,6 @@
 
 ;; Connection
 
-(def default-client* nil)
-
-(defn default-client []
-  (when-let [client default-client*]
-    (when (:connected @client)
-      client)))
-
-(defn set-default-client [client]
-  (when-not (default-client)
-    (set! default-client* client)))
-
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
 (defn julia-path [] (or (@julia :path) "julia"))
@@ -120,6 +109,8 @@
     (set-default-client client)
     client))
 
+;; Manual connection
+
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
     (popup/popup! {:header "Connect Julia to Light Table"
@@ -132,6 +123,8 @@
 (scl/add-connector {:name "Julia (manual)"
                     :desc "Manually connect to Julia."
                     :connect connect-manual})
+
+;; Connect on startup
 
 (defn wait-until [cond callback]
   (if (cond)
@@ -152,13 +145,29 @@
                                            :origin julia
                                            :create (fn [] (connect :notify true))}))))
 
+;; Default client
+
+(def default-client* nil)
+
+(defn default-client []
+  (when-let [client default-client*]
+    (when (:connected @client)
+      client)))
+
+(defn set-default-client [client]
+  (when-not (default-client)
+    (set! default-client* client)
+    #_(doseq [])))
+
+(defn connect-default-client [editor]
+  (when-not (-> @editor :client :default)
+    (when-let [client (default-client)]
+      (object/update! editor [:client :default] (constantly client))
+      (object/raise editor :set-client client))))
+
 (behavior ::connect-on-open
           :triggers #{:object.instant}
-          :desc "Julia: Automatically connect editors to a Julia client"
+          :desc "Julia: Automatically connect editors to the default Julia client"
           :type :user
           :reaction (fn [editor]
-                      (when-connect
-                       #(eval/get-client! {:command :editor.eval.julia
-                                           :origin editor
-                                           :info {}
-                                           :create (fn [] (connect :notify true :complain false))}))))
+                      (connect-default-client editor)))
