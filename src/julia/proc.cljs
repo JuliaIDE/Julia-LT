@@ -157,17 +157,28 @@
 (defn set-default-client [client]
   (when-not (default-client)
     (set! default-client* client)
-    #_(doseq [])))
+    (doseq [editor (lt.objs.editor.pool/get-all)]
+      (object/raise editor :julia.connected client))))
+
+(defn connect-client [editor client]
+  (when-not (some-> @editor :client :default deref :connected)
+    (object/update! editor [:client :default] (constantly client))
+    (object/raise editor :set-client client)))
 
 (defn connect-default-client [editor]
-  (when-not (-> @editor :client :default)
-    (when-let [client (default-client)]
-      (object/update! editor [:client :default] (constantly client))
-      (object/raise editor :set-client client))))
+  (when-let [client (default-client)]
+    (connect-client editor client)))
 
 (behavior ::connect-on-open
           :triggers #{:object.instant}
-          :desc "Julia: Automatically connect editors to the default Julia client"
+          :desc "Julia: Connect new editors to the default Julia client"
           :type :user
           :reaction (fn [editor]
                       (connect-default-client editor)))
+
+(behavior ::attach-on-connect
+          :triggers #{:julia.connected}
+          :desc "Julia: Connect editors when a default Julia client is created"
+          :type :user
+          :reaction (fn [editor client]
+                      (connect-client editor client)))
