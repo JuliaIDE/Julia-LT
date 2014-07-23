@@ -38,13 +38,15 @@
           :reaction (fn [this data]
                       (when-not (:connected @this)
                         (notifos/done-working "")
-                        (when (@this :complain)
+                        (when (:complain @this)
                           (popup/popup! {:header "Couldn't connect to Julia"
                                          :body [:pre (:buffer @this)]
                                          :buttons [{:label "Close"}]}))
                         (clients/rem! (:client @this)))
                       (proc/kill-all (:procs @this))
                       (object/destroy! this)))
+
+;; Pipe output to LT's console
 
 (behavior ::pipe-out
            :triggers #{:proc.out}
@@ -66,21 +68,24 @@
                           (console/log out "error")
                           (object/merge! this {:err-buffer ""})))))
 
+(behavior ::flush
+          :triggers #{:proc.out :proc.err}
+          :debounce 500
+          :reaction (fn [this]
+                      (when-let [out (not-empty (@this :out-buffer))]
+                        (console/log out)
+                        (object/merge! this {:out-buffer ""}))
+                      (when-let [out (not-empty (@this :err-buffer))]
+                        (console/log out)
+                        (object/merge! this {:err-buffer ""}))))
+
+;; Connection object
+
 (object/object* ::connecting-notifier
-                :behaviors [::proc-out ::proc-error ::proc-exit ::pipe-out ::pipe-err]
+                :behaviors [::proc-out ::proc-error ::proc-exit
+                            ::pipe-out ::pipe-err ::flush]
                 :init (fn [this client]
-                        (object/merge! this {:client client :buffer ""})
-                        ((fn cb []
-                           (js/setTimeout (fn []
-                                            (when @this
-                                              (when (@this :out-buffer)
-                                                (console/log (@this :out-buffer))
-                                                (object/merge! this {:out-buffer ""}))
-                                              (when (@this :err-buffer)
-                                                (console/log (@this :err-buffer))
-                                                (object/merge! this {:err-buffer ""}))
-                                              (cb))))
-                                         500))
+                        (object/merge! this {:client client})
                         nil))
 
 ;; Connection
