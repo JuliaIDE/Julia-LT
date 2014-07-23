@@ -1,5 +1,14 @@
 port, id = map(parseint, ARGS)
 
+if VERSION < v"0.3-"
+  println(STDERR, """
+  This plugin requires Julia 0.3 or higher to work. Your current version
+  is $(VERSION). Please download a more recent release from
+  http://www.julialang.org/downloads
+  """)
+  exit(1)
+end
+
 try
   require("Jewel")
 catch e
