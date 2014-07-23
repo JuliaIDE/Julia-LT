@@ -35,7 +35,7 @@
 (behavior ::get-module
   :triggers #{:active :save}
   :reaction (fn [editor]
-              (when-let [client (proc/global-client)]
+              (when-let [client (proc/default-client)]
                 (clients/send client
                               :editor.julia.module.update
                               {:path (-> @editor :info :path)}

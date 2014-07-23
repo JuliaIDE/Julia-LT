@@ -90,11 +90,20 @@
 
 ;; Connection
 
+(def default-client* nil)
+
+(defn default-client []
+  (when-let [client default-client*]
+    (when (:connected @client)
+      client)))
+
+(defn set-default-client [client]
+  (when-not (default-client)
+    (set! default-client* client)))
+
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
 (defn julia-path [] (or (@julia :path) "julia"))
-
-(def global-client* nil)
 
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
 ; complain – show a popup if we can't connect
@@ -108,20 +117,16 @@
                 :obj obj})
     (object/merge! client {:proc (-> @obj :procs first)})
     (clients/send client :julia.set-global-client {} :only julia)
-    (set! global-client* client)
+    (set-default-client client)
     client))
-
-(defn global-client []
-  (when-let [client global-client*]
-    (when (:connected @client)
-      client)))
 
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
     (popup/popup! {:header "Connect Julia to Light Table"
                    :body (str "@async Jewel.server(" tcp/port ", " (clients/->id client) ")")
                    :buttons [{:label "Done"}]})
-    (clients/send client :julia.set-global-client {} :only julia)
+    (clients/send client :julia.set-default-client {} :only julia)
+    (set-default-client client)
     client))
 
 (scl/add-connector {:name "Julia (manual)"
