@@ -90,6 +90,12 @@
 
 ;; Connection
 
+(defn with-dir [dir f]
+  (let [dir' (js/process.cwd)]
+    (js/process.chdir dir)
+    (f)
+    (js/process.chdir dir')))
+
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
 (defn julia-path [] (or (@julia :path) "julia"))
@@ -101,9 +107,10 @@
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
     (object/merge! obj {:notify notify :complain complain})
-    (proc/exec {:command (julia-path)
-                :args [init tcp/port (clients/->id client)]
-                :obj obj})
+    (with-dir (files/home)
+      #(proc/exec {:command (julia-path)
+                   :args [init tcp/port (clients/->id client)]
+                   :obj obj}))
     (object/merge! client {:proc (-> @obj :procs first)})
     (clients/send client :julia.set-global-client {} :only julia)
     (set-default-client client)
