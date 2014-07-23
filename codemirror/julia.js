@@ -129,8 +129,10 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     // Strings
 
-    if (scope == '"""' || scope == 'string') {
-      delimiter = scope == 'string' ? '"' : '"""';
+    if (scope == '"""' || scope == 'string' || scope == 'charstring') {
+      delimiter = scope == 'string'     ? '"' :
+                  scope == 'charstring' ? "'" :
+                                          '"""';
       while (!stream.eol()) {
         stream.eatWhile(/[^\$'"\\]/);
         if (stream.eat('\\')) {
@@ -282,6 +284,9 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return 'string';
     } else if (stream.match('"')) {
       push_scope(state, 'string');
+      return 'string';
+    } else if (stream.match("'")) {
+      push_scope(state, 'charstring');
       return 'string';
     }
 
