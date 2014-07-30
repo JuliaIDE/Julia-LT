@@ -33,9 +33,9 @@
 ;; Backend communication
 
 (behavior ::get-module
-  :triggers #{:active :save}
-  :reaction (fn [editor]
-              (when-let [client (proc/default-client)]
+  :triggers #{:active :save :julia.connected}
+  :reaction (fn [editor & [client]]
+              (when-let [client (or client (proc/default-client))]
                 (clients/send client
                               :editor.julia.module.update
                               {:path (-> @editor :info :path)}
