@@ -34,6 +34,7 @@
 
 (behavior ::get-module
   :triggers #{:active :save :julia.connected}
+  :debounce 100
   :reaction (fn [editor & [client]]
               (when-let [client (or client (proc/default-client))]
                 (clients/send client
