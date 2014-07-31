@@ -33,7 +33,7 @@
 ;; Backend communication
 
 (behavior ::get-module
-  :triggers #{:active :save :julia.connected}
+  :triggers #{:object.instant :active :save :julia.connected}
   :debounce 100
   :reaction (fn [editor & [client]]
               (when-let [client (or client (proc/default-client))]
