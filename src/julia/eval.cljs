@@ -1,6 +1,7 @@
 (ns lt.objs.langs.julia.eval
   (:require [lt.objs.langs.julia.proc :as proc]
             [lt.objs.langs.julia.util :as util]
+            [lt.objs.langs.julia.light-lines :as lights]
             [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.console :as console]
@@ -58,3 +59,37 @@
                                :path (-> @editor :info :path)
                                :module (util/module editor)}
                               :only editor))))
+
+(behavior ::result
+          :triggers #{:julia.result}
+          :reaction (fn [editor res]
+                      (notifos/done-working "")
+                      (let [val (if (res :html)
+                                  (-> res :value crate/raw)
+                                  (-> res :value))
+                            scripts (when (res :html) (util/get-scripts val))]
+                        (object/raise editor
+                                      (if (res :under)
+                                        :editor.result.underline
+                                        :editor.result)
+                                      val
+                                      {:start-line (-> res :start dec)
+                                       :line (-> res :end dec)})
+                        (when scripts (util/eval-scripts scripts)))))
+
+(behavior ::error
+          :triggers #{:julia.error}
+          :reaction (fn [editor res]
+                      (notifos/done-working "")
+                      (let [dom (-> res :value util/parse-div)
+                            line (-> res :end dec)]
+                        (util/process-links! dom editor)
+                        (object/raise editor
+                                      :editor.exception
+                                      dom
+                                      {:start-line (-> res :start dec)
+                                       :line line})
+                        (lights/clear)
+                        (lights/add (util/get-error-lines dom))
+                        (let [ex (-> @editor :widgets (get [(editor/line-handle editor line) :inline]))]
+                          (lights/listen ex)))))

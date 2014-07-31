@@ -27,43 +27,6 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-;; Editor commands
-
-; Should really factor these into behaviours
-(behavior ::editor-commands
-  :triggers #{:editor.eval.julia.editor-command}
-  :reaction (fn [editor res]
-              (notifos/done-working)
-              (condp = (res :cmd)
-                "result" (do
-                           (notifos/done-working "")
-                           (let [val (if (res :html)
-                                       (-> res :value crate/raw)
-                                       (-> res :value))
-                                 scripts (when (res :html) (util/get-scripts val))]
-                             (object/raise editor
-                                           (if (res :under)
-                                             :editor.result.underline
-                                             :editor.result)
-                                           val
-                                           {:start-line (-> res :start dec)
-                                            :line (-> res :end dec)})
-                             (when scripts (util/eval-scripts scripts))))
-                "error" (do
-                          (notifos/done-working "")
-                          (let [dom (-> res :value util/parse-div)
-                                line (-> res :end dec)]
-                            (util/process-links! dom editor)
-                            (object/raise editor
-                                          :editor.exception
-                                          dom
-                                          {:start-line (-> res :start dec)
-                                           :line line})
-                            (lights/clear)
-                            (lights/add (util/get-error-lines dom))
-                            (let [ex (-> @editor :widgets (get [(editor/line-handle editor line) :inline]))]
-                              (lights/listen ex)))))))
-
 ;; Global commands
 
 (behavior ::commands
