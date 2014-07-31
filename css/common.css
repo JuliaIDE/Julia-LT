@@ -1,7 +1,7 @@
 .julia.result {
   font-family: 'DejaVu Sans';
   white-space: normal;
-  cursor: auto;
+  cursor: default;
   -webkit-user-select: none; }
 
 .julia.error {
