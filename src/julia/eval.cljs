@@ -65,7 +65,7 @@
           :reaction (fn [editor res]
                       (notifos/done-working "")
                       (let [val (if (res :html)
-                                  (-> res :value crate/raw)
+                                  (crate/html [:div.julia.result (-> res :value crate/raw)])
                                   (-> res :value))
                             scripts (when (res :html) (util/get-scripts val))]
                         (object/raise editor

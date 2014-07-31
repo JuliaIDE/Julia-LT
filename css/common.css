@@ -1,3 +1,7 @@
+.julia.result {
+  font-family: 'DejaVu Sans';
+  white-space: normal; }
+
 .julia.error {
   max-width: 500px;
   white-space: normal; }
