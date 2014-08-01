@@ -77,6 +77,8 @@
                                        :line (-> res :end dec)})
                         (when scripts (util/eval-scripts scripts)))))
 
+(def error-lines (lights/obj :error))
+
 (behavior ::error
           :triggers #{:julia.error}
           :reaction (fn [editor res]
@@ -89,7 +91,7 @@
                                       dom
                                       {:start-line (-> res :start dec)
                                        :line line})
-                        (lights/clear)
-                        (lights/add (util/get-error-lines dom))
+                        (object/raise error-lines :clear)
+                        (object/raise error-lines :highlight (util/get-error-lines dom))
                         (let [ex (-> @editor :widgets (get [(editor/line-handle editor line) :inline]))]
-                          (lights/listen ex)))))
+                          (object/raise error-lines :listen ex)))))
