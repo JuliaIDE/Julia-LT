@@ -2,6 +2,7 @@
   (:require [lt.objs.langs.julia.util :as util]
             [lt.object :as object]
             [lt.objs.eval :as eval]
+            [lt.util.dom :as dom]
             [lt.objs.console :as console]
             [lt.objs.command :as cmd]
             [lt.objs.clients.tcp :as tcp]
@@ -26,6 +27,19 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
+;; Some utils
+
+(defn editor-for-file [file]
+  (->> (pool/get-all) (filter #(-> @% :info :path (= file))) first))
+
+; This, is horrible, TODO: change this
+(defn toggle-background [ed handle class toggle]
+  (when-let [ed (editor/->cm-ed ed)]
+    ((if toggle editor/+line-class editor/-line-class)
+     ed handle :background class)))
+
+;; Highlights
+
 (object/object* ::light-lines
                 :tags #{:light-lines}
                 :behaviors [::refresh ::clear ::highlight ::listen]
@@ -35,14 +49,6 @@
                         nil))
 
 (defn obj [class] (object/create ::light-lines class))
-
-(defn editor-for-file [file]
-  (->> (pool/get-all) (filter #(-> @% :info :path (= file))) first))
-
-(defn toggle-background [ed handle class toggle]
-  (when-let [ed (editor/->cm-ed ed)]
-    ((if toggle editor/+line-class editor/-line-class)
-     ed handle :background class)))
 
 ; TODO: See if the editor can be found from the handle
 (defn refresh-line [{:keys [file line handle class] :as l} default-class]
