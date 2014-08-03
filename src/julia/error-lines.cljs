@@ -27,6 +27,33 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
+;; CodeMirror extension for setting attributes on lines
+;; This applies attributes to the same element
+;; Attributes are stored as a Clojure map within each line handle object
+
+(defn attributes
+  ([lh] (.-attributes lh))
+  ([lh attrs] (set! (.-attributes lh) attrs)))
+
+;; (editor/on  ed :renderLine render-reaction-wrapper)
+
+(defn render-reaction-wrapper [& args]
+  (apply render-reaction args))
+
+(defn render-reaction [cm line dom]
+  (when-let [attrs (attributes line)]
+    (dom/attr dom attrs)))
+
+;; (def ed (-> (pool/containing-path "mandelbrot.jl") first))
+
+;; (def li (editor/line-handle ed 30))
+
+;; (editor/+line-class ed li :text :progress)
+
+;; (attributes li {:data-percent 50})
+
+;; (do (editor/refresh ed) nil)
+
 ;; Some utils
 
 (defn editor-for-file [file]
