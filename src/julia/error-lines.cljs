@@ -27,24 +27,6 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-;; (editor/on ed :renderLine render-reaction-wrapper)
-
-(defn render-reaction-wrapper [& args]
-  (apply render-reaction args))
-
-(defn render-reaction [cm line dom]
-  (when-let [progress (.-progress line)]
-    (dom/append dom
-      (crate/html [:div.progress {:style (str "width:" progress)}]))))
-
-;; (def ed (-> (pool/containing-path "mandelbrot.jl") first))
-
-;; (def li (editor/line-handle ed 30))
-
-;; (set! (.-progress li) "60%")
-
-;; (do (editor/refresh ed) nil)
-
 ;; Some utils
 
 (defn editor-for-file [file]
