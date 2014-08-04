@@ -27,20 +27,51 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-;; (editor/off ed :renderLine render-reaction-wrapper)
+;; CodeMirror extension
+
+(behavior ::render-bars
+          :triggers #{:object.instant}
+          :reaction (fn [editor]
+                      (editor/on editor :renderLine render-reaction-wrapper)))
 
 (defn render-reaction-wrapper [& args]
-  (apply render-reaction args))
+  (apply render-bar args))
 
-(defn render-reaction [cm line dom]
-  (when-let [progress (.-progress line)]
+(defn render-bar [cm line dom]
+  (when-let [percent (.-percent line)]
     (dom/append dom
-      (crate/html [:div.progress {:style (str "width:" progress)}]))))
+      (crate/html [:div.progress {:style (str "width:" percent)}]))))
 
-;; (def ed (-> (pool/containing-path "mandelbrot.jl") first))
+;; Usage similar to Highlights
 
-;; (def li (editor/line-handle ed 30))
+(defn % [x] (str (* x 100) "%"))
 
-;; (set! (.-progress li) "60%")
+(defn editor-for-file [file]
+  (first (pool/by-path file)))
 
-;; (do (editor/refresh ed) nil)
+(defn refresh-line [{:keys [file line percent handle] :as l}]
+  (if handle
+    l
+    (if-let [ed (editor-for-file file)]
+      (let [handle (editor/line-handle ed (dec line))]
+        (when handle (set! (.-percent handle) (% percent)))
+        (assoc l :handle handle :ed ed))
+      l)))
+
+(defn refresh-lines [lines]
+  (into #{} (map refresh-line lines)))
+
+(defn editors [lines]
+  (into #{} (map :ed lines)))
+
+(defn refresh-and-update [lines]
+  (let [lines (refresh-lines lines)]
+    (doseq [ed (editors lines)]
+      (editor/refresh ed))
+    lines))
+
+;; (do
+;;   (refresh-and-update [{:file "/Users/mike/Dropbox/Programming/Julia/mandelbrot.jl"
+;;                         :line 33
+;;                         :percent 0.4}])
+;;   nil)
