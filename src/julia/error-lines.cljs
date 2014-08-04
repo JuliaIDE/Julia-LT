@@ -30,7 +30,7 @@
 ;; Some utils
 
 (defn editor-for-file [file]
-  (->> (pool/get-all) (filter #(-> @% :info :path (= file))) first))
+  (first (pool/by-path file)))
 
 ; This, is horrible, TODO: change this
 (defn toggle-background [ed handle class toggle]
@@ -50,7 +50,6 @@
 
 (defn obj [class] (object/create ::light-lines class))
 
-; TODO: See if the editor can be found from the handle
 (defn refresh-line [{:keys [file line handle class] :as l} default-class]
   (if handle
     l
