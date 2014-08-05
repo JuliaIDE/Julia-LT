@@ -75,3 +75,5 @@
 ;;                         :line 33
 ;;                         :percent 0.4}])
 ;;   nil)
+(defn dom-bars [] (dom/$$ ".CodeMirror-code .progress"))
+
