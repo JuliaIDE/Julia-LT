@@ -32,10 +32,7 @@
 (behavior ::render-bars
           :triggers #{:object.instant}
           :reaction (fn [editor]
-                      (editor/on editor :renderLine render-reaction-wrapper)))
-
-(defn render-reaction-wrapper [& args]
-  (apply render-bar args))
+                      (editor/on editor :renderLine render-bar)))
 
 (defn render-bar [cm line dom]
   (when-let [percent (.-percent line)]
