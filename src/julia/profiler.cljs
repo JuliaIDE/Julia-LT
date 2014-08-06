@@ -49,13 +49,17 @@
 (defn editor-for-file [file]
   (first (pool/by-path file)))
 
+(def lines (atom #{}))
+
 (defn refresh-line [{:keys [file line percent handle] :as l}]
   (if handle
     l
     (if-let [ed (editor-for-file file)]
       (let [handle (editor/line-handle ed (dec line))]
         (when handle (set! (.-percent handle) (% percent)))
-        (assoc l :handle handle :ed ed))
+        (let [l (assoc l :handle handle :ed ed)]
+          (swap! lines conj l)
+          l))
       l)))
 
 (defn refresh-lines [lines]
@@ -70,10 +74,37 @@
       (editor/refresh ed))
     lines))
 
-;; (do
-;;   (refresh-and-update [{:file "/Users/mike/Dropbox/Programming/Julia/mandelbrot.jl"
-;;                         :line 33
-;;                         :percent 0.4}])
-;;   nil)
 (defn dom-bars [] (dom/$$ ".CodeMirror-code .progress"))
 
+(defn clear []
+  (doseq [{handle :handle} @lines]
+    (set! (.-percent handle) nil))
+  (reset! lines #{})
+  (doseq [bar (dom-bars)]
+    (.remove bar)))
+
+(defn callback [f]
+  (js/setTimeout f 0))
+
+(defn animate-in []
+  (let [bars (dom-bars)]
+    (doseq [bar bars]
+      (dom/remove-class bar :animated)
+      (dom/add-class bar :hidden))
+    (callback ; Hack to make the animation work
+     #(doseq [bar bars]
+        (dom/add-class bar :animated)
+        (dom/remove-class bar :hidden)))))
+
+(defn animate-out []
+  (doseq [bar (dom-bars)]
+    (dom/add-class bar :hidden)))
+
+(defn set-lines [lines]
+  (clear)
+  (refresh-and-update lines)
+  (animate-in))
+
+(defn clear-lines []
+  (animate-out)
+  (js/setTimeout clear 200))
