@@ -11,17 +11,23 @@
 
      :editor [:lt.objs.langs.julia.module/update-module-statusbar]
 
-     :editor.julia [:lt.objs.langs.julia.eval/eval.one
+     :editor.julia [;; Connection
+                    :lt.objs.langs.julia.eval/eval.one
                     :lt.objs.langs.julia.eval/eval.all
                     :lt.objs.langs.julia.proc/connect-on-open
                     :lt.objs.langs.julia.proc/attach-on-connect
+
+                    ;; Settings
                     (:lt.objs.editor/tab-settings false 2 2)
+
+                    ;; Editor support
                     (:lt.object/add-tag :editor.julia.hints)
                     (:lt.object/add-tag :editor.julia.doc)
                     :lt.objs.langs.julia.module/get-module
                     :lt.objs.langs.julia.module/update-module
                     :lt.objs.langs.julia.light-lines/highlight-lines
 
+                    ;; Profiler support
                     :lt.objs.langs.julia.profiler/render-bars
                     :lt.objs.langs.julia.profiler/result
 
@@ -39,5 +45,10 @@
      :editor.julia.hints [:lt.objs.langs.julia.completions/use-local-hints
                           :lt.objs.langs.julia.completions/trigger-update-hints
                           :lt.objs.langs.julia.completions/update-hints]
+
+     :julia.profile-result [:lt.objs.langs.julia.profiler/clear
+                            :lt.objs.langs.julia.profiler/menu]
      }
- :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]}}
+ :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
+
+     :julia.profile-result [:lt.objs.eval/result-menu!]}}

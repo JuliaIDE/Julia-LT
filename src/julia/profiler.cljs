@@ -24,7 +24,8 @@
             [lt.objs.editor :as editor]
             [lt.objs.editor.pool :as pool]
             [lt.plugins.doc :as doc]
-            [crate.core :as crate])
+            [crate.core :as crate]
+            [lt.objs.menu :as menu])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 ;; CodeMirror extension
@@ -73,12 +74,15 @@
 
 (defn dom-bars [] (dom/$$ ".CodeMirror-code .progress"))
 
+(def *clearing* false) ; Don't interrupt the animation
+
 (defn clear []
-  (doseq [{handle :handle} @lines]
-    (set! (.-percent handle) nil))
-  (reset! lines #{})
-  (doseq [bar (dom-bars)]
-    (.remove bar)))
+  (when-not *clearing*
+    (doseq [{handle :handle} @lines]
+      (set! (.-percent handle) nil))
+    (reset! lines #{})
+    (doseq [bar (dom-bars)]
+      (.remove bar))))
 
 (defn callback [f]
   (js/setTimeout f 0))
@@ -103,25 +107,41 @@
   (animate-in))
 
 (defn clear-lines []
+  (set! *clearing* true)
   (animate-out)
-  (js/setTimeout clear 200))
+  (js/setTimeout #(do (set! *clearing* false) (clear)) 200))
+
+;; Result handling
 
 (behavior ::result
           :triggers #{:julia.profile-result}
           :reaction (fn [editor res]
                       (object/raise editor :julia.result (merge res {:html true
                                                                      :under true}))
-                      (listen! (util/widget editor (-> res :end dec) :underline))
+                      (let [res-obj (util/widget editor (-> res :end dec) :underline)]
+                        (prn (->> (:content @res-obj) (dom/$ :.root) .-foo))
+                        (listen! res-obj)
+                        (object/add-tags res-obj [:julia.profile-result]))
                       (set-lines (res :lines))))
 
 (def listen-object)
 
 (defn listen! [obj]
-  (set! listen-object obj)
-  (object/add-behavior! obj ::clear))
+  (set! listen-object obj))
 
 (behavior ::clear
           :triggers #{:clear!}
           :reaction (fn [this]
                       (when (= this listen-object)
                         (clear))))
+
+(behavior ::menu
+          :triggers #{:menu!}
+          :reaction (fn [this ev]
+                      (-> (menu/menu [{:label "Remove Profile Tree"
+                                       :click (fn []
+                                                (clear-lines)
+                                                (object/raise this :clear!))}])
+                          (menu/show-menu (.-clientX ev) (.-clientY ev)))
+                      (dom/prevent ev)
+                      (dom/stop-propagation ev)))
