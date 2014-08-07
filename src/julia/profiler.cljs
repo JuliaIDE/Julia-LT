@@ -99,7 +99,6 @@
                       (object/raise editor :julia.result (merge res {:html true
                                                                      :under true}))
                       (let [res-obj (util/widget editor (-> res :end dec) :underline)]
-                        (prn (->> (:content @res-obj) (dom/$ :.root) .-foo))
                         (listen! res-obj)
                         (object/add-tags res-obj [:julia.profile-result]))
                       (set-lines (res :lines))))
@@ -115,13 +114,19 @@
                       (when (= this listen-object)
                         (clear))))
 
+(defn reset-zoom [svg]
+  (let [svg (->> svg (dom/$ :.root) js/Snap)]
+    (.animate svg #js {:transform (js/Snap.matrix)} 200)))
+
 (behavior ::menu
           :triggers #{:menu!}
           :reaction (fn [this ev]
                       (-> (menu/menu [{:label "Remove Profile Tree"
                                        :click (fn []
                                                 (clear-lines)
-                                                (object/raise this :clear!))}])
+                                                (object/raise this :clear!))}
+                                      {:label "Reset Zoom"
+                                       :click #(reset-zoom (:content @this))}])
                           (menu/show-menu (.-clientX ev) (.-clientY ev)))
                       (dom/prevent ev)
                       (dom/stop-propagation ev)))
