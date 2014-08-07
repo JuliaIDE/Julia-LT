@@ -3,7 +3,8 @@
             [lt.objs.platform :as platform]
             [lt.objs.highlights :as lights]
             [lt.objs.files :as files]
-            [lt.util.dom :as dom]))
+            [lt.util.dom :as dom]
+            [lt.objs.platform :refer [open]]))
 
 ;; DOM utils
 
@@ -41,12 +42,14 @@
     (when (anchor? node)
       (set! (.-href node) "javascript:void(0);"))
     (set! (.-onclick node)
-          #(object/raise lt.objs.jump-stack/jump-stack :jump-stack.push!
-                                                       editor
-                                                       (line :file)
-                                                       {:line (dec (or (line :line) 1))
-                                                        :ch 0}))
-    (when (line :line)
+          (if (string? line)
+            #(open line)
+            #(object/raise lt.objs.jump-stack/jump-stack :jump-stack.push!
+                                                         editor
+                                                         (line :file)
+                                                         {:line (dec (or (line :line) 1))
+                                                          :ch 0})))
+    (when (and (not (string? line)) (line :line))
       (set! (.-onmouseover node) #(highlight line))
       (set! (.-onmouseout node) highlight)))
   node)
@@ -59,9 +62,12 @@
 (defn data-file [dom]
   (dom/attr dom :data-file))
 
+(defn data-url [dom]
+  (dom/attr dom :data-url))
+
 (defn process-nodes! [dom editor]
   (doseq [link (file-links dom)]
-    (process-node! link (-> link data-file ->line) editor))
+      (process-node! link (or (-> link data-url) (-> link data-file ->line)) editor))
   dom)
 
 ;; Anchor tags
