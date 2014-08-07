@@ -3,8 +3,7 @@
             [lt.objs.platform :as platform]
             [lt.objs.highlights :as lights]
             [lt.objs.files :as files]
-            [lt.util.dom :as dom]
-            [lt.objs.platform :refer [open]]))
+            [lt.util.dom :as dom]))
 
 ;; DOM utils
 
@@ -37,18 +36,16 @@
       {:file file
        :line (when line (js/parseInt line))})))
 
+(defn open [line]
+  (if (string? line)
+    (platform/open line)
+    (lt.objs.jump-stack/jump-to (line :file) (dec (or (line :line) 1)))))
+
 (defn process-node! [node line editor]
   (when line
     (when (anchor? node)
       (set! (.-href node) "javascript:void(0);"))
-    (set! (.-onclick node)
-          (if (string? line)
-            #(open line)
-            #(object/raise lt.objs.jump-stack/jump-stack :jump-stack.push!
-                                                         editor
-                                                         (line :file)
-                                                         {:line (dec (or (line :line) 1))
-                                                          :ch 0})))
+    (set! (.-onclick node) #(open line))
     (when (and (not (string? line)) (line :line))
       (set! (.-onmouseover node) #(highlight line))
       (set! (.-onmouseout node) highlight)))
