@@ -41,7 +41,7 @@
     (platform/open line)
     (lt.objs.jump-stack/jump-to (line :file) (dec (or (line :line) 1)))))
 
-(defn process-node! [node line editor]
+(defn process-node! [node line]
   (when line
     (when (anchor? node)
       (set! (.-href node) "javascript:void(0);"))
@@ -62,9 +62,9 @@
 (defn data-url [dom]
   (dom/attr dom :data-url))
 
-(defn process-nodes! [dom editor]
+(defn process-nodes! [dom]
   (doseq [link (file-links dom)]
-      (process-node! link (or (-> link data-url) (-> link data-file ->line)) editor))
+      (process-node! link (or (-> link data-url) (-> link data-file ->line))))
   dom)
 
 ;; Anchor tags
@@ -72,21 +72,19 @@
 (defn all-anchors [dom]
   (.getElementsByTagName dom "a"))
 
-(defn process-anchor! [node editor]
-  (process-node! node (some ->line [(.-text node) (.-href node)]) editor))
+(defn process-anchor! [node]
+  (process-node! node (some ->line [(.-text node) (.-href node)])))
 
-(defn process-anchors! [dom editor]
-  (->> dom all-anchors (map #(process-anchor! % editor)) dorun)
+(defn process-anchors! [dom]
+  (->> dom all-anchors (map #(process-anchor! %)) dorun)
   (doseq [anchor (all-anchors dom)]
-    (process-anchor! anchor editor))
+    (process-anchor! anchor))
   dom)
 
 ;; Both
 
-(defn process! [dom editor]
-  (-> dom (process-anchors! editor) (process-nodes! editor)))
-
-;; (process! js/document (lt.objs.editor.pool/last-active))
+(defn process! [dom]
+  (-> dom process-anchors! process-nodes!))
 
 ;; Errors – TODO: remove this
 

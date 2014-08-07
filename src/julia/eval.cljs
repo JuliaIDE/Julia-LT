@@ -70,7 +70,7 @@
                                                 (-> res :value crate/raw)])
                                   (-> res :value))
                             scripts (when (res :html) (util/get-scripts val))]
-                        (when (res :html) (links/process! val editor))
+                        (when (res :html) (links/process! val))
                         (object/raise editor
                                       (if (res :under)
                                         :editor.result.underline
@@ -88,7 +88,7 @@
                       (notifos/done-working "")
                       (let [dom (-> res :value util/parse-div)
                             line (-> res :end dec)]
-                        (links/process! dom editor)
+                        (links/process! dom)
                         (object/raise editor
                                       :editor.exception
                                       dom

@@ -73,7 +73,7 @@
                                       (crate/html
                                        [:div.inline-doc
                                         (if (res :html)
-                                          (-> res :doc util/parse-div (links/process! editor))
+                                          (-> res :doc util/parse-div links/process!)
                                           [:pre (res :doc)])])
                                       {}
                                       (:loc res))))
