@@ -3,39 +3,52 @@
             [lt.objs.platform :as platform]
             [lt.objs.highlights :as lights]
             [lt.objs.files :as files]
-            [lt.util.dom :as dom]
-            [clojure.string :as str]))
+            [lt.util.dom :as dom]))
 
-(defn all-links [dom]
+;; DOM utils
+
+(defn anchor? [node]
+  (= (.-tagName node) "A"))
+
 ;; Line highlighting
 
 (def highlighter (lights/obj :highlight))
+(defn clear [] (object/raise highlighter :clear))
 
-(def current-line)
+(def tm*)
 
 (defn highlight [& [line]]
-  (set! current-line line)
-  (object/raise highlighter :clear)
-  (when line (object/raise highlighter :highlight line)))
+  (when tm* (js/clearTimeout tm*))
+  (clear)
+  (when line (object/raise highlighter :highlight line)
+    (set! tm* (js/setTimeout clear 1000))))
 
 ;; Generic utils
 
+(def url-pattern ; Check for absolute paths
+  (if (platform/win?)
+    #"^\s*((?:\w+:)[/\\][A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"
+    #"^\s*(/[A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"))
+
 (defn ->line [s]
-  (let [[file line] (str/split s ":")]
-    {:file file
-     :line (when line (js/parseInt line))}))
+  (let [[_ file line] (re-find url-pattern s)]
+    (when file
+      {:file file
+       :line (when line (js/parseInt line))})))
 
 (defn process-node! [node line editor]
-  (when (line :file)
+  (when line
+    (when (anchor? node)
+      (set! (.-href node) "javascript:void(0);"))
     (set! (.-onclick node)
           #(object/raise lt.objs.jump-stack/jump-stack :jump-stack.push!
                                                        editor
                                                        (line :file)
                                                        {:line (dec (or (line :line) 1))
-                                                        :ch 0})))
+                                                        :ch 0}))
     (when (line :line)
       (set! (.-onmouseover node) #(highlight line))
-      (set! (.-onmouseout node) highlight))
+      (set! (.-onmouseout node) highlight)))
   node)
 
 ;; Arbitary elements (with file-link class, data-file attribute)
@@ -48,34 +61,31 @@
 
 (defn process-nodes! [dom editor]
   (doseq [link (file-links dom)]
-    (prn (-> link data-file ->line))
-    (process-node! link (-> link data-file ->line) editor)))
+    (process-node! link (-> link data-file ->line) editor))
+  dom)
 
 ;; Anchor tags
 
-  (into [] (.getElementsByTagName dom "a")))
+(defn all-anchors [dom]
+  (.getElementsByTagName dom "a"))
 
-(def url-pattern
-  (if (platform/win?)
-    #"^\s*((?:\w+:)[/\\][A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"
-    #"^\s*(/[A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"))
+(defn process-anchor! [node editor]
+  (process-node! node (some ->line [(.-text node) (.-href node)]) editor))
 
-(defn process-link! [link editor]
-  (let [[_ file line] (re-find url-pattern (.-text link))]
-    (when file
-      (set! (.-href link) "javascript:void(0);")
-      (set! (.-onclick link) #(object/raise lt.objs.jump-stack/jump-stack
-                                            :jump-stack.push!
-                                            editor
-                                            file
-                                            {:line (-> line (or 1) js/parseInt dec)
-                                             :ch 0})))))
-
-(defn process-links! [dom editor]
-  (->> dom all-links (map #(process-link! % editor)) dorun)
+(defn process-anchors! [dom editor]
+  (->> dom all-anchors (map #(process-anchor! % editor)) dorun)
+  (doseq [anchor (all-anchors dom)]
+    (process-anchor! anchor editor))
   dom)
 
-;; Errors – perhaps move this to Jewel
+;; Both
+
+(defn process! [dom editor]
+  (-> dom (process-anchors! editor) (process-nodes! editor)))
+
+;; (process! js/document (lt.objs.editor.pool/last-active))
+
+;; Errors – TODO: remove this
 
 (defn get-error-line [link]
   (let [[_ file line] (re-find url-pattern (.-text link))]
@@ -84,4 +94,4 @@
        :line (js/parseInt line)})))
 
 (defn get-error-lines [dom]
-  (->> dom all-links (map get-error-line) (filter identity)))
+  (->> dom all-anchors (map get-error-line) (filter identity)))

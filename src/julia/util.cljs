@@ -40,9 +40,7 @@
 ;; DOM manipulation
 
 (defn into-div [dom]
-  (let [div (crate/html [:div])]
-    (.appendChild div dom)
-    div))
+  (crate/html [:div dom]))
 
 (defn parse-div [html]
   (-> html crate/raw into-div))

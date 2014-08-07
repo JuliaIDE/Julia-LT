@@ -66,9 +66,11 @@
           :reaction (fn [editor res]
                       (notifos/done-working "")
                       (let [val (if (res :html)
-                                  (crate/html [:div.julia.result (-> res :value crate/raw)])
+                                  (crate/html [:div.julia.result
+                                                (-> res :value crate/raw)])
                                   (-> res :value))
                             scripts (when (res :html) (util/get-scripts val))]
+                        (when (res :html) (links/process! val editor))
                         (object/raise editor
                                       (if (res :under)
                                         :editor.result.underline
@@ -86,7 +88,7 @@
                       (notifos/done-working "")
                       (let [dom (-> res :value util/parse-div)
                             line (-> res :end dec)]
-                        (links/process-links! dom editor)
+                        (links/process! dom editor)
                         (object/raise editor
                                       :editor.exception
                                       dom
