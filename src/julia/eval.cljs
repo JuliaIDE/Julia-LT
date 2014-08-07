@@ -93,5 +93,5 @@
                                        :line line})
                         (object/raise error-lines :clear)
                         (object/raise error-lines :highlight (util/get-error-lines dom))
-                        (let [ex (-> @editor :widgets (get [(editor/line-handle editor line) :inline]))]
-                          (object/raise error-lines :listen ex)))))
+                        (->> (util/widget editor line)
+                             (object/raise error-lines :listen)))))

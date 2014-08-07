@@ -25,6 +25,8 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
+;; Editors
+
 ; Use 1-based indexing for Julia
 (defn cursor
   ([editor] (cursor editor "start"))
@@ -36,12 +38,13 @@
 (defn module [editor]
   (@editor :lt.objs.langs.julia.module/module))
 
-; DOM manipulation
+(defn widget [editor line]
+  (-> @editor :widgets (get [(editor/line-handle editor line) :inline])))
+
+;; DOM manipulation
 
 (defn html-string [dom]
-  (let [el (js/document.createElement "div")]
-    (.appendChild el dom)
-    (.-innerHTML el)))
+  (.outerHTML dom))
 
 (defn inner-text [dom]
   (let [children (.-childNodes dom)]
