@@ -38,8 +38,8 @@
 (defn module [editor]
   (@editor :lt.objs.langs.julia.module/module))
 
-(defn widget [editor line]
-  (-> @editor :widgets (get [(editor/line-handle editor line) :inline])))
+(defn widget [editor line & [type]]
+  (-> @editor :widgets (get [(editor/line-handle editor line) (or type :inline)])))
 
 ;; DOM manipulation
 

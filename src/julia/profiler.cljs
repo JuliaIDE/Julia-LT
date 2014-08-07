@@ -109,6 +109,19 @@
 (behavior ::result
           :triggers #{:julia.profile-result}
           :reaction (fn [editor res]
-                      (set-lines (res :lines))
                       (object/raise editor :julia.result (merge res {:html true
-                                                                     :under true}))))
+                                                                     :under true}))
+                      (listen! (util/widget editor (-> res :end dec) :underline))
+                      (set-lines (res :lines))))
+
+(def listen-object)
+
+(defn listen! [obj]
+  (set! listen-object obj)
+  (object/add-behavior! obj ::clear))
+
+(behavior ::clear
+          :triggers #{:clear!}
+          :reaction (fn [this]
+                      (when (= this listen-object)
+                        (clear))))
