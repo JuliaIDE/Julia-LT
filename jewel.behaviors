@@ -21,7 +21,9 @@
                     :lt.objs.langs.julia.module/get-module
                     :lt.objs.langs.julia.module/update-module
                     :lt.objs.langs.julia.light-lines/highlight-lines
+
                     :lt.objs.langs.julia.profiler/render-bars
+                    :lt.objs.langs.julia.profiler/result
 
                     ; Editor Commands
                     :lt.objs.langs.julia.eval/result

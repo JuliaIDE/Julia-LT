@@ -67,7 +67,7 @@
 
 (defn refresh-and-update [lines]
   (let [lines (refresh-lines lines)]
-    (doseq [ed (editors lines)]
+    (doseq [ed (editors lines) :when ed]
       (editor/refresh ed))
     lines))
 
@@ -105,3 +105,10 @@
 (defn clear-lines []
   (animate-out)
   (js/setTimeout clear 200))
+
+(behavior ::result
+          :triggers #{:julia.profile-result}
+          :reaction (fn [editor res]
+                      (set-lines (res :lines))
+                      (object/raise editor :julia.result (merge res {:html true
+                                                                     :under true}))))
