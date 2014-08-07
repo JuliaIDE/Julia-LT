@@ -43,9 +43,6 @@
 
 ;; DOM manipulation
 
-(defn html-string [dom]
-  (.outerHTML dom))
-
 (defn inner-text [dom]
   (let [children (.-childNodes dom)]
     (if (> (.-length children) 0)
