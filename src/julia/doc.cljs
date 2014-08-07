@@ -1,6 +1,7 @@
 (ns lt.objs.langs.julia.doc
   (:require [lt.objs.langs.julia.proc :as proc]
             [lt.objs.langs.julia.util :as util]
+            [lt.objs.file-links :as links]
             [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.console :as console]
@@ -72,7 +73,7 @@
                                       (crate/html
                                        [:div.inline-doc
                                         (if (res :html)
-                                          (-> res :doc util/parse-div (util/process-links! editor))
+                                          (-> res :doc util/parse-div (links/process-links! editor))
                                           [:pre (res :doc)])])
                                       {}
                                       (:loc res))))
