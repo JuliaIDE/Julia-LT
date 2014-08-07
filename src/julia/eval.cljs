@@ -2,7 +2,7 @@
   (:require [lt.objs.langs.julia.proc :as proc]
             [lt.objs.file-links :as links]
             [lt.objs.langs.julia.util :as util]
-            [lt.objs.langs.julia.light-lines :as lights]
+            [lt.objs.highlights :as lights]
             [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.console :as console]

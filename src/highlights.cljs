@@ -1,4 +1,4 @@
-(ns lt.objs.langs.julia.light-lines
+(ns lt.objs.highlights
   (:require [lt.objs.langs.julia.util :as util]
             [lt.object :as object]
             [lt.objs.eval :as eval]
@@ -32,23 +32,23 @@
 (defn editor-for-file [file]
   (first (pool/by-path file)))
 
-; This, is horrible, TODO: change this
+; This is horrible, TODO: change this
 (defn toggle-background [ed handle class toggle]
-  (when-let [ed (editor/->cm-ed ed)]
+  (when-let [ed (editor/->cm-ed ed)] ; I have a PR for +/-line-class
     ((if toggle editor/+line-class editor/-line-class)
      ed handle :background class)))
 
 ;; Highlights
 
-(object/object* ::light-lines
-                :tags #{:light-lines}
+(object/object* ::highlights
+                :tags #{:highlights}
                 :behaviors [::refresh ::clear ::highlight ::listen]
                 :lines #{}
                 :init (fn [this class]
                         (object/merge! this {:class class})
                         nil))
 
-(defn obj [class] (object/create ::light-lines class))
+(defn obj [class] (object/create ::highlights class))
 
 (defn refresh-line [{:keys [file line handle class] :as l} default-class]
   (if handle
@@ -104,5 +104,5 @@
 (behavior ::highlight-lines
           :triggers #{:object.instant}
           :reaction (fn [editor]
-                      (doseq [highlights (object/by-tag :light-lines)]
+                      (doseq [highlights (object/by-tag :highlights)]
                         (object/raise highlights :refresh))))
