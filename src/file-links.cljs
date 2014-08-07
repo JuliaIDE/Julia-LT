@@ -18,9 +18,7 @@
                                             :jump-stack.push!
                                             editor
                                             file
-                                            {:line (if line
-                                                     (dec (js/parseInt line))
-                                                     0)
+                                            {:line (-> line (or 0) js/parseInt dec)
                                              :ch 0})))))
 
 (defn process-links! [dom editor]
