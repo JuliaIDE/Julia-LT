@@ -33,10 +33,13 @@
     &.animated {
       transition: all 0.2s linear;
     }
-
     &.hidden {
       width:0 !important;
       opacity: 0;
     }
+  }
+
+  .highlight {
+    background: rgba(0,255,0,0.1);
   }
 }
