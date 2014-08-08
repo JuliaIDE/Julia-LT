@@ -10,6 +10,22 @@
 (defn anchor? [node]
   (= (.-tagName node) "A"))
 
+(defn ->pos [e] [(.-clientX e) (.-clientY e)])
+
+(def sqrt js/Math.sqrt)
+(def sqr #(js/Math.pow % 2))
+(defn hypot [[x y] [x' y']]
+  (sqrt (+ (sqr (- x' x)) (sqr (- y' y)))))
+
+(defn left-click? [e] (= (.-which e) 1))
+
+(defn click [node f]
+  (let [pos (atom [0 0])]
+    (set! (.-onmousedown node) #(when (left-click? %) (reset! pos (->pos %))))
+    (set! (.-onmouseup node)   #(when (and (left-click? %)
+                                           (< (hypot @pos (->pos %)) 5))
+                                  (f %)))))
+
 ;; Line highlighting
 
 (def highlighter (lights/obj :highlight))
@@ -45,7 +61,8 @@
   (when line
     (when (anchor? node)
       (set! (.-href node) "javascript:void(0);"))
-    (set! (.-onclick node) #(open line))
+;;     (set! (.-onclick node) #(open line))
+    (click node #(open line))
     (when (and (not (string? line)) (line :line))
       (set! (.-onmouseover node) #(highlight line))
       (set! (.-onmouseout node) highlight)))
