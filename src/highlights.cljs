@@ -78,8 +78,9 @@
 
 ;; Update editors on open
 
-(behavior ::highlight-lines
+(behavior ::refresh-on-open
           :triggers #{:object.instant}
+          :debounce 100
           :reaction (fn [editor]
                       (doseq [highlights (object/by-tag :highlights)]
                         (object/raise highlights :refresh))))

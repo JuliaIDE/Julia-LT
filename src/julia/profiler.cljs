@@ -93,6 +93,7 @@
 
 (behavior ::refresh-on-open
           :triggers #{:object.instant}
+          :debounce 100
           :reaction #(refresh-and-update @lines))
 
 ;; Result handling
