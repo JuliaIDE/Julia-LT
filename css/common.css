@@ -25,3 +25,10 @@
   left: 0;
   bottom: 0;
   z-index: -1; }
+  .CodeMirror-code .progress.animated {
+    transition: all 0.2s linear; }
+  .CodeMirror-code .progress.hidden {
+    width: 0 !important;
+    opacity: 0; }
+.CodeMirror-code .highlight {
+  background: rgba(0, 255, 0, 0.1); }
