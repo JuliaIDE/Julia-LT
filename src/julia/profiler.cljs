@@ -48,7 +48,7 @@
 
 (defn refresh-and-update [lines]
   (let [lines (refresh-lines lines)]
-    (doseq [ed (editors lines) :when ed]
+    (doseq [ed (editors lines) :when (and ed @ed)]
       (editor/refresh ed))
     lines))
 
