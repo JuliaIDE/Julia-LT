@@ -29,6 +29,7 @@
                     ;; Profiler support
                     :lt.objs.langs.julia.profiler/render-bars
                     :lt.objs.langs.julia.profiler/result
+                    :lt.objs.langs.julia.profiler/refresh-on-open
 
                     ; Editor Commands
                     :lt.objs.langs.julia.eval/result

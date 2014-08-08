@@ -91,6 +91,10 @@
   (animate-out)
   (js/setTimeout #(do (set! *clearing* false) (clear)) 200))
 
+(behavior ::refresh-on-open
+          :triggers #{:object.instant}
+          :reaction #(refresh-and-update @lines))
+
 ;; Result handling
 
 (behavior ::result
