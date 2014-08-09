@@ -23,6 +23,7 @@
                     (:lt.object/add-tag :editor.julia.hints)
                     (:lt.object/add-tag :editor.julia.doc)
                     :lt.objs.langs.julia.module/get-module
+                    :lt.objs.langs.julia.module/get-module-on-connect
                     :lt.objs.langs.julia.module/update-module
                     :lt.objs.highlights/refresh-on-open
 

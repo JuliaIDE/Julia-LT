@@ -32,15 +32,30 @@
 
 ;; Backend communication
 
+;; ::get-module and ::get-module-on-connect are separated into separate behaviors because:
+;; a) the debounce on ::get-module improves performance on tab change, so is desired
+;; b) the debounce implementation is per function call, not per editor object that it's
+;;    called with so when :julia.connected event is sent to all open .jl tabs/editors
+;;    all but one call is dropped.
+;; If a per object debounce or a throttle with a delayed leading call were implemented
+;; in LT these could be recombined.
+
+(def get-module
+  (fn [editor & [client]]
+    (when-let [client (or client (proc/default-client))]
+      (clients/send client
+                    :editor.julia.module.update
+                    {:path (-> @editor :info :path)}
+                    :only editor))))
+
 (behavior ::get-module
-  :triggers #{:object.instant :active :save :julia.connected}
+  :triggers #{:object.instant :active :save}
   :debounce 100
-  :reaction (fn [editor & [client]]
-              (when-let [client (or client (proc/default-client))]
-                (clients/send client
-                              :editor.julia.module.update
-                              {:path (-> @editor :info :path)}
-                              :only editor))))
+  :reaction get-module)
+
+(behavior ::get-module-on-connect
+  :triggers #{:julia.connected}
+  :reaction get-module)
 
 (behavior ::update-module
   :triggers #{:editor.julia.module.update}
