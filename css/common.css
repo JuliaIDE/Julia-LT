@@ -16,3 +16,19 @@
 
 .CodeMirror-linebackground.error {
   background: rgba(255, 100, 100, 0.3); }
+
+.CodeMirror-code .progress {
+  background: rgba(0, 0, 0, 0.05);
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -1; }
+  .CodeMirror-code .progress.animated {
+    transition: all 0.2s linear; }
+  .CodeMirror-code .progress.hidden {
+    width: 0 !important;
+    opacity: 0; }
+.CodeMirror-code .highlight {
+  background: rgba(0, 255, 0, 0.1); }

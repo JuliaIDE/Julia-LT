@@ -1,7 +1,8 @@
 (ns lt.objs.langs.julia.eval
   (:require [lt.objs.langs.julia.proc :as proc]
+            [lt.objs.file-links :as links]
             [lt.objs.langs.julia.util :as util]
-            [lt.objs.langs.julia.light-lines :as lights]
+            [lt.objs.highlights :as lights]
             [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.console :as console]
@@ -65,9 +66,11 @@
           :reaction (fn [editor res]
                       (notifos/done-working "")
                       (let [val (if (res :html)
-                                  (crate/html [:div.julia.result (-> res :value crate/raw)])
+                                  (crate/html [:div.julia.result
+                                                (-> res :value crate/raw)])
                                   (-> res :value))
                             scripts (when (res :html) (util/get-scripts val))]
+                        (when (res :html) (links/process! val))
                         (object/raise editor
                                       (if (res :under)
                                         :editor.result.underline
@@ -85,13 +88,13 @@
                       (notifos/done-working "")
                       (let [dom (-> res :value util/parse-div)
                             line (-> res :end dec)]
-                        (util/process-links! dom editor)
+                        (links/process! dom)
                         (object/raise editor
                                       :editor.exception
                                       dom
                                       {:start-line (-> res :start dec)
                                        :line line})
                         (object/raise error-lines :clear)
-                        (object/raise error-lines :highlight (util/get-error-lines dom))
-                        (let [ex (-> @editor :widgets (get [(editor/line-handle editor line) :inline]))]
-                          (object/raise error-lines :listen ex)))))
+                        (object/raise error-lines :highlight (links/get-error-lines dom))
+                        (->> (util/widget editor line)
+                             (object/raise error-lines :listen)))))

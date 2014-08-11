@@ -1,56 +1,32 @@
-(ns lt.objs.langs.julia.light-lines
-  (:require [lt.objs.langs.julia.util :as util]
-            [lt.object :as object]
-            [lt.objs.eval :as eval]
-            [lt.util.dom :as dom]
-            [lt.objs.console :as console]
-            [lt.objs.command :as cmd]
-            [lt.objs.clients.tcp :as tcp]
-            [lt.objs.sidebar.clients :as scl]
-            [lt.objs.dialogs :as dialogs]
-            [lt.objs.files :as files]
-            [lt.objs.popup :as popup]
-            [lt.objs.platform :as platform]
-            [lt.plugins.auto-complete :as auto-complete]
-            [lt.objs.editor :as ed]
-            [lt.objs.plugins :as plugins]
-            [lt.plugins.watches :as watches]
-            [clojure.string :as string]
-            [lt.objs.clients :as clients]
-            [lt.objs.notifos :as notifos]
-            [lt.objs.cache :as cache]
-            [lt.util.load :as load]
-            [lt.util.cljs]; :refer [js->clj]]
+(ns lt.objs.highlights
+  (:require [lt.object :as object]
             [lt.objs.editor :as editor]
-            [lt.objs.editor.pool :as pool]
-            [lt.plugins.doc :as doc]
-            [crate.core :as crate])
+            [lt.objs.editor.pool :as pool])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 ;; Some utils
 
 (defn editor-for-file [file]
-  (->> (pool/get-all) (filter #(-> @% :info :path (= file))) first))
+  (first (pool/by-path file)))
 
-; This, is horrible, TODO: change this
+; This is horrible, TODO: change this
 (defn toggle-background [ed handle class toggle]
-  (when-let [ed (editor/->cm-ed ed)]
+  (when-let [ed (editor/->cm-ed ed)] ; I have a PR for +/-line-class
     ((if toggle editor/+line-class editor/-line-class)
      ed handle :background class)))
 
 ;; Highlights
 
-(object/object* ::light-lines
-                :tags #{:light-lines}
+(object/object* ::highlights
+                :tags #{:highlights}
                 :behaviors [::refresh ::clear ::highlight ::listen]
                 :lines #{}
                 :init (fn [this class]
                         (object/merge! this {:class class})
                         nil))
 
-(defn obj [class] (object/create ::light-lines class))
+(defn obj [class] (object/create ::highlights class))
 
-; TODO: See if the editor can be found from the handle
 (defn refresh-line [{:keys [file line handle class] :as l} default-class]
   (if handle
     l
@@ -102,8 +78,9 @@
 
 ;; Update editors on open
 
-(behavior ::highlight-lines
+(behavior ::refresh-on-open
           :triggers #{:object.instant}
+          :debounce 100
           :reaction (fn [editor]
-                      (doseq [highlights (object/by-tag :light-lines)]
+                      (doseq [highlights (object/by-tag :highlights)]
                         (object/raise highlights :refresh))))
