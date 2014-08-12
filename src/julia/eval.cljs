@@ -36,7 +36,7 @@
                                               :origin editor
                                               :info {}
                                               :create proc/connect})]
-                (notifos/working "Running...")
+                (notifos/working)
                 (clients/send client
                               :editor.eval.julia
                               {:code (editor/->val editor)
@@ -52,7 +52,7 @@
                                               :origin editor
                                               :info {}
                                               :create proc/connect})]
-                (notifos/working "Loading file...")
+                (notifos/working)
                 (clients/send client
                               :editor.eval.julia
                               {:code (editor/->val editor)
@@ -64,7 +64,7 @@
 (behavior ::result
           :triggers #{:julia.result}
           :reaction (fn [editor res]
-                      (notifos/done-working "")
+                      (notifos/done-working)
                       (let [val (if (res :html)
                                   (crate/html [:div.julia.result
                                                 (-> res :value crate/raw)])
@@ -85,7 +85,7 @@
 (behavior ::error
           :triggers #{:julia.error}
           :reaction (fn [editor res]
-                      (notifos/done-working "")
+                      (notifos/done-working)
                       (let [dom (-> res :value util/parse-div)
                             line (-> res :end dec)]
                         (links/process! dom)
