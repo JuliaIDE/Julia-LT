@@ -54,9 +54,8 @@
                                               :create proc/connect})]
                 (notifos/working)
                 (clients/send client
-                              :editor.eval.julia
+                              :editor.eval.julia.all
                               {:code (editor/->val editor)
-                               :all true
                                :path (-> @editor :info :path)
                                :module (util/module editor)}
                               :only editor))))
