@@ -69,14 +69,14 @@
                           (object/merge! this {:err-buffer ""})))))
 
 (behavior ::flush
-          :triggers #{:proc.out :proc.err}
+          :triggers #{:proc.out :proc.error}
           :debounce 500
           :reaction (fn [this]
                       (when-let [out (not-empty (@this :out-buffer))]
                         (console/log out)
                         (object/merge! this {:out-buffer ""}))
                       (when-let [out (not-empty (@this :err-buffer))]
-                        (console/log out)
+                        (console/log out "error")
                         (object/merge! this {:err-buffer ""}))))
 
 ;; Connection object
