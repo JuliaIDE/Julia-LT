@@ -9,7 +9,7 @@
                                           :mime "text/julia"
                                           :tags [:editor.julia]}])]
 
-     :editor [:lt.objs.langs.julia.module/update-module-statusbar]
+     :editor.active [:lt.objs.langs.julia.module/update-module-statusbar]
 
      :editor.julia [:lt.objs.langs.julia.proc/connect-on-open
                     :lt.objs.langs.julia.proc/attach-on-connect

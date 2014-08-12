@@ -25,15 +25,10 @@
 (defn ->module [editor]
   (::module @editor))
 
-(defn isactive? [editor]
-  (identical? (lt.objs.editor.pool/last-active) editor))
-
-
 (behavior ::update-module-statusbar
           :triggers #{:active :module-update}
           :reaction (fn [editor]
-                      (if (isactive? editor)
-                        (object/merge! statusbar-module {:module (->module editor)}))))
+                      (object/merge! statusbar-module {:module (->module editor)})))
 
 ;; Backend communication
 
