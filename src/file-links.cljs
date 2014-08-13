@@ -101,14 +101,3 @@
 
 (defn process! [dom]
   (-> dom process-anchors! process-nodes!))
-
-;; Errors – TODO: remove this
-
-(defn get-error-line [link]
-  (let [[_ file line] (re-find url-pattern (.-text link))]
-    (when (and file line)
-      {:file file
-       :line (js/parseInt line)})))
-
-(defn get-error-lines [dom]
-  (->> dom all-anchors (map get-error-line) (filter identity)))

@@ -80,6 +80,18 @@
                                        :line (-> res :end dec)})
                         (when scripts (util/eval-scripts scripts)))))
 
+;; Errors
+
+(defn get-error-line [link]
+  (let [[_ file line] (re-find links/url-pattern (links/data-file link))]
+;;     (println (links/data-url link))
+    (when (and file line)
+      {:file file
+       :line (js/parseInt line)})))
+
+(defn get-error-lines [dom]
+  (->> dom links/file-links (map get-error-line) (filter identity)))
+
 (def error-lines (lights/obj :error))
 
 (behavior ::error
@@ -95,6 +107,6 @@
                                       {:start-line (-> res :start dec)
                                        :line line})
                         (object/raise error-lines :clear)
-                        (object/raise error-lines :highlight (links/get-error-lines dom))
+                        (object/raise error-lines :highlight (get-error-lines dom))
                         (->> (util/widget editor line)
                              (object/raise error-lines :listen)))))
