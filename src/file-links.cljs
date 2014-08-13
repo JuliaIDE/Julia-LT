@@ -43,8 +43,8 @@
 
 (def url-pattern ; Check for absolute paths
   (if (platform/win?)
-    #"^\s*((?:\w+:)[/\\][A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"
-    #"^\s*(/[A-Za-z0-9_ \//\.]*?\.jl)(?::([0-9]+))?\s*$"))
+    #"^\s*((?:\w+:)[/\\][A-Za-z0-9_ \//\.\-]*?\.jl)(?::([0-9]+))?\s*$"
+    #"^\s*(/[A-Za-z0-9_ \//\.\-]*?\.jl)(?::([0-9]+))?\s*$"))
 
 (defn ->line [s]
   (let [[_ file line] (re-find url-pattern s)]
@@ -61,7 +61,6 @@
   (when line
     (when (anchor? node)
       (set! (.-href node) "javascript:void(0);"))
-;;     (set! (.-onclick node) #(open line))
     (click node #(open line))
     (when (and (not (string? line)) (line :line))
       (set! (.-onmouseover node) #(highlight line))
