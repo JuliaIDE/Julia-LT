@@ -52,6 +52,7 @@
                                               :origin editor
                                               :info {}
                                               :create proc/connect})]
+                (cmd/exec! :clear-inline-results)
                 (notifos/working)
                 (clients/send client
                               :editor.eval.julia.all
