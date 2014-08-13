@@ -35,9 +35,7 @@
     (if-let [ed (editor-for-file file)]
       (let [handle (editor/line-handle ed (dec line))]
         (when handle (set! (.-percent handle) (% percent)))
-        (let [l (assoc l :handle handle :ed ed)]
-          (swap! lines conj l)
-          l))
+        (assoc l :handle handle :ed ed))
       l)))
 
 (defn refresh-lines [lines]
@@ -58,7 +56,7 @@
 
 (defn clear []
   (when-not *clearing*
-    (doseq [{handle :handle} @lines]
+    (doseq [{handle :handle} @lines :when handle]
       (set! (.-percent handle) nil))
     (reset! lines #{})
     (doseq [bar (dom-bars)]
@@ -81,9 +79,9 @@
   (doseq [bar (dom-bars)]
     (dom/add-class bar :hidden)))
 
-(defn set-lines [lines]
+(defn set-lines [lines']
   (clear)
-  (refresh-and-update lines)
+  (reset! lines (refresh-and-update lines'))
   (animate-in))
 
 (defn clear-lines []
