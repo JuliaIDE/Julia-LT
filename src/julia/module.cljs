@@ -15,7 +15,6 @@
 (object/object* ::statusbar.module
                 :triggers #{}
                 :behaviors #{::update-module-status}
-                :module "Main"
                 :init (fn [this]
                         (statusbar/statusbar-item (bound this ->module-str) "")))
 
