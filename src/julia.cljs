@@ -2,6 +2,7 @@
   (:require [lt.objs.langs.julia.util :as util]
             [lt.object :as object]
             [lt.objs.console :as console]
+            [lt.objs.editor.pool :as pool]
             [lt.objs.command :as cmd]
             [lt.objs.popup :as popup]
             [lt.objs.notifos :as notifos])
