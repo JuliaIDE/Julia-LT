@@ -1,24 +1,25 @@
 .julia.result {
-  font-family: 'DejaVu Sans';
   white-space: normal;
   cursor: default;
   -webkit-user-select: none; }
 
-.julia.error {
-  max-width: 500px;
-  white-space: normal; }
-
-.julia.error-description {
+.julia.result .collapsible-header {
   font-weight: bold; }
 
+.julia.error {
+  max-width: 500px;
+  white-space: normal;
+  cursor: default; }
+
+.julia .error-description {
+  font-weight: bold; }
+
+/* Error Highlighting */
 .CodeMirror-linebackground {
   transition: all 0.2s linear; }
 
-.CodeMirror-linebackground.error {
-  background: rgba(255, 100, 100, 0.3); }
-
+/* Profiler */
 .CodeMirror-code .progress {
-  background: rgba(0, 0, 0, 0.05);
   display: block;
   position: absolute;
   top: 0;
@@ -30,5 +31,3 @@
   .CodeMirror-code .progress.hidden {
     width: 0 !important;
     opacity: 0; }
-.CodeMirror-code .highlight {
-  background: rgba(0, 255, 0, 0.1); }
