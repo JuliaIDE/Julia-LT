@@ -36,7 +36,8 @@
 
                     ; Editor Commands
                     :lt.objs.langs.julia.eval/result
-                    :lt.objs.langs.julia.eval/error]
+                    :lt.objs.langs.julia.eval/error
+                    :lt.objs.langs.julia.display/inline-results]
 
      :hinter [:lt.objs.langs.julia.completions/line-change]
 
@@ -52,6 +53,8 @@
      :julia.profile-result [:lt.objs.langs.julia.profiler/clear
                             :lt.objs.langs.julia.profiler/menu]
      }
- :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
+ :- {:editor.julia [:lt.objs.eval/inline-results]
+
+     :editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
 
      :julia.profile-result [:lt.objs.eval/result-menu!]}}

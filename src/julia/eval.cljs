@@ -1,7 +1,6 @@
 (ns lt.objs.langs.julia.eval
   (:require [lt.objs.langs.julia.util :as util]
             [lt.objs.langs.julia.proc :as proc]
-            [lt.objs.langs.julia.display :as display]
             [lt.objs.file-links :as links]
             [lt.objs.highlights :as lights]
             [lt.object :as object]
@@ -54,7 +53,7 @@
                                                 (-> res :value crate/raw)])
                                   (-> res :value))
                             scripts (when (res :html) (util/get-scripts val))]
-                        (when (res :html) (-> val links/process! display/process!))
+                        (when (res :html) (links/process! val))
                         (object/raise editor
                                       (if (res :under)
                                         :editor.result.underline
