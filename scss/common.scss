@@ -8,6 +8,12 @@
   font-weight: bold;
 }
 
+.julia.result .collapsible-content {
+  max-width: 500px;
+  max-height: 250px;
+  overflow: auto;
+}
+
 .julia.result table.array {
   td {
     padding: 2px;
