@@ -11,6 +11,7 @@
     (set! (.-onclick header)
           (fn []
             (.toggle content 200)
+            (js/setTimeout #(editor/refresh (:ed @res)) 200)
             (object/update! res [::open] not)))))
 
 (defn process-collapsibles! [res]
