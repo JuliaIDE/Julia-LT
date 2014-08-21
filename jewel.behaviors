@@ -1,4 +1,4 @@
-{:+ {:app [(:lt.objs.plugins/load-js ["codemirror/julia.js" "jewel_compiled.js"])
+{:+ {:app [(:lt.objs.plugins/load-js ["js/julia.js" "jewel_compiled.js"])
            (:lt.objs.plugins/load-css "css/common.css")
            (:lt.objs.plugins/load-css "css/light.css")
            (:lt.objs.plugins/load-css "css/dark.css")
