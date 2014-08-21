@@ -11,3 +11,20 @@
   }
 
 }
+
+.collapsible-header span {
+  color: rgba(0,0,0,0.3);
+  font-weight: normal;
+}
+
+.julia.result table.array {
+  td {
+    padding: 2px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  color: black;
+
+  tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
+    background: rgba(0,0,200,0.04);
+  }
+}

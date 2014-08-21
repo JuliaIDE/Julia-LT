@@ -8,6 +8,12 @@
   font-weight: bold;
 }
 
+.julia.result table.array {
+  td {
+    padding: 2px;
+  }
+}
+
 .julia.error {
   max-width: 500px;
   white-space: normal;
