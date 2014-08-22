@@ -1,5 +1,5 @@
 .julia.result {
-  white-space: normal;
+  white-space: nowrap;
   cursor: default;
   -webkit-user-select: none;
 }
@@ -14,10 +14,9 @@
   overflow: auto;
 }
 
-.julia.result table.array {
-  td {
-    padding: 2px;
-  }
+.julia.result td {
+  padding: 2px;
+  white-space: nowrap;
 }
 
 .julia.error {

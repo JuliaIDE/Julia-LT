@@ -12,19 +12,29 @@
 
 }
 
-.collapsible-header span {
-  color: rgba(0,0,0,0.3);
-  font-weight: normal;
-}
+.julia.result {
 
-.julia.result table.array {
-  td {
-    padding: 2px;
-    border: 1px solid rgba(0,0,0,0.05);
+  .collapsible-header span {
+    color: rgba(0,0,0,0.3);
+    font-weight: normal;
   }
-  color: black;
 
-  tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
-    background: rgba(0,0,200,0.04);
+  table {
+    color: black;
+    td {
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+  }
+
+  table.array {
+    tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
+      background: rgba(0,0,200,0.04);
+    }
+  }
+
+  table.data-frame {
+    tr:nth-child(even) {
+      background: rgba(0,0,200,0.04);
+    }
   }
 }
