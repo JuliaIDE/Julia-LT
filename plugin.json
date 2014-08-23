@@ -6,5 +6,5 @@
   "desc": "Julia Language plugin",
   "dependencies": {
   },
-  "behaviors": "jewel.behaviors"
+  "behaviors": "julia.behaviors"
 }
