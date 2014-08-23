@@ -53,7 +53,7 @@
      :julia.profile-result [:lt.objs.langs.julia.profiler/clear
                             :lt.objs.langs.julia.profiler/menu]
      }
- :- {:editor.julia [:lt.objs.eval/inline-results]
+ :- {:editor.julia [#_:lt.objs.eval/inline-results]
 
      :editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
 
