@@ -1,9 +1,9 @@
 {
-  "name": "Jewel",
+  "name": "Julia",
   "author": "Mike Innes",
-  "version": "0.7.0",
-  "source": "https://github.com/one-more-minute/Jewel",
-  "desc": "Julia Language Plugin",
+  "version": "0.7.1",
+  "source": "https://github.com/one-more-minute/Julia-LT",
+  "desc": "Julia Language plugin",
   "dependencies": {
   },
   "behaviors": "jewel.behaviors"
