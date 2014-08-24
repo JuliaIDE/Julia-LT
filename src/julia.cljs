@@ -5,7 +5,8 @@
             [lt.objs.editor.pool :as pool]
             [lt.objs.command :as cmd]
             [lt.objs.popup :as popup]
-            [lt.objs.notifos :as notifos])
+            [lt.objs.notifos :as notifos]
+            [lt.util.dom :as dom])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Global commands
@@ -63,3 +64,11 @@
           :exclusive true
           :reaction (fn [this exe]
                       (object/merge! julia {:path exe})))
+
+(behavior ::dark-theme
+          :triggers #{:object.instant}
+          :desc "Julia: Use a dark theme"
+          :type :user
+          :exclusive true
+          :reaction (fn [app]
+                      (dom/add-class (dom/$ :body) :julia-dark)))
