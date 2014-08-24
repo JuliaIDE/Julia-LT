@@ -13,9 +13,12 @@
     overflow: auto;
   }
 
-  td {
-    padding: 2px;
-    white-space: nowrap;
+  table {
+    border-collapse: collapse;
+    td {
+      padding: 5px;
+      white-space: nowrap;
+    }
   }
 }
 
