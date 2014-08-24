@@ -294,9 +294,9 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
       return null;
     }
 
-    if (stream.match(builtins)) {
-      return 'builtin';
-    }
+//     if (stream.match(builtins)) {
+//       return 'builtin';
+//     }
 
     if (stream.match(macro)) {
       return 'meta';
