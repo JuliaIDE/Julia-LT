@@ -1,7 +1,53 @@
-.dark {
+.julia-dark {
 
   .CodeMirror-linebackground.error {
     background: rgba(255,100,100,0.3);
+  }
+
+  .CodeMirror-code {
+
+    /* Link Highlights */
+    .highlight {
+      background: rgba(0,255,0,0.1);
+    }
+
+    /* Profiler */
+    .progress {
+      background: rgba(0,0,0,0.05);
+    }
+
+  }
+
+  .julia.result {
+
+    .collapsible-header span {
+      color: inherit;
+      opacity: 0.7;
+      font-weight: normal;
+    }
+
+    table {
+      color: white;
+      opacity: 0.8;
+      td {
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+    }
+
+    table.array {
+      tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
+        background: rgba(0,0,0,0.4);
+      }
+    }
+
+    table.data-frame {
+      tr:nth-child(1) td {
+        font-weight: bold;
+      }
+      tr:nth-child(even) {
+        background: rgba(0,0,0,0.4);
+      }
+    }
   }
 
 }
