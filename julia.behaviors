@@ -4,6 +4,7 @@
            (:lt.objs.plugins/load-css "css/light.css")
            (:lt.objs.plugins/load-css "css/dark.css")
            (:lt.objs.plugins/load-css "css/patch.css")
+           (:lt.objs.plugins/load-css "css/profiler.css")
            (:lt.objs.plugins/load-keymap "julia.keymap")
            :lt.objs.langs.julia.stats/metrics]
 

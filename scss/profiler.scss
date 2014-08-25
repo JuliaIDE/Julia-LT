@@ -1,0 +1,68 @@
+/* Util */
+
+@mixin border($colour) {
+  border: 1px solid $colour;
+  box-shadow: 1px 1px 0px $colour;
+  -webkit-border-radius: 5px;
+}
+
+/* Structure */
+.profile {
+  position: relative;
+  -webkit-user-select: none;
+  .tooltip {
+    position: absolute;
+    padding: 5px;
+    visibility: hidden;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .background {
+    fill: transparent;
+/*     fill: black; */
+  }
+  .tree rect {
+    transition: fill 0.2s ease;
+    stroke-width: 1px;
+  }
+  .func {
+    font-weight: bold;
+  }
+}
+
+/* Light */
+
+.CodeMirror-code .progress {
+  background: rgba(0,0,0,0.05);
+}
+.profile {
+  .tooltip {
+    background: white;
+    color: black;
+    @include border(#e1e1e1);
+  }
+  .tree rect {
+    fill: #464;
+    stroke: white;
+  }
+  .tree rect:hover {
+    fill: #575;
+  }
+}
+
+/* Dark */
+.julia-dark {
+  .CodeMirror-code .progress {
+    background: rgba(0,0,0,0.2);
+  }
+  .profile {
+    .tooltip {
+      background: #404444;
+      color: #DCDCCC;
+      @include border(#222);
+    }
+    .tree rect {
+      stroke: #404444;
+    }
+  }
+}
