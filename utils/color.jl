@@ -1,9 +1,9 @@
-using Color, Lazy
+using Color
 
 hue_range(n) = [0:360/n:360.][1:n]
 
 # Night colours
-hexes = @>> [hex(HSV(h, 0.2, 1)) for h in hue_range(20)]
+hexes = [hex(HSV(h, 0.2, 1)) for h in hue_range(20)]
 
 colours = distinguishable_colors(20,
                                  lchoices = linspace(90,100,50),
