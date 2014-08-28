@@ -1,6 +1,9 @@
 (ns lt.objs.langs.julia.module
   (:require [lt.objs.langs.julia.proc :as proc]
             [lt.objs.statusbar :as statusbar]
+            [lt.objs.sidebar.command :as cmd]
+            [lt.objs.notifos :as notifos]
+            [lt.objs.editor.pool :as pool]
             [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.clients :as clients]
@@ -9,8 +12,9 @@
 
 ;; Status bar object
 
-(defn ->module-str [{:keys [module]}]
-  [:span.module (str module "\t")])
+(defui ->module-str [{:keys [module]}]
+  [:span.module (str module "\t")]
+  :click #(cmd/exec! :julia.set-module))
 
 (object/object* ::statusbar.module
                 :triggers #{}
@@ -58,6 +62,33 @@
 
 (behavior ::update-module
   :triggers #{:editor.julia.module.update}
-  :reaction (fn [editor module]
-              (object/merge! editor {::module module})
-              (object/raise editor :module-update)))
+  :reaction (fn [editor module force]
+              (when (or force (not (::forced @editor)))
+                (object/merge! editor {::module module
+                                       ::forced force})
+                (object/raise editor :module-update))))
+
+;; Module selector
+
+(def module-selector (cmd/filter-list {:items (fn []
+                                                ["Main" "Base" "Base.FFTW"])
+                                       :key identity
+                                       :placeholder "Module"}))
+
+(behavior ::set-module
+          :triggers #{:select}
+          :reaction (fn [this v]
+                      (cmd/exec-active! v)))
+
+(object/add-behavior! module-selector ::set-module)
+
+(defn set-module [ed module]
+  (object/raise ed :editor.julia.module.update module true))
+
+(cmd/command {:command :julia.set-module
+              :desc "Julia: Set the module for the current editor"
+              :options module-selector
+              :exec (fn [mod]
+                      (if-let [last (pool/last-active)]
+                        (set-module last mod)
+                        (notifos/set-msg! "Set module requires an active editor")))})
