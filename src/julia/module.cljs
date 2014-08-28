@@ -1,5 +1,6 @@
 (ns lt.objs.langs.julia.module
-  (:require [lt.objs.langs.julia.proc :as proc]
+  (:require [lt.objs.langs.julia :refer [julia]]
+            [lt.objs.langs.julia.proc :as proc]
             [lt.objs.statusbar :as statusbar]
             [lt.objs.sidebar.command :as cmd]
             [lt.objs.notifos :as notifos]
@@ -70,15 +71,22 @@
 
 ;; Module selector
 
-(def module-selector (cmd/filter-list {:items (fn []
-                                                ["Main" "Base" "Base.FFTW"])
+(behavior ::set-modules
+          :triggers #{:julia.set-modules}
+          :reaction (fn [julia {:keys [modules]}]
+                      (object/merge! julia {::modules (sort modules)})
+                      (object/raise module-selector :refresh!)))
+
+(object/add-behavior! julia ::set-modules)
+
+(def module-selector (cmd/filter-list {:items #(@julia ::modules)
                                        :key identity
                                        :placeholder "Module"}))
 
 (behavior ::select-module
           :triggers #{:select}
-          :reaction (fn [this v]
-                      (cmd/exec-active! v)))
+          :reaction (fn [this mod]
+                      (cmd/exec-active! mod)))
 
 (object/add-behavior! module-selector ::select-module)
 
