@@ -60,8 +60,8 @@
   :triggers #{:julia.connected}
   :reaction get-module)
 
-(behavior ::update-module
-  :triggers #{:editor.julia.module.update}
+(behavior ::set-module
+  :triggers #{:julia.set-module}
   :reaction (fn [editor module force]
               (when (or force (not (::forced @editor)))
                 (object/merge! editor {::module module
@@ -83,7 +83,7 @@
 (object/add-behavior! module-selector ::set-module)
 
 (defn set-module [ed module]
-  (object/raise ed :editor.julia.module.update module true))
+  (object/raise ed :julia.set-module module true))
 
 (cmd/command {:command :julia.set-module
               :desc "Julia: Set the module for the current editor"
