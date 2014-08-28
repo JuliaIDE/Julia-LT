@@ -75,12 +75,12 @@
                                        :key identity
                                        :placeholder "Module"}))
 
-(behavior ::set-module
+(behavior ::select-module
           :triggers #{:select}
           :reaction (fn [this v]
                       (cmd/exec-active! v)))
 
-(object/add-behavior! module-selector ::set-module)
+(object/add-behavior! module-selector ::select-module)
 
 (defn set-module [ed module]
   (object/raise ed :julia.set-module module true))
