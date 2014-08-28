@@ -14,7 +14,7 @@
 ;; Status bar object
 
 (defui ->module-str [{:keys [module]}]
-  [:span.module (str module "\t")]
+  [:span.module.clickable (str module "\t")]
   :click #(cmd/exec! :julia.set-module))
 
 (object/object* ::statusbar.module
