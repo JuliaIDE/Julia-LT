@@ -7,7 +7,9 @@
 (def http (js/require "http"))
 
 (defn hit [page]
-  (.get http page))
+  (try
+    (.get http page)
+    (catch js/Error e)))
 
 (behavior ::metrics
           :triggers #{:init}
