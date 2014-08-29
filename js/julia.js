@@ -3,23 +3,6 @@
 CodeMirror.defineMode("julia2", function(config, parserConfig) {
   var indentUnit = config.indentUnit || 2;
 
-  // ––––––––––––––––––––––––
-  // Hashing utils – this should be a seperate plugin
-  function hash(str) {
-    var res = 0,
-        len = str.length;
-    for (var i = 0; i < len; i++) {
-      res = res * 31 + str.charCodeAt(i);
-    }
-    return Math.abs(res);
-  }
-
-  function hash_class(str) {
-    h = hash(str)%20
-    return 'hash-' + h
-  }
-  // ––––––––––––––––––––––––
-
   function whitespace_only(stream) {
     return stream.match(/^\s*$/, false)
   }
@@ -328,11 +311,11 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
           last_keyword == 'module') {
         if (stream.match(/,|\./, false))
           state.last_keyword = last_keyword;
-        return 'def ' + hash_class(stream.current());
+        return 'def ';
       } else if (stream.match('(', false)) {
-        return (stream.column() == 0 ? 'def ' : 'variable-2 ') + hash_class(stream.current());
+        return (stream.column() == 0 ? 'def ' : 'variable-2 ');
       } else {
-        return 'variable ' + hash_class(stream.current());
+        return 'variable ';
       }
     }
 
