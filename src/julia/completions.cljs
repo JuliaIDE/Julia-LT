@@ -14,10 +14,7 @@
           :reaction (fn [editor res]
                       (when-let [default-client (-> @editor :client :default)] ;; dont eval unless we're already connected
                         (when @default-client
-                          (clients/send (eval/get-client! {:command :editor.julia.hints
-                                                           :info {}
-                                                           :origin editor
-                                                           :create proc/connect})
+                          (clients/send default-client
                                         :editor.julia.hints
                                         {:cursor (util/cursor editor)
                                          :code (editor/->val editor)
