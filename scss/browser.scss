@@ -1,0 +1,10 @@
+.julia.browser {
+  overflow: scroll;
+  height: 100%;
+  table {
+    width: 100%;
+    tr td:nth-child(1) {
+      width: 1px;
+    }
+  }
+}

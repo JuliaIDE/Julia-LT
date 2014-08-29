@@ -1,4 +1,4 @@
-.julia.result {
+.julia {
   white-space: nowrap;
   cursor: default;
   -webkit-user-select: none;
@@ -24,6 +24,7 @@
 
 .julia.error {
   max-width: 500px;
+  overflow-y: scroll;
   white-space: normal;
   cursor: default;
 }
