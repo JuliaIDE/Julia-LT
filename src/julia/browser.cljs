@@ -45,7 +45,7 @@
                       (object/merge! browser {:objs objs})))
 
 (defui browser-ui [{:keys [objs]}]
-  [:div.CodeMirror.cm-s-june-night ; fonts/themes
+  [(join-theme :div.CodeMirror) ; fonts/themes
    [:div.julia.browser
     [:table.data-frame
      (for [[k v] objs]
@@ -68,3 +68,17 @@
 (cmd/command {:command :browser-tab
               :desc "Julia: Open the object browser"
               :exec #(tabs/add-or-focus! browser)})
+
+;; Get the correct theme
+
+(defn tag-behaviour [tag name]
+  (->> @object/tags tag (filter #(= (if (seq? %) (first %) %) name)) first))
+
+(defn theme [tag]
+  (-> tag (tag-behaviour :lt.objs.style/set-theme) second))
+
+(defn julia-theme []
+  (or (theme :editor.julia) (theme :editor) "default"))
+
+(defn join-theme [class]
+  (keyword (str (name class) ".cm-s-" (julia-theme))))
