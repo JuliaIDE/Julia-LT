@@ -7,8 +7,6 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior]]))
 
-;; (def ed (editor/->cm-ed (pool/last-active)))
-
 (defn gutter-node [ed line]
   (let [markers (-> ed editor/->cm-ed (.lineInfo (dec line)) .-gutterMarkers)]
     (when markers
@@ -16,13 +14,6 @@
 
 (defn set-gutter-node [ed line & [node]]
   (.setGutterMarker (editor/->cm-ed ed) (dec line) "CodeMirror-linenumbers" node))
-
-(set-gutter-node ed 6 (crate/html [:div.CodeMirror-linenumber "●"]))
-
-(gutter-node ed 6)
-
-;; (.setGutterMarker ed 6 "CodeMirror-linenumbers"
-;;                   (crate/html [:div.CodeMirror-linenumber "■"]))
 
 (defn show-gutter-menu [ed l e]
   (let [items (sort-by :order (object/raise-reduce ed :gutter-menu+ [] l))]
