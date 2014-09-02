@@ -1,5 +1,6 @@
 (ns lt.objs.langs.julia.browser
   (:require [lt.objs.langs.julia.util :as util]
+            [lt.objs.file-links :as links]
             [lt.object :as object]
             [lt.objs.clients :as clients]
             [lt.util.dom :as dom]
@@ -51,11 +52,12 @@
     [:table.data-frame
      (for [[k v] objs]
        (june/highlight ".variable" nil nil
-                       (process-collapsible!
-                        (crate/html
-                         [:tr
-                          [:td [:strong [:span.variable (name k)]]]
-                          [:td (crate/raw v)]]))))]]])
+                       (links/process!
+                        (process-collapsible!
+                         (crate/html
+                          [:tr
+                           [:td [:strong [:span.variable (name k)]]]
+                           [:td (crate/raw v)]])))))]]])
 
 (object/object* ::browser
                 :tags #{:julia.browser}
