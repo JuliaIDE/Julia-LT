@@ -11,6 +11,21 @@
 
 }
 
+.CodeMirror-linenumber {
+  &.warn {
+    color: #AA0;
+    &:hover {
+      color: #BB0;
+    }
+  }
+  &.stop {
+    color: #D00;
+    &:hover {
+      color: red;
+    }
+  }
+}
+
 .julia {
 
   .collapsible-header span {
