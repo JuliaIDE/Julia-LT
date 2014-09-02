@@ -32,7 +32,7 @@
                 :only browser))
 
 (behavior ::get-objects
-          :triggers #{:active :editor.result}
+          :triggers #{:active :editor.result :module-update}
           :debounce 100
           :reaction (fn [editor]
                       (when (:lt.objs.tabs/tabset @browser)
