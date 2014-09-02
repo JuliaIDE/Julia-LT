@@ -11,12 +11,13 @@
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 (defn process-collapsible! [dom]
-  (let [;header (dom/$ :.collapsible-header dom)
+  (let [header (dom/$ :.collapsible-header dom)
         content (js/$ (dom/$ :.collapsible-content dom))]
-    (.hide content)
-    (set! (.-onclick dom)
-          (fn []
-            (.toggle content 200)))
+    (when header
+      (.hide content)
+      (set! (.-onclick header)
+            (fn []
+              (.toggle content 200))))
     dom))
 
 (behavior ::on-close
