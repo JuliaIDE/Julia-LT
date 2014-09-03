@@ -1,5 +1,3 @@
-port, id = map(parseint, ARGS)
-
 if VERSION < v"0.3-"
   println(STDERR, """
   This plugin requires Julia 0.3 or higher to work. Your current version
@@ -32,4 +30,4 @@ end
 
 require("Jewel")
 
-Jewel.server(port, id)
+Jewel.server(map(parseint, ARGS)...)
