@@ -1,0 +1,9 @@
+.julia.browser {
+  overflow: scroll;
+  height: 100%; }
+  .julia.browser table {
+    width: 100%; }
+    .julia.browser table tr td:nth-child(1) {
+      width: 1px; }
+  .julia.browser .collapsible-content {
+    max-width: none; }

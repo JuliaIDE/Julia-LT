@@ -1,0 +1,46 @@
+/* Util */
+/* Structure */
+.profile {
+  position: relative; }
+  .profile .tooltip {
+    position: absolute;
+    padding: 5px;
+    visibility: hidden;
+    white-space: nowrap;
+    pointer-events: none; }
+  .profile .background {
+    fill: transparent;
+    /*     fill: black; */ }
+  .profile .tree rect {
+    transition: fill 0.2s ease;
+    stroke-width: 1px; }
+  .profile .func {
+    font-weight: bold; }
+
+/* Light */
+.CodeMirror-code .progress {
+  background: rgba(0, 0, 0, 0.05); }
+
+.profile .tooltip {
+  background: white;
+  color: black;
+  border: 1px solid #e1e1e1;
+  box-shadow: 1px 1px 0px #e1e1e1;
+  -webkit-border-radius: 5px; }
+.profile .tree rect {
+  fill: #464;
+  stroke: white; }
+.profile .tree rect:hover {
+  fill: #575; }
+
+/* Dark */
+.julia-dark .CodeMirror-code .progress {
+  background: rgba(0, 0, 0, 0.2); }
+.julia-dark .profile .tooltip {
+  background: #404444;
+  color: #DCDCCC;
+  border: 1px solid #222222;
+  box-shadow: 1px 1px 0px #222222;
+  -webkit-border-radius: 5px; }
+.julia-dark .profile .tree rect {
+  stroke: #404444; }

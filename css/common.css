@@ -1,13 +1,22 @@
-.julia.result {
-  white-space: normal;
+.julia {
+  white-space: nowrap;
   cursor: default;
   -webkit-user-select: none; }
-
-.julia.result .collapsible-header {
-  font-weight: bold; }
+  .julia .collapsible-header {
+    font-weight: bold; }
+  .julia .collapsible-content {
+    max-width: 500px;
+    max-height: 250px;
+    overflow: auto; }
+  .julia table {
+    border-collapse: collapse; }
+    .julia table td {
+      padding: 3px;
+      white-space: nowrap; }
 
 .julia.error {
   max-width: 500px;
+  overflow-y: scroll;
   white-space: normal;
   cursor: default; }
 
@@ -31,3 +40,7 @@
   .CodeMirror-code .progress.hidden {
     width: 0 !important;
     opacity: 0; }
+
+/* Status Bar */
+#statusbar .clickable:hover {
+  text-decoration: underline; }
