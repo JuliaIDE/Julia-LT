@@ -1,4 +1,4 @@
-(ns lt.objs.langs.julia.display
+(ns lt.objs.langs.julia.results
   (:require [lt.object :as object]
             [lt.util.dom :as dom]
             [lt.objs.editor :as editor]
