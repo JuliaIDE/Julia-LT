@@ -61,6 +61,8 @@
 
      :julia.profile-result [:lt.objs.langs.julia.profiler/clear
                             :lt.objs.langs.julia.profiler/menu]
+
+     :inline.result [:lt.objs.langs.julia.display/clear-result]
      }
  :- {:editor.julia [:lt.objs.eval/inline-results]
 

@@ -60,7 +60,8 @@
                                         :editor.result)
                                       val
                                       {:start-line (-> res :start dec)
-                                       :line (-> res :end dec)})
+                                       :line (-> res :end dec)}
+                                      {:id (res :id)})
                         (when scripts (util/eval-scripts scripts)))))
 
 ;; Errors

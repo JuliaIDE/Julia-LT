@@ -1,7 +1,8 @@
 (ns lt.objs.langs.julia.display
   (:require [lt.object :as object]
             [lt.util.dom :as dom]
-            [lt.objs.editor :as editor])
+            [lt.objs.editor :as editor]
+            [lt.objs.clients :as clients])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 (defn process-collapsible! [res dom]
@@ -23,6 +24,8 @@
   (when-not (string? dom)
     (->> dom (dom/$$ :.collapsible-content) js/$ .show)))
 
+(def results (atom {}))
+
 (behavior ::inline-results
           :triggers #{:editor.result}
           :reaction (fn [this res loc opts]
@@ -35,7 +38,9 @@
                                                     :opts opts
                                                     :result res
                                                     :loc loc
-                                                    :line line})]
+                                                    :line line
+                                                    :id (:id opts)})]
+                        (when (:id opts) (swap! results assoc (:id opts) res-obj))
                         (when-not (string? res)
                           (process-collapsibles! res-obj))
                         (when-let [prev (get (@this :widgets) [line type])]
@@ -50,3 +55,11 @@
                                   :when widget]
                             (object/raise widget :clear!)))
                         (object/update! this [:widgets] assoc [line type] res-obj))))
+
+(behavior ::clear-result
+          :triggers #{:clear!}
+          :reaction (fn [this]
+                      (when-let [client (-> @this :ed deref :client :default)]
+                        (when (:id @this)
+                          (swap! results dissoc (:id @this))
+                          (clients/send client :result.clear (:id @this))))))
