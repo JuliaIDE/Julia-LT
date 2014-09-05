@@ -6,20 +6,18 @@
             [lt.objs.clients :as clients])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-(defn process-collapsible! [res dom]
+(defn process-collapsible! [ed dom]
   (let [header (dom/$ :.collapsible-header dom)
         content (js/$ (dom/$ :.collapsible-content dom))]
     (.hide content)
     (set! (.-onclick header)
           (fn []
             (.toggle content 200)
-            (js/setTimeout #(editor/refresh (:ed @res)) 200)
-            (object/update! res [::open] not)))))
+            (js/setTimeout #(editor/refresh ed) 200)))))
 
 (defn process-collapsibles! [res]
   (doseq [collapsible (dom/$$ :.collapsible (@res :result))]
-    (process-collapsible! res collapsible))
-  dom)
+    (process-collapsible! (:ed @res) collapsible)))
 
 (defn show-collapsibles! [dom]
   (when-not (string? dom)
@@ -47,9 +45,6 @@
                         (when-let [prev (get (@this :widgets) [line type])]
                           (when (:open @prev)
                             (object/merge! res-obj {:open true}))
-                          (when (::open @prev)
-                            (object/merge! res-obj {::open true})
-                            (show-collapsibles! res))
                           (object/raise prev :clear!))
                         (when (:start-line loc)
                           (doseq [widget (map #(get (@this :widgets) [(editor/line-handle ed %) type]) (range (:start-line loc) (:line loc)))
