@@ -6,6 +6,19 @@
             [lt.objs.clients :as clients])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
+(defn ->ed [ed]
+  (cond (integer? ed) (@object/instances ed)
+        :else ed))
+
+(defn jleval [ed code]
+  (let [ed (->ed ed)
+        client (-> @ed :client :default)]
+    (when client
+      (clients/send client :eval.julia code
+                    :only ed))))
+
+(set! js/jleval jleval)
+
 (defn process-collapsible! [ed dom]
   (let [header (dom/$ :.collapsible-header dom)
         content (js/$ (dom/$ :.collapsible-content dom))]
