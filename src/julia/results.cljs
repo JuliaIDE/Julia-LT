@@ -68,6 +68,15 @@
 (behavior ::raise
           :triggers #{:raise}
           :reaction (fn [this {:keys [id event args]}]
-                      (apply object/raise (@results id) (keyword event) args)))
+                      (when (@results id)
+                        (apply object/raise (@results id) (keyword event) args))))
+
+(defn eval-with [obj code]
+  (.call (js/eval (str "(function () {" code "})")) obj))
+
+(behavior ::eval
+          :triggers #{:eval}
+          :reaction (fn [this code]
+                      (eval-with (:content @this) code)))
 
 (object/add-behavior! julia ::raise)
