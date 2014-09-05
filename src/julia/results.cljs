@@ -1,5 +1,6 @@
 (ns lt.objs.langs.julia.results
-  (:require [lt.object :as object]
+  (:require [lt.objs.langs.julia :refer [julia]]
+            [lt.object :as object]
             [lt.util.dom :as dom]
             [lt.objs.editor :as editor]
             [lt.objs.clients :as clients])
@@ -63,3 +64,10 @@
                         (when (:id @this)
                           (swap! results dissoc (:id @this))
                           (clients/send client :result.clear (:id @this))))))
+
+(behavior ::raise
+          :triggers #{:raise}
+          :reaction (fn [this {:keys [id event args]}]
+                      (apply object/raise (@results id) (keyword event) args)))
+
+(object/add-behavior! julia ::raise)
