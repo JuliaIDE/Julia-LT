@@ -14,11 +14,11 @@
    (integer? thing) (@object/instances ed)
    :else thing))
 
-(defn jlcall [ed code]
-  (let [ed (->ed ed)
+(defn jlcall [id code]
+  (let [ed (->ed id)
         client (-> @ed :client :default)]
     (when client
-      (clients/send client :eval.julia code
+      (clients/send client :eval.julia {:code code :id (when (string? id) id)}
                     :only ed))))
 
 (set! js/jlcall jlcall)
