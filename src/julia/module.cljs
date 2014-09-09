@@ -36,14 +36,6 @@
 
 ;; Backend communication
 
-;; ::get-module and ::get-module-on-connect are separated into separate behaviors because:
-;; a) the debounce on ::get-module improves performance on tab change, so is desired
-;; b) the debounce implementation is per function call, not per editor object that it's
-;;    called with so when :julia.connected event is sent to all open .jl tabs/editors
-;;    all but one call is dropped.
-;; If a per object debounce or a throttle with a delayed leading call were implemented
-;; in LT these could be recombined.
-
 (def get-module
   (fn [editor & [client]]
     (when-let [client (or client (proc/default-client))]
@@ -53,21 +45,14 @@
                     :only editor))))
 
 (behavior ::get-module
-  :triggers #{:object.instant :active :save}
-  :debounce 100
-  :reaction get-module)
-
-(behavior ::get-module-on-connect
-  :triggers #{:julia.connected}
+  :triggers #{:object.instant :julia.connected}
   :reaction get-module)
 
 (behavior ::set-module
   :triggers #{:julia.set-module}
-  :reaction (fn [editor module force]
-              (when (or force (not (::forced @editor)))
-                (object/merge! editor {::module module
-                                       ::forced force})
-                (object/raise editor :module-update))))
+  :reaction (fn [editor module]
+                (object/merge! editor {::module module})
+                (object/raise editor :module-update)))
 
 ;; Module selector
 
@@ -91,7 +76,7 @@
 (object/add-behavior! module-selector ::select-module)
 
 (defn set-module [ed module]
-  (object/raise ed :julia.set-module module true))
+  (object/raise ed :julia.set-module module))
 
 (cmd/command {:command :julia.set-module
               :desc "Julia: Set the module for the current editor"
