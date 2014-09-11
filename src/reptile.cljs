@@ -76,6 +76,7 @@
         node (.-replacedWith mark)
         loc (.find mark)
         content (str content)]
+    (.clear mark)
     (set! (.-innerText node) content)
     (.replaceRange (.-doc mark) content (.-from loc) (.-to loc))
     (set! (-> loc .-to .-ch) (+ (-> loc .-from .-ch) (.-length content)))
