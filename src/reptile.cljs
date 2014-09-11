@@ -127,6 +127,9 @@
                    (mark-slider ed line span
                                 (fn [start x]
                                   (let [val (transform start x)]
+                                    (object/update! this [:scales] assoc idx val)
+                                    (when-let [obj (:obj @this)]
+                                      (object/raise obj :scales (:scales @this)))
                                     val)))
                    (object/update! this [:scales] conj
                                    (transform (content ed line span) 0))
