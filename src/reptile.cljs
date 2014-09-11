@@ -103,21 +103,33 @@
                  (if (< (js/Math.abs (- x (.-clientX e))) 1)
                    (.setCursor (-> @mark .-doc) (-> @mark .find .-to))))))))))
 
+;; The transform
+
+(defn transform [start x]
+  (let [start (js/parseInt start)]
+    (+ start x)))
+
 ;; Objects & results
 
 (object/object* ::reptile
                 :tags [:reptile]
-                :scales [])
+                :scales []
+                :locs [])
 
 (defn reptile [ed start end]
   (let [this (object/create ::reptile)]
     (each-line ed start end
                (fn [handle]
                  (doseq [span (numbers handle)
-                         :let [idx (count (:scales @this))]]
-                   (mark-slider ed (here's-my-number handle) span #(do %2))
+                         :let [line (here's-my-number handle)
+                               idx (count (:scales @this))]]
+                   (mark-slider ed line span
+                                (fn [start x]
+                                  (let [val (transform start x)]
+                                    val)))
                    (object/update! this [:scales] conj
-                     (mark-slider ed (here's-my-number handle) span identity)))))
+                                   (transform (content ed line span) 0))
+                   (object/update! this [:locs] conj (apply vector line span)))))
     this))
 
 ;; (def r (reptile ed 1 9))
