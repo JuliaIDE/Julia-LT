@@ -74,7 +74,8 @@
 (defn set-content' [mark* content]
   (let [mark @mark*
         node (.-replacedWith mark)
-        loc (.find mark)]
+        loc (.find mark)
+        content (str content)]
     (set! (.-innerText node) content)
     (.replaceRange (.-doc mark) content (.-from loc) (.-to loc))
     (set! (-> loc .-to .-ch) (+ (-> loc .-from .-ch) (.-length content)))
@@ -97,10 +98,10 @@
             (let [start (value node)]
               (listen-drag!
                (fn [x y]
-                 (let [x (- x (.-clientX e))]
-                   (set! (.-innerText node) x)
-                   (set-content mark (str x))
-                   (cb x)))
+                 (let [x (- x (.-clientX e))
+                       result (cb start x)]
+                   (set! (.-innerText node) result)
+                   (set-content mark result)))
                (fn [x y]
                  (if (< (js/Math.abs (- x (.-clientX e))) 1)
                    (.setCursor (.-doc @mark) (-> @mark .find .-to))))))))
@@ -118,6 +119,7 @@
                (fn [handle]
                  (doseq [span (numbers handle)
                          :let [idx (count (:scales @this))]]
+                   (mark-slider ed (here's-my-number handle) span #(do %2))
                    (object/update! this [:scales] conj
                      (mark-slider ed (here's-my-number handle) span identity)))))
     this))
