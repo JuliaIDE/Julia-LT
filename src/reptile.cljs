@@ -84,7 +84,7 @@
                              #js {:clearOnEnter true
                                   :replacedWith node}))))
 
-(def set-content (lt.util.js/debounce 100 set-content'))
+(def set-content (lt.util.js/debounce 500 set-content'))
 
 (defn mark-slider [ed line span cb]
   (let [node (slider (content ed line span))
