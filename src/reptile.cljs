@@ -85,9 +85,6 @@
 
 (def set-content (lt.util.js/debounce 100 set-content'))
 
-(defn value [node]
-  (-> node .-innerText js/parseInt))
-
 (defn mark-slider [ed line span cb]
   (let [node (slider (content ed line span))
         mark (atom (mark-text ed line span {:clearOnEnter true
@@ -95,17 +92,16 @@
     (set! (.-onmousedown node)
           (fn [e]
             (.preventDefault e)
-            (let [start (value node)]
+            (let [current (.-innerText node)]
               (listen-drag!
                (fn [x y]
                  (let [x (- x (.-clientX e))
-                       result (cb start x)]
+                       result (cb current x)]
                    (set! (.-innerText node) result)
                    (set-content mark result)))
                (fn [x y]
                  (if (< (js/Math.abs (- x (.-clientX e))) 1)
-                   (.setCursor (.-doc @mark) (-> @mark .find .-to))))))))
-    (value node)))
+                   (.setCursor (-> @mark .-doc) (-> @mark .find .-to))))))))))
 
 ;; Objects & results
 
