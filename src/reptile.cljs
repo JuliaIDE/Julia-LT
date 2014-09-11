@@ -36,13 +36,16 @@
 (defn line-styles [lh]
   (-> lh .-styles vec))
 
+(defn conj-vec [vec & args]
+  (apply conj (or vec []) args))
+
 (defn process-line-styles [vec]
   (loop [start 0
          [end token & vec] (rest vec)
          tokens {}]
     (if end
       (recur end vec
-             (update-in tokens [(keyword token)] conj [start end]))
+             (update-in tokens [(keyword token)] conj-vec [start end]))
       tokens)))
 
 (defn line-tokens [lh]
