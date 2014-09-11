@@ -82,6 +82,7 @@
 ;; Connection object
 
 (object/object* ::connecting-notifier
+                :tags #{:julia.connection-watch}
                 :behaviors [::proc-out ::proc-error ::proc-exit
                             ::pipe-out ::pipe-err ::flush]
                 :init (fn [this client]
