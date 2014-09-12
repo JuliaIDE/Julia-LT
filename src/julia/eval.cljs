@@ -42,7 +42,7 @@
 ;; Evaluation
 
 (defn single-selection? [editor]
-  (-> ed editor/->cm-ed .getSelections count (= 1)))
+  (-> editor editor/->cm-ed .getSelections count (= 1)))
 
 ;; (def ed (-> "newton.jl" lt.objs.editor.pool/containing-path first))
 
