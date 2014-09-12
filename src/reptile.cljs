@@ -102,7 +102,8 @@
                    (set-content mark result)))
                (fn [x y]
                  (if (< (js/Math.abs (- x (.-clientX e))) 1)
-                   (.setCursor (-> @mark .-doc) (-> @mark .find .-to))))))))))
+                   (.setCursor (-> @mark .-doc) (-> @mark .find .-to))))))))
+    mark))
 
 ;; The transform
 
@@ -112,28 +113,35 @@
 
 ;; Objects & results
 
+(behavior ::clear
+          :triggers #{:clear!}
+          :reaction (fn [this]
+                      (doseq [scale (:scales @this)]
+                        (-> scale :mark deref .clear))
+                      (object/destroy! this)))
+
 (object/object* ::reptile
                 :tags [:reptile]
-                :scales []
-                :locs [])
+                :behaviors [::clear]
+                :scales [])
 
-(defn reptile [ed start end]
+(defn reptile [ed [start end]]
   (let [this (object/create ::reptile)]
     (each-line ed start end
                (fn [handle]
                  (doseq [span (numbers handle)
                          :let [line (here's-my-number handle)
                                idx (count (:scales @this))]]
-                   (mark-slider ed line span
-                                (fn [start x]
-                                  (let [val (transform start x)]
-                                    (object/update! this [:scales] assoc idx val)
-                                    (when-let [obj (:obj @this)]
-                                      (object/raise obj :scales (:scales @this)))
-                                    val)))
                    (object/update! this [:scales] conj
-                                   (transform (content ed line span) 0))
-                   (object/update! this [:locs] conj (apply vector line span)))))
+                     {:mark (mark-slider ed line span
+                              (fn [start x]
+                                (let [val (transform start x)]
+                                  (object/update! this [:scales idx] (constantly val))
+                                  (when-let [obj (:obj @this)]
+                                    (object/raise obj :scale (:scales @this)))
+                                  val)))
+                      :value (transform (content ed line span) 0)
+                      :loc (apply vector line span)}))))
     this))
 
 ;; (def r (reptile ed 1 9))
