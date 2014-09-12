@@ -44,8 +44,6 @@
 (defn single-selection? [editor]
   (-> editor editor/->cm-ed .getSelections count (= 1)))
 
-;; (def ed (-> "newton.jl" lt.objs.editor.pool/containing-path first))
-
 (defn eval-selection [editor client]
   (when (single-selection? editor)
     (clients/send client
