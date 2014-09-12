@@ -120,9 +120,16 @@
                         (-> scale :mark deref .clear))
                       (object/destroy! this)))
 
+(behavior ::self-destruct
+          :triggers #{:init}
+          :debounce 500
+          :reaction (fn [this]
+                      (when-not (:obj @this)
+                        (object/raise this :clear!))))
+
 (object/object* ::reptile
                 :tags [:reptile]
-                :behaviors [::clear]
+                :behaviors [::clear ::self-destruct]
                 :scales [])
 
 (defn reptile [ed [start end]]
