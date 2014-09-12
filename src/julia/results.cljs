@@ -25,19 +25,19 @@
 
 (behavior ::inline-results
           :triggers #{:editor.result}
-          :reaction (fn [this res loc opts]
+          :reaction (fn [this res loc {:keys [id] :as info}]
                       (let [ed (:ed @this)
                             type (or (:type opts) :inline)
                             line (editor/line-handle ed (:line loc))
                             res-obj (object/create :lt.objs.eval/inline-result
-                                                   {:ed this
-                                                    :class (name type)
-                                                    :opts opts
-                                                    :result res
-                                                    :loc loc
-                                                    :line line
-                                                    :id (:id opts)})]
-                        (when (:id opts) (swap! results assoc (:id opts) res-obj))
+                                                   (merge {:ed this
+                                                           :class (name type)
+                                                           :opts opts
+                                                           :result res
+                                                           :loc loc
+                                                           :line line}
+                                                          info))]
+                        (when id (swap! results assoc id res-obj))
                         (when-let [prev (get (@this :widgets) [line type])]
                           (when (:open @prev)
                             (object/merge! res-obj {:open true}))

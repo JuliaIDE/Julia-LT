@@ -3,6 +3,7 @@
             [lt.objs.langs.julia.proc :as proc]
             [lt.objs.file-links :as links]
             [lt.objs.highlights :as lights]
+            [lt.plugins.reptile :refer [reptile]]
             [lt.object :as object]
             [lt.objs.eval :as eval]
             [lt.objs.command :as cmd]
@@ -27,18 +28,24 @@
        :module (util/module editor)}
       :only editor)))
 
+(defn safe-scalify [editor [start end] block]
+  (when (= block (editor/range editor {:line (dec start) :ch 0} {:line (dec end)}))
+    (reptile editor [start end])))
+
 (defn eval-block [editor client]
   (object/raise editor :get-block
     (fn [bounds block]
       (if (= block "")
         (notifos/done-working)
-        (clients/send client
-          :eval.block
-          {:code block
-           :bounds bounds
-           :path (-> @editor :info :path)
-           :module (util/module editor)}
-          :only editor)))))
+        (let [scales (safe-scalify editor bounds block)]
+          (clients/send client
+            :eval.block
+            {:code block
+             :bounds bounds
+             :path (-> @editor :info :path)
+             :module (util/module editor)
+             :scales (:lt.object/id @scales)}
+            :only editor))))))
 
 (behavior ::eval.one
   :triggers #{:eval.one}
