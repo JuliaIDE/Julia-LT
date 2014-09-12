@@ -28,7 +28,7 @@
                 (clients/send client
                               :editor.block
                               {:code (editor/->val editor)
-                               :cursor (util/cursor editor)
+                               :line (-> editor editor/->cursor :line inc)
                                :id id}
                               :only editor))))
 
