@@ -40,6 +40,35 @@
                 (cb bounds block))))
 
 ;; Evaluation
+
+(defn single-selection? [editor]
+  (-> ed editor/->cm-ed .getSelections count (= 1)))
+
+;; (def ed (-> "newton.jl" lt.objs.editor.pool/containing-path first))
+
+(defn eval-selection [editor client]
+  (when (single-selection? editor)
+    (clients/send client
+      :eval.selection
+      {:code (editor/->val editor)
+       :start (util/cursor editor "start") :end (util/cursor editor "end")
+       :path (-> @editor :info :path)
+       :module (util/module editor)}
+      :only editor)))
+
+(defn eval-block [editor client]
+  (object/raise editor :get-block
+    (fn [bounds block]
+      (if (= block "")
+        (notifos/done-working)
+        (clients/send client
+          :eval.block
+          {:code block
+           :bounds bounds
+           :path (-> @editor :info :path)
+           :module (util/module editor)}
+          :only editor)))))
+
 (behavior ::eval.one
   :triggers #{:eval.one}
   :reaction (fn [editor]
@@ -48,13 +77,7 @@
                                               :info {}
                                               :create proc/connect})]
                 (notifos/working)
-                (clients/send client
-                              :editor.eval.julia
-                              {:code (editor/->val editor)
-                               :start (util/cursor editor "start") :end (util/cursor editor "end")
-                               :path (-> @editor :info :path)
-                               :module (util/module editor)}
-                              :only editor))))
+                ((if (editor/selection? editor) eval-selection eval-block) editor client))))
 
 (behavior ::eval.all
   :triggers #{:eval}
