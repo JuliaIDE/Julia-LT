@@ -12,33 +12,6 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-;; Get current block
-
-(def cb-id (atom 0))
-(def cbs (atom {}))
-
-(behavior ::get-block
-  :triggers #{:get-block}
-  :reaction (fn [editor cb]
-              (let [client (eval/get-client! {:command :editor.block
-                                              :origin editor
-                                              :create proc/connect})
-                    id (swap! cb-id inc)]
-                (swap! cbs assoc id cb)
-                (clients/send client
-                              :editor.block
-                              {:code (editor/->val editor)
-                               :line (-> editor editor/->cursor :line inc)
-                               :id id}
-                              :only editor))))
-
-(behavior ::return-block
-  :triggers #{:return-block}
-  :reaction (fn [editor {:keys [id bounds block]}]
-              (let [cb (@cbs id)]
-                (swap! cbs dissoc id)
-                (cb bounds block))))
-
 ;; Evaluation
 
 (defn single-selection? [editor]
