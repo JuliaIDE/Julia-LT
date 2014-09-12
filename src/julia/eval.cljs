@@ -89,7 +89,7 @@
                 (cmd/exec! :clear-inline-results)
                 (notifos/working)
                 (clients/send client
-                              :editor.eval.julia.all
+                              :eval.all
                               {:code (editor/->val editor)
                                :path (-> @editor :info :path)
                                :module (util/module editor)}
@@ -119,7 +119,6 @@
 
 (defn get-error-line [link]
   (let [[_ file line] (re-find links/url-pattern (links/data-file link))]
-;;     (println (links/data-url link))
     (when (and file line)
       {:file file
        :line (js/parseInt line)})))
