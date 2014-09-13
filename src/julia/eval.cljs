@@ -40,11 +40,14 @@
         (let [scales (safe-scalify editor bounds block)]
           (clients/send client
             :eval.block
-            {:code block
+            {:code (editor/->val editor)
+             :block block
              :bounds bounds
              :path (-> @editor :info :path)
              :module (util/module editor)
-             :scales (:lt.object/id @scales)}
+             :scales {:id (:lt.object/id @scales)
+                      :locs (->> @scales :scales (map :loc))
+                      :vals (->> @scales :scales (map :value))}}
             :only editor))))))
 
 (behavior ::eval.one
