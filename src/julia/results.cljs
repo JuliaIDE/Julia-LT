@@ -30,13 +30,11 @@
                             type (or (:type opts) :inline)
                             line (editor/line-handle ed (:line loc))
                             res-obj (object/create :lt.objs.eval/inline-result
-                                                   (merge {:ed this
-                                                           :class (name type)
-                                                           :opts opts
-                                                           :result res
-                                                           :loc loc
-                                                           :line line}
-                                                          info))]
+                                                   (merge info {:ed this
+                                                                :class (name type)
+                                                                :result res
+                                                                :loc loc
+                                                                :line line}))]
                         (when id (swap! results assoc id res-obj))
                         (when-let [prev (get (@this :widgets) [line type])]
                           (when (:open @prev)
