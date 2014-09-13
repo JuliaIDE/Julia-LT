@@ -47,8 +47,7 @@
 
                     ; Editor Commands
                     :lt.objs.langs.julia.eval/result
-                    :lt.objs.langs.julia.eval/error
-                    :lt.objs.langs.julia.results/inline-results]
+                    :lt.objs.langs.julia.eval/error]
 
      :hinter [:lt.objs.langs.julia.completions/line-change]
 
@@ -64,15 +63,18 @@
      :julia.profile-result [:lt.objs.langs.julia.profiler/clear
                             :lt.objs.langs.julia.profiler/menu]
 
-     :inline.result [:lt.objs.langs.julia.results/clear-result
+     :inline.result [:lt.objs.langs.julia.results/register-result
+                     :lt.objs.langs.julia.results/unregister-result
                      :lt.objs.langs.julia.results/eval
                      :lt.plugins.reptile/attach-reptile
                      :lt.plugins.reptile/clear-reptile]
-     :inline.underline-result [:lt.plugins.reptile/attach-reptile
+
+     :inline.underline-result [:lt.objs.langs.julia.results/register-result
+                               :lt.objs.langs.julia.results/unregister-result
+                               :lt.objs.langs.julia.results/eval
+                               :lt.plugins.reptile/attach-reptile
                                :lt.plugins.reptile/clear-reptile]
      }
- :- {:editor.julia [:lt.objs.eval/inline-results]
-
-     :editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
+ :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
 
      :julia.profile-result [:lt.objs.eval/result-menu!]}}

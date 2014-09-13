@@ -23,36 +23,22 @@
 
 (set! js/jlcall jlcall)
 
-(behavior ::inline-results
-          :triggers #{:editor.result}
-          :reaction (fn [this res loc {:keys [id] :as info}]
-                      (let [ed (:ed @this)
-                            type (or (:type opts) :inline)
-                            line (editor/line-handle ed (:line loc))
-                            res-obj (object/create :lt.objs.eval/inline-result
-                                                   (merge info {:ed this
-                                                                :class (name type)
-                                                                :result res
-                                                                :loc loc
-                                                                :line line}))]
-                        (when id (swap! results assoc id res-obj))
-                        (when-let [prev (get (@this :widgets) [line type])]
-                          (when (:open @prev)
-                            (object/merge! res-obj {:open true}))
-                          (object/raise prev :clear!))
-                        (when (:start-line loc)
-                          (doseq [widget (map #(get (@this :widgets) [(editor/line-handle ed %) type]) (range (:start-line loc) (:line loc)))
-                                  :when widget]
-                            (object/raise widget :clear!)))
-                        (object/update! this [:widgets] assoc [line type] res-obj))))
+(defn id [result]
+  (-> @result :opts :id))
 
-(behavior ::clear-result
+(behavior ::register-result
+          :triggers #{:init}
+          :reaction (fn [this]
+                      (when-let [id (id this)]
+                        (swap! results assoc id this))))
+
+(behavior ::unregister-result
           :triggers #{:clear!}
           :reaction (fn [this]
                       (when-let [client (-> @this :ed deref :client :default)]
-                        (when (:id @this)
-                          (swap! results dissoc (:id @this))
-                          (clients/send client :result.clear (:id @this))))))
+                        (when-let [id (id this)]
+                          (swap! results dissoc id)
+                          (clients/send client :result.clear id)))))
 
 (behavior ::raise
           :triggers #{:raise}
