@@ -74,23 +74,22 @@
 
 (behavior ::result
           :triggers #{:julia.result}
-          :reaction (fn [editor res]
+          :reaction (fn [editor {:keys [value html under info] [start end] :bounds}]
                       (notifos/done-working)
-                      (let [val (if (res :html)
+                      (let [val (if html
                                   (crate/html [:div.julia.result
-                                                (-> res :value crate/raw)])
-                                  (-> res :value))
-                            scripts (when (res :html) (util/get-scripts val))]
-                        (when (res :html) (links/process! val))
+                                                (crate/raw value)])
+                                  value)
+                            scripts (when html (util/get-scripts val))]
+                        (when html (links/process! val))
                         (object/raise editor
-                                      (if (res :under)
+                                      (if under
                                         :editor.result.underline
                                         :editor.result)
                                       val
-                                      {:start-line (-> res :start dec)
-                                       :line (-> res :end dec)}
-                                      {:id (res :id)
-                                       :scales (res :scales)})
+                                      {:start-line (dec start)
+                                       :line (dec end)}
+                                      info)
                         (when scripts (util/eval-scripts scripts)))))
 
 ;; Errors
