@@ -37,18 +37,14 @@
     (fn [bounds block]
       (if (= block "")
         (notifos/done-working)
-        (let [scales (safe-scalify editor bounds block)]
-          (clients/send client
-            :eval.block
-            {:code (editor/->val editor)
-             :block block
-             :bounds bounds
-             :path (-> @editor :info :path)
-             :module (util/module editor)
-             :scales {:id (:lt.object/id @scales)
-                      :locs (->> @scales :scales (map :loc))
-                      :vals (->> @scales :scales (map :value))}}
-            :only editor))))))
+        (clients/send client
+          :eval.block
+          {:code (editor/->val editor)
+           :block block
+           :bounds bounds
+           :path (-> @editor :info :path)
+           :module (util/module editor)}
+          :only editor)))))
 
 (behavior ::eval.one
   :triggers #{:eval.one}
