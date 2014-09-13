@@ -93,7 +93,8 @@
                                       val
                                       {:start-line (-> res :start dec)
                                        :line (-> res :end dec)}
-                                      {:id (res :id)})
+                                      {:id (res :id)
+                                       :scales (res :scales)})
                         (when scripts (util/eval-scripts scripts)))))
 
 ;; Errors

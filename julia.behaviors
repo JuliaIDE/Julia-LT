@@ -65,7 +65,11 @@
                             :lt.objs.langs.julia.profiler/menu]
 
      :inline.result [:lt.objs.langs.julia.results/clear-result
-                     :lt.objs.langs.julia.results/eval]
+                     :lt.objs.langs.julia.results/eval
+                     :lt.plugins.reptile/attach-reptile
+                     :lt.plugins.reptile/clear-reptile]
+     :inline.underline-result [:lt.plugins.reptile/attach-reptile
+                               :lt.plugins.reptile/clear-reptile]
      }
  :- {:editor.julia [:lt.objs.eval/inline-results]
 

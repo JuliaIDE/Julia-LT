@@ -111,7 +111,7 @@
   (let [start (js/parseInt start)]
     (+ start x)))
 
-;; Objects & results
+;; Objects & API
 
 (behavior ::clear
           :triggers #{:clear!}
@@ -151,9 +151,21 @@
                       :loc (apply vector line span)}))))
     this))
 
-;; (def r (reptile ed 1 9))
+;; Interaction with results
 
-;; (:scales @r)
+(behavior ::attach-reptile
+          :triggers #{:init}
+          :reaction (fn [result]
+                      (when-let [id (:scales @result)]
+                        (when-let [reptile (object/by-id id)]
+                          (object/merge! result {:scales reptile})
+                          (object/merge! reptile {:obj result})))))
+
+(behavior ::clear-reptile
+          :triggers #{:clear!}
+          :reaction (fn [result]
+                      (when-let [reptile (:scales @result)]
+                        (object/raise reptile :clear!))))
 
 ;; (doseq [obj (object/by-tag :reptile)]
 ;;   (object/destroy! obj))
