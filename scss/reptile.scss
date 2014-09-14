@@ -3,8 +3,8 @@
   border-bottom: 1px solid #BBB;
   cursor: ew-resize;
   -webkit-user-select: none;
-}
 
-.CodeMirror-code .reptile.slider:hover {
-  border-bottom: 1px solid #666;
+  &:hover {
+    border-bottom: 1px solid #666;
+  }
 }
