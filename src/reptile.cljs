@@ -158,15 +158,15 @@
 (behavior ::attach-reptile
           :triggers #{:init}
           :reaction (fn [result]
-                      (when-let [id (:scales @result)]
-                        (when-let [reptile (object/by-id id)]
+                      (when-let [span (-> @result :opts :scales)]
+                        (let [reptile (reptile (:ed @result) span)]
                           (object/merge! result {:scales reptile})
                           (object/merge! reptile {:obj result})))))
 
 (behavior ::clear-reptile
           :triggers #{:clear!}
           :reaction (fn [result]
-                      (when-let [reptile (:scales @result)]
+                      (when-let [reptile (@result :scales)]
                         (object/raise reptile :clear!))))
 
 ;; (doseq [obj (object/by-tag :reptile)]
