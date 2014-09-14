@@ -14,6 +14,9 @@
    (integer? thing) (@object/instances ed)
    :else thing))
 
+(defn ->client [id]
+  (some-> id ->ed deref :client :default))
+
 (defn jlcall [id code]
   (let [ed (->ed id)
         client (-> @ed :client :default)]
@@ -55,3 +58,14 @@
                       (eval-with (:content @this) code)))
 
 (object/add-behavior! julia ::raise)
+
+(behavior ::reval
+          :triggers #{:scale}
+          :reaction (fn [result vals]
+                      (let [id (id result)
+                            client (->client id)]
+                        (when client
+                          (clients/send client :result.reval
+                                        {:id id
+                                         :vals (map :value vals)
+                                         :locs (map :loc vals)})))))
