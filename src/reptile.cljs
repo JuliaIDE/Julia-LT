@@ -107,9 +107,11 @@
 
 ;; The transform
 
+(defn div [x y] (Math/floor (/ x y)))
+
 (defn transform [start x]
   (let [start (js/parseInt start)]
-    (+ start x)))
+    (+ start (div x 5))))
 
 ;; Objects & API
 
