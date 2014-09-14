@@ -145,7 +145,7 @@
                      {:mark (mark-slider ed line span
                               (fn [start x]
                                 (let [val (transform start x)]
-                                  (object/update! this [:scales idx] (constantly val))
+                                  (object/update! this [:scales idx :value] (constantly val))
                                   (when-let [obj (:obj @this)]
                                     (object/raise obj :scale (:scales @this)))
                                   val)))
