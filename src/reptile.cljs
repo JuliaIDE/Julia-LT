@@ -169,13 +169,3 @@
           :reaction (fn [result]
                       (when-let [reptile (@result :scales)]
                         (object/raise reptile :clear!))))
-
-;; (doseq [obj (object/by-tag :reptile)]
-;;   (object/destroy! obj))
-
-;; (mark-slider ed 11 (-> ed (line-handle 11) numbers first) identity)
-
-;; (def ed (-> "mandelbrot.jl" lt.objs.editor.pool/containing-path first))
-
-;; (doseq [mark (.getAllMarks (editor/->cm-ed ed))]
-;;   (.clear mark))
