@@ -145,9 +145,10 @@
                      {:mark (mark-slider ed line span
                               (fn [start x]
                                 (let [val (transform start x)]
-                                  (object/update! this [:scales idx :value] (constantly val))
-                                  (when-let [obj (:obj @this)]
-                                    (object/raise obj :scale (:scales @this)))
+                                  (when (not= val (-> @this :scales (get idx) :value))
+                                    (object/update! this [:scales idx :value] (constantly val))
+                                    (when-let [obj (:obj @this)]
+                                      (object/raise obj :scale (:scales @this))))
                                   val)))
                       :value (transform (content ed line span) 0)
                       :loc (apply vector line span)}))))
