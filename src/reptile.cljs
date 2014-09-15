@@ -105,7 +105,10 @@
                    (.setCursor (-> @mark .-doc) (-> @mark .find .-to))))))))
     mark))
 
-;; The transform
+;; Number processing
+
+(defn valid-number? [s]
+  (re-find #"^[0-9]+$" s))
 
 (defn div [x y] (Math/floor (/ x y)))
 
@@ -141,17 +144,18 @@
                  (doseq [span (numbers handle)
                          :let [line (here's-my-number handle)
                                idx (count (:scales @this))]]
-                   (object/update! this [:scales] conj
-                     {:mark (mark-slider ed line span
-                              (fn [start x]
-                                (let [val (transform start x)]
-                                  (when (not= val (-> @this :scales (get idx) :value))
-                                    (object/update! this [:scales idx :value] (constantly val))
-                                    (when-let [obj (:obj @this)]
-                                      (object/raise obj :scale (:scales @this))))
-                                  val)))
-                      :value (transform (content ed line span) 0)
-                      :loc (apply vector line span)}))))
+                   (when (valid-number? (content ed line span))
+                     (object/update! this [:scales] conj
+                       {:mark (mark-slider ed line span
+                                (fn [start x]
+                                  (let [val (transform start x)]
+                                    (when (not= val (-> @this :scales (get idx) :value))
+                                      (object/update! this [:scales idx :value] (constantly val))
+                                      (when-let [obj (:obj @this)]
+                                        (object/raise obj :scale (:scales @this))))
+                                    val)))
+                        :value (transform (content ed line span) 0)
+                        :loc (apply vector line span)})))))
     this))
 
 ;; Interaction with results
