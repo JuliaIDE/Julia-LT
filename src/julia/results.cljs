@@ -3,6 +3,7 @@
             [lt.object :as object]
             [lt.util.dom :as dom]
             [lt.objs.editor :as editor]
+            [lt.objs.notifos :as notifos]
             [lt.objs.clients :as clients])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
@@ -65,6 +66,7 @@
                       (let [id (id result)
                             client (->client id)]
                         (when client
+                          (notifos/working)
                           (clients/send client :result.reval
                                         {:id id
                                          :vals (map :value vals)
