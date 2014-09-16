@@ -25,7 +25,7 @@
 (defn % [x] (str (* x 100) "%"))
 
 (defn editor-for-file [file]
-  (first (pool/by-path file)))
+  (first (pool/containing-path file)))
 
 (def lines (atom #{}))
 
@@ -101,7 +101,7 @@
           :reaction (fn [editor res]
                       (object/raise editor :julia.result (merge res {:html true
                                                                      :under true}))
-                      (let [res-obj (util/widget editor (-> res :end dec) :underline)]
+                      (let [res-obj (util/widget editor (-> res :bounds second) :underline)]
                         (listen! res-obj)
                         (object/add-tags res-obj [:julia.profile-result]))
                       (set-lines (res :lines))))

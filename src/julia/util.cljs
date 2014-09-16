@@ -16,7 +16,7 @@
   (@editor :lt.objs.langs.julia.module/module))
 
 (defn widget [editor line & [type]]
-  (-> @editor :widgets (get [(editor/line-handle editor line) (or type :inline)])))
+  (-> @editor :widgets (get [(editor/line-handle editor (dec line)) (or type :inline)])))
 
 ;; Script evaluation
 
