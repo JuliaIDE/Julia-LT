@@ -124,7 +124,7 @@
     (popup/popup! {:header "Connect Julia to Light Table"
                    :body (str "@async Jewel.server(" tcp/port ", " (clients/->id client) ")")
                    :buttons [{:label "Done"}]})
-    (clients/send client :julia.set-default-client {} :only julia)
+    (clients/send client :julia.set-global-client {} :only julia)
     (set-default-client client)
     client))
 
