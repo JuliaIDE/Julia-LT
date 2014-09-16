@@ -28,6 +28,18 @@
 
 .julia {
 
+  .fade {
+    color: rgba(0,0,0,0.3);
+    font-weight: normal;
+  }
+
+  a {
+    color: black;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .collapsible-header span {
     color: rgba(0,0,0,0.3);
     font-weight: normal;
