@@ -26,6 +26,11 @@
     max-height: 300px;
     max-width: 500px;
   }
+
+  .collapsible-content > img {
+    max-width: none;
+    max-height: none;
+  }
 }
 
 .julia.error {
