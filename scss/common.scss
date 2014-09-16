@@ -8,8 +8,9 @@
   }
 
   .collapsible-content {
-    max-width: 500px;
     max-height: 250px;
+    min-width: 75px;
+    max-width: 500px;
     overflow: auto;
   }
 
