@@ -21,6 +21,11 @@
       white-space: nowrap;
     }
   }
+
+  img {
+    max-height: 300px;
+    max-width: 500px;
+  }
 }
 
 .julia.error {
