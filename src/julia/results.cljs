@@ -66,7 +66,7 @@
                       (let [id (id result)
                             client (->client id)]
                         (when client
-                          (notifos/working)
+                          ;(notifos/working)
                           (clients/send client :result.reval
                                         {:id id
                                          :vals (map :value vals)
