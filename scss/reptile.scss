@@ -8,3 +8,13 @@
     border-bottom: 1px solid #666;
   }
 }
+
+.julia-dark {
+  .CodeMirror-code .reptile.slider {
+    border-bottom: 1px solid #888;
+
+    &:hover {
+      border-bottom: 1px solid #DDD;
+    }
+  }
+}
