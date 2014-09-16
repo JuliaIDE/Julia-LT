@@ -6,7 +6,8 @@
             [lt.objs.command :as cmd]
             [lt.objs.popup :as popup]
             [lt.objs.notifos :as notifos]
-            [lt.util.dom :as dom])
+            [lt.util.dom :as dom]
+            [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Global commands
