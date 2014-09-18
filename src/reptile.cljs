@@ -2,6 +2,8 @@
   (:require [lt.object :as object]
             [lt.util.dom :as dom]
             [lt.objs.editor :as editor]
+            [lt.objs.notifos :as notifos]
+            [lt.util.js :refer [debounce]]
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
@@ -84,7 +86,7 @@
                              #js {:clearOnEnter true
                                   :replacedWith node}))))
 
-(def set-content (lt.util.js/debounce 500 set-content'))
+(def set-content (debounce 500 set-content'))
 
 (defn mark-slider [ed line span cb]
   (let [node (slider (content ed line span))
@@ -163,6 +165,7 @@
 (behavior ::attach-reptile
           :triggers #{:init}
           :reaction (fn [result]
+                      (reset! busy 0)
                       (when-let [span (-> @result :opts :scales)]
                         (let [reptile (reptile (:ed @result) span)]
                           (object/merge! result {:scales reptile})
@@ -173,3 +176,28 @@
           :reaction (fn [result]
                       (when-let [reptile (@result :scales)]
                         (object/raise reptile :clear!))))
+
+;; Notifications
+
+(def busy (atom 0))
+(def busy-shown false)
+
+(def reset-busy
+  (debounce 5000 #(reset! busy 0)))
+
+(def working*
+  (debounce 50
+    #(when (and (not busy-shown) (> @busy 0))
+       (def busy-shown true)
+       (notifos/working))))
+
+(defn working []
+  (swap! busy inc)
+  (when (not busy-shown)
+    (working*)))
+
+(defn done-working []
+  (swap! busy dec)
+  (when (and busy-shown (<= @busy 0))
+    (def busy-shown false)
+    (notifos/done-working)))
