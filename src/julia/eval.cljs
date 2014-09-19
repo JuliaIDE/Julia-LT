@@ -119,5 +119,5 @@
                                        :line line})
                         (object/raise error-lines :clear)
                         (object/raise error-lines :highlight (get-error-lines dom))
-                        (->> (util/widget editor line)
+                        (->> (util/widget editor (inc line))
                              (object/raise error-lines :listen)))))
