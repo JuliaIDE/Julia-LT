@@ -16,7 +16,8 @@
   .julia {
 
     .fade {
-      color: rgba(0,0,0,0.3);
+      color: inherit;
+      opacity: 0.7;
       font-weight: normal;
     }
 
@@ -25,12 +26,6 @@
       &:hover {
         text-decoration: underline;
       }
-    }
-
-    .collapsible-header span {
-      color: inherit;
-      opacity: 0.7;
-      font-weight: normal;
     }
 
     table {
