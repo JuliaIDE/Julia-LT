@@ -28,10 +28,6 @@
        :module (util/module editor)}
       :only editor)))
 
-(defn safe-scalify [editor [start end] block]
-  (when (= block (editor/range editor {:line (dec start) :ch 0} {:line (dec end)}))
-    (reptile editor [start end])))
-
 (defn eval-block [editor client]
   (object/raise editor :get-block
     (fn [bounds block]
