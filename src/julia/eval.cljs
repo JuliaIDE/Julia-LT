@@ -59,7 +59,7 @@
         (notifos/done-working)
         (do
           (clear-results editor bounds)
-          (when move (next-line editor (first bounds)))
+          (when move (next-line editor (last bounds)))
           (clients/send client
             :eval.block
             {:code (editor/->val editor)
