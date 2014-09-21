@@ -52,3 +52,10 @@
                          (fn [[start end] block]
                            (editor/set-selection ed {:line (dec start) :ch 0}
                                                     {:line (dec end)}))))})
+
+;; Eval
+
+(cmd/command {:command :eval.one.move
+              :desc "Editor: Eval and go to next block"
+              :exec #(when-let [ed (pool/last-active)]
+                       (object/raise ed :eval.one true))})

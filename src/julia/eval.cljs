@@ -21,6 +21,22 @@
     (when-let [widget (get (@ed :widgets) [lh type])]
       (object/raise widget :clear!))))
 
+(defn blank? [l] (re-find #"^\s*$" l))
+
+(defn next-line [ed line]
+  (let [l (editor/line ed line)]
+    (if l
+      (if-not (blank? l)
+        (editor/move-cursor ed {:line line})
+        (if (editor/line ed (inc line))
+          (editor/move-cursor ed {:line (inc line)})
+          (do
+            (editor/move-cursor ed {:line line})
+            (editor/insert-at-cursor ed "\n"))))
+      (do
+        (editor/move-cursor ed {:line line})
+        (editor/insert-at-cursor ed "\n\n")))))
+
 ;; Evaluation
 
 (defn single-selection? [editor]
@@ -36,13 +52,14 @@
        :module (util/module editor)}
       :only editor)))
 
-(defn eval-block [editor client]
+(defn eval-block [editor client move]
   (object/raise editor :get-block
     (fn [bounds block]
       (if (= block "")
         (notifos/done-working)
         (do
           (clear-results editor bounds)
+          (when move (next-line editor (first bounds)))
           (clients/send client
             :eval.block
             {:code (editor/->val editor)
@@ -54,13 +71,13 @@
 
 (behavior ::eval.one
   :triggers #{:eval.one}
-  :reaction (fn [editor]
+  :reaction (fn [editor & [move]]
               (let [client (eval/get-client! {:command :editor.eval.julia
                                               :origin editor
                                               :info {}
                                               :create proc/connect})]
                 (notifos/working)
-                ((if (editor/selection? editor) eval-selection eval-block) editor client))))
+                ((if (editor/selection? editor) eval-selection eval-block) editor client move))))
 
 (behavior ::eval.all
   :triggers #{:eval}

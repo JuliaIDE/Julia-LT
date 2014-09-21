@@ -1,4 +1,5 @@
 {:+
  {:editor.julia {"pmeta-/" [:toggle-comment-selection]
                  "ctrl-m" [:editor.methods.toggle]
-                 "pmeta-shift-a" [:editor.select-block]}}}
+                 "pmeta-shift-a" [:editor.select-block]
+                 "shift-enter" [:eval.one.move]}}}
