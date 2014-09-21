@@ -13,6 +13,14 @@
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
+;; Utils
+
+(defn clear-results [ed [start end]]
+  (doseq [lh (map (partial editor/line-handle ed) (range (dec start) end))
+          type [:inline :underline]]
+    (when-let [widget (get (@ed :widgets) [lh type])]
+      (object/raise widget :clear!))))
+
 ;; Evaluation
 
 (defn single-selection? [editor]
@@ -33,14 +41,16 @@
     (fn [bounds block]
       (if (= block "")
         (notifos/done-working)
-        (clients/send client
-          :eval.block
-          {:code (editor/->val editor)
-           :block block
-           :bounds bounds
-           :path (-> @editor :info :path)
-           :module (util/module editor)}
-          :only editor)))))
+        (do
+          (clear-results editor bounds)
+          (clients/send client
+            :eval.block
+            {:code (editor/->val editor)
+             :block block
+             :bounds bounds
+             :path (-> @editor :info :path)
+             :module (util/module editor)}
+            :only editor))))))
 
 (behavior ::eval.one
   :triggers #{:eval.one}
