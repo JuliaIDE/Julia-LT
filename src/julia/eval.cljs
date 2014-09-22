@@ -104,7 +104,7 @@
                                                 (crate/raw value)])
                                   value)
                             scripts (when html (util/get-scripts val))]
-                        (when html (links/process! val))
+                        (when html (lt.objs.langs.julia/process val))
                         (object/raise editor
                                       (if under
                                         :editor.result.underline

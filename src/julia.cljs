@@ -81,3 +81,6 @@
           :exclusive true
           :reaction (fn [app]
                       (dom/remove-class (dom/$ :body) :julia-dark)))
+
+(defn process [node]
+  (-> node lt.objs.file-links/process! lt.plugins.runmode/process!))

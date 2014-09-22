@@ -1,5 +1,6 @@
 {:+ {:app [(:lt.objs.plugins/load-js ["js/julia.js" "julia_compiled.js"])
            (:lt.objs.plugins/load-js "js/jquery-2.1.1.min.js")
+           (:lt.objs.plugins/load-js "js/runmode.js")
            (:lt.objs.plugins/load-css "css/common.css")
            (:lt.objs.plugins/load-css "css/light.css")
            (:lt.objs.plugins/load-css "css/dark.css")
