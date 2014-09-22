@@ -32,9 +32,16 @@
                               (util/eval-scripts scripts))
                             (-> res :value console/log)))))
 
+(behavior ::popup
+          :triggers #{:popup}
+          :reaction (fn [this res]
+                      (popup/popup! {:header  (res :header)
+                                       :body    (res :body)
+                                       :buttons (res :buttons)})))
+
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
-                :behaviors [::commands])
+                :behaviors [::commands ::popup])
 
 (def julia (object/create ::julia-lang))
 
