@@ -59,3 +59,14 @@
               :desc "Editor: Eval and go to next block"
               :exec #(when-let [ed (pool/last-active)]
                        (object/raise ed :eval.one true))})
+
+;; Files
+
+(cmd/command {:command :julia.new
+              :desc "Julia: Open a blank file"
+              :exec #(do
+                       (cmd/exec! :new-file)
+                       (cmd/exec! :set-syntax {:name "Julia"
+                                               :exts [:jl]
+                                               :mime "text/julia"
+                                               :tags [:editor.julia]}))})
