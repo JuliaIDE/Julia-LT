@@ -72,7 +72,7 @@
 
 (def browser (object/create ::browser))
 
-(cmd/command {:command :browser-tab
+(cmd/command {:command :julia.browser
               :desc "Julia: Open the object browser"
               :exec #(tabs/add-or-focus! browser)})
 
