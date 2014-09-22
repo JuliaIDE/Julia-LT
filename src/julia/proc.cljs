@@ -104,7 +104,7 @@
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
 ; complain – show a popup if we can't connect
 (defn connect [& {:keys [notify complain] :or {notify false complain true}}]
-  (when notify (notifos/working "Spinning up a Julia client..."))
+  (when notify (notifos/working "Spinning up Julia..."))
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
     (object/merge! obj {:notify notify :complain complain})
