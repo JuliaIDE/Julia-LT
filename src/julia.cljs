@@ -45,22 +45,6 @@
 
 (def julia (object/create ::julia-lang))
 
-(cmd/command {:command :editor.interrupt-clients
-              :desc "Julia: Interrupt the current client"
-              :exec (fn []
-                      (when-let [ed (pool/last-active)]
-                        (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
-                          (.kill proc "SIGINT"))
-                        (notifos/done-working)))})
-
-(cmd/command {:command :editor.kill-clients
-              :desc "Julia: Kill the current client"
-              :exec (fn []
-                      (when-let [ed (pool/last-active)]
-                        (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
-                            (.kill proc))
-                        (notifos/done-working)))})
-
 ;; Settings
 
 (behavior ::julia-path

@@ -10,7 +10,8 @@
             [lt.objs.plugins :as plugins]
             [lt.objs.clients :as clients]
             [lt.objs.notifos :as notifos]
-            [lt.objs.eval :as eval])
+            [lt.objs.eval :as eval]
+            [lt.objs.sidebar.command :as cmd])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Connection Monitors
@@ -190,3 +191,25 @@
           :type :user
           :reaction (fn [editor client]
                       (connect-client editor client)))
+
+;; Process commands
+
+(defn get-proc [ed]
+  (or (->> @ed :client vals (map deref) (map :proc) (filter identity) seq)
+      [(:proc @(default-client))]))
+
+(cmd/command {:command :editor.interrupt-clients
+              :desc "Julia: Interrupt the current client"
+              :exec (fn []
+                      (when-let [ed (lt.objs.editor.pool/last-active)]
+                        (doseq [proc (get-proc ed)]
+                          (.kill proc "SIGINT"))
+                        (notifos/done-working)))})
+
+(cmd/command {:command :editor.kill-clients
+              :desc "Julia: Kill the current client"
+              :exec (fn []
+                      (when-let [ed (lt.objs.editor.pool/last-active)]
+                        (doseq [proc (get-proc ed)]
+                            (.kill proc))
+                        (notifos/done-working)))})
