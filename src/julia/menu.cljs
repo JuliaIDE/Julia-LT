@@ -18,4 +18,7 @@
                             {:label "Show methods"
                              :order 0.15
                              :enabled (not (editor/selection? this))
-                             :click #(cmd/exec! :editor.methods.toggle)})))
+                             :click #(cmd/exec! :editor.methods.toggle)}
+                            {:label "Select block"
+                             :order 4.5
+                             :click #(cmd/exec! :editor.select-block)})))
