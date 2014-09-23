@@ -35,6 +35,7 @@
                     :lt.objs.highlights/refresh-on-open
                     :lt.objs.julia.commands/get-block
                     :lt.objs.julia.commands/return-block
+                    :lt.objs.langs.julia.menu/ed-menu+
 
 ;;                     :lt.objs.breakpoint/gutter-menu
 ;;                     :lt.objs.breakpoint/breakpoint-menu
