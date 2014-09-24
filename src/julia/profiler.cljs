@@ -25,7 +25,7 @@
 (defn % [x] (str (* x 100) "%"))
 
 (defn editor-for-file [file]
-  (first (pool/containing-path file)))
+  (first (pool/by-path file)))
 
 (def lines (atom #{}))
 
