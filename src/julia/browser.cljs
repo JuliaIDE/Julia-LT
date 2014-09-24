@@ -23,7 +23,7 @@
 (def highlight
   (if lt.plugins.june
     lt.plugins.june/highlight
-    identity))
+    (fn [selector cm line dom] dom)))
 
 (behavior ::on-close
           :triggers #{:close}
