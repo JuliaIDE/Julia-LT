@@ -20,10 +20,10 @@
               (.toggle content 200))))
     dom))
 
-(def highlight
+(defn highlight [selector cm line dom]
   (if lt.plugins.june
-    lt.plugins.june/highlight
-    (fn [selector cm line dom] dom)))
+    (lt.plugins.june/highlight selector cm line dom)
+    dom))
 
 (behavior ::on-close
           :triggers #{:close}
