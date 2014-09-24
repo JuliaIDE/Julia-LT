@@ -1,0 +1,12 @@
+.CodeMirror-code .reptile.slider {
+  background-clip: border-box;
+  border-bottom: 1px solid #BBB;
+  cursor: ew-resize;
+  -webkit-user-select: none; }
+  .CodeMirror-code .reptile.slider:hover {
+    border-bottom: 1px solid #666; }
+
+.julia-dark .CodeMirror-code .reptile.slider {
+  border-bottom: 1px solid #888; }
+  .julia-dark .CodeMirror-code .reptile.slider:hover {
+    border-bottom: 1px solid #DDD; }

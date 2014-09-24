@@ -4,10 +4,14 @@
   /* Link Highlights */ }
   .julia-dark .CodeMirror-code .highlight {
     background: rgba(0, 255, 0, 0.1); }
-.julia-dark .julia .collapsible-header span {
+.julia-dark .julia .fade {
   color: inherit;
   opacity: 0.7;
   font-weight: normal; }
+.julia-dark .julia a {
+  color: #c8c8c8; }
+  .julia-dark .julia a:hover {
+    text-decoration: underline; }
 .julia-dark .julia table {
   color: white;
   opacity: 0.8; }
