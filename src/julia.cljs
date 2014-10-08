@@ -6,7 +6,8 @@
             [lt.objs.command :as cmd]
             [lt.objs.popup :as popup]
             [lt.objs.notifos :as notifos]
-            [lt.util.dom :as dom])
+            [lt.util.dom :as dom]
+            [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Global commands
@@ -31,27 +32,18 @@
                               (util/eval-scripts scripts))
                             (-> res :value console/log)))))
 
+(behavior ::popup
+          :triggers #{:popup}
+          :reaction (fn [this res]
+                      (popup/popup! {:header  (res :header)
+                                       :body    (res :body)
+                                       :buttons (res :buttons)})))
+
 (object/object* ::julia-lang
                 :tags #{:julia.lang}
-                :behaviors [::commands])
+                :behaviors [::commands ::popup])
 
 (def julia (object/create ::julia-lang))
-
-(cmd/command {:command :editor.interrupt-clients
-              :desc "Julia: Interrupt the current client"
-              :exec (fn []
-                      (when-let [ed (pool/last-active)]
-                        (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
-                          (.kill proc "SIGINT"))
-                        (notifos/done-working)))})
-
-(cmd/command {:command :editor.kill-clients
-              :desc "Julia: Kill the current client"
-              :exec (fn []
-                      (when-let [ed (pool/last-active)]
-                        (doseq [proc (->> @ed :client vals (map deref) (map :proc) (filter identity))]
-                            (.kill proc))
-                        (notifos/done-working)))})
 
 ;; Settings
 
@@ -80,3 +72,6 @@
           :exclusive true
           :reaction (fn [app]
                       (dom/remove-class (dom/$ :body) :julia-dark)))
+
+(defn process [node]
+  (-> node lt.objs.file-links/process! lt.plugins.runmode/process!))

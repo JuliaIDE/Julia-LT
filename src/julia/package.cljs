@@ -1,4 +1,4 @@
-(ns lt.objs.langs.pkg
+(ns lt.objs.langs.julia.package
   (:require [lt.object :as object]
             [lt.objs.tabs :as tabs]
             [lt.objs.command :as cmd]

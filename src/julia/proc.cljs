@@ -10,7 +10,8 @@
             [lt.objs.plugins :as plugins]
             [lt.objs.clients :as clients]
             [lt.objs.notifos :as notifos]
-            [lt.objs.eval :as eval])
+            [lt.objs.eval :as eval]
+            [lt.objs.sidebar.command :as cmd])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Connection Monitors
@@ -72,16 +73,18 @@
           :triggers #{:proc.out :proc.error}
           :debounce 500
           :reaction (fn [this]
-                      (when-let [out (not-empty (@this :out-buffer))]
-                        (console/log out)
-                        (object/merge! this {:out-buffer ""}))
-                      (when-let [out (not-empty (@this :err-buffer))]
-                        (console/log out "error")
-                        (object/merge! this {:err-buffer ""}))))
+                      (when @this
+                        (when-let [out (not-empty (@this :out-buffer))]
+                          (console/log out)
+                          (object/merge! this {:out-buffer ""}))
+                        (when-let [out (not-empty (@this :err-buffer))]
+                          (console/log out "error")
+                          (object/merge! this {:err-buffer ""})))))
 
 ;; Connection object
 
 (object/object* ::connecting-notifier
+                :tags #{:julia.connection-watch}
                 :behaviors [::proc-out ::proc-error ::proc-exit
                             ::pipe-out ::pipe-err ::flush]
                 :init (fn [this client]
@@ -103,7 +106,7 @@
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
 ; complain – show a popup if we can't connect
 (defn connect [& {:keys [notify complain] :or {notify false complain true}}]
-  (when notify (notifos/working "Spinning up a Julia client..."))
+  (when notify (notifos/working "Spinning up Julia..."))
   (let [client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
     (object/merge! obj {:notify notify :complain complain})
@@ -123,7 +126,7 @@
     (popup/popup! {:header "Connect Julia to Light Table"
                    :body (str "@async Jewel.server(" tcp/port ", " (clients/->id client) ")")
                    :buttons [{:label "Done"}]})
-    (clients/send client :julia.set-default-client {} :only julia)
+    (clients/send client :julia.set-global-client {} :only julia)
     (set-default-client client)
     client))
 
@@ -189,3 +192,25 @@
           :type :user
           :reaction (fn [editor client]
                       (connect-client editor client)))
+
+;; Process commands
+
+(defn get-proc [ed]
+  (or (->> @ed :client vals (map deref) (map :proc) (filter identity) seq)
+      [(:proc @(default-client))]))
+
+(cmd/command {:command :editor.interrupt-clients
+              :desc "Julia: Interrupt the current client"
+              :exec (fn []
+                      (when-let [ed (lt.objs.editor.pool/last-active)]
+                        (doseq [proc (get-proc ed)]
+                          (.kill proc "SIGINT"))
+                        (notifos/done-working)))})
+
+(cmd/command {:command :editor.kill-clients
+              :desc "Julia: Kill the current client"
+              :exec (fn []
+                      (when-let [ed (lt.objs.editor.pool/last-active)]
+                        (doseq [proc (get-proc ed)]
+                            (.kill proc))
+                        (notifos/done-working)))})

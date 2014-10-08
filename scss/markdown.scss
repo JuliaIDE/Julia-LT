@@ -1,0 +1,50 @@
+.markdown {
+  white-space: normal;
+  max-width: 600px;
+  h1 {
+    font-weight: bold;
+    width: 100%;
+    text-align: right;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+  }
+
+  code {
+    font-family: 'DejaVu Sans Mono', Helvetica, arial, sans-serif;
+    color: black;
+    margin: 0 2px;
+    padding: 0 5px;
+    white-space: nowrap;
+    border: 1px solid #eaeaea;
+    background-color: #f8f8f8;
+    border-radius: 3px;
+  }
+
+  pre {
+    background-color: #f8f8f8;
+    border: 1px solid #cccccc;
+    font-size: 13px;
+    line-height: 19px;
+    overflow: auto;
+    padding: 6px 10px;
+    border-radius: 3px;
+    code {
+      margin: 0;
+      padding: 0;
+      white-space: pre;
+      border: none;
+      background: transparent;
+    }
+  }
+
+  p, blockquote, ul, ol, dl, li, table, pre {
+    margin: 10px 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    &:first-child {
+      margin-top: 0;
+      padding-top: 0;
+    }
+  }
+}

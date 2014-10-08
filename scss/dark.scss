@@ -15,10 +15,17 @@
 
   .julia {
 
-    .collapsible-header span {
+    .fade {
       color: inherit;
       opacity: 0.7;
       font-weight: normal;
+    }
+
+    a {
+      color: rgb(200,200,200);
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     table {

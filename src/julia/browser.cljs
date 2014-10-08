@@ -7,8 +7,7 @@
             [lt.objs.tabs :as tabs]
             [lt.objs.command :as cmd]
             [crate.core :as crate]
-            [crate.binding :refer [bound map-bound]]
-            [lt.plugins.june :as june])
+            [crate.binding :refer [bound map-bound]])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 (defn process-collapsible! [dom]
@@ -19,6 +18,11 @@
       (set! (.-onclick header)
             (fn []
               (.toggle content 200))))
+    dom))
+
+(defn highlight [selector cm line dom]
+  (if lt.plugins.june
+    (lt.plugins.june/highlight selector cm line dom)
     dom))
 
 (behavior ::on-close
@@ -51,13 +55,13 @@
    [:div.julia.browser
     [:table.data-frame
      (for [[k v] objs]
-       (june/highlight ".variable" nil nil
-                       (links/process!
-                        (process-collapsible!
-                         (crate/html
-                          [:tr
-                           [:td [:strong [:span.variable (name k)]]]
-                           [:td (crate/raw v)]])))))]]])
+       (highlight ".variable" nil nil
+                  (links/process!
+                   (process-collapsible!
+                    (crate/html
+                     [:tr
+                      [:td [:strong [:span.variable (name k)]]]
+                      [:td (crate/raw v)]])))))]]])
 
 (object/object* ::browser
                 :tags #{:julia.browser}
@@ -68,7 +72,7 @@
 
 (def browser (object/create ::browser))
 
-(cmd/command {:command :browser-tab
+(cmd/command {:command :julia.browser
               :desc "Julia: Open the object browser"
               :exec #(tabs/add-or-focus! browser)})
 

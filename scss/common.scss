@@ -3,14 +3,22 @@
   cursor: default;
   -webkit-user-select: none;
 
-  .collapsible-header {
-    font-weight: bold;
+  .collapsible-content {
+    max-height: 250px;
+    padding-right: 10px;
+    max-width: 500px;
+    overflow: auto;
   }
 
-  .collapsible-content {
-    max-width: 500px;
-    max-height: 250px;
-    overflow: auto;
+  .collapsible-content .collapsible-content {
+    max-height: none;
+    max-width: none;
+    padding-left: 5px;
+    padding-right: 0;
+  }
+
+  .text {
+    white-space: pre;
   }
 
   table {
@@ -19,6 +27,16 @@
       padding: 3px;
       white-space: nowrap;
     }
+  }
+
+  img {
+    max-height: 300px;
+    max-width: 500px;
+  }
+
+  .collapsible-content > img {
+    max-width: none;
+    max-height: none;
   }
 }
 

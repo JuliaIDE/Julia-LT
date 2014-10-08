@@ -1,13 +1,16 @@
 {:+ {:app [(:lt.objs.plugins/load-js ["js/julia.js" "julia_compiled.js"])
            (:lt.objs.plugins/load-js "js/jquery-2.1.1.min.js")
+           (:lt.objs.plugins/load-js "js/runmode.js")
            (:lt.objs.plugins/load-css "css/common.css")
            (:lt.objs.plugins/load-css "css/light.css")
            (:lt.objs.plugins/load-css "css/dark.css")
            (:lt.objs.plugins/load-css "css/patch.css")
            (:lt.objs.plugins/load-css "css/profiler.css")
+           (:lt.objs.plugins/load-css "css/reptile.css")
            (:lt.objs.plugins/load-css "css/browser.css")
            (:lt.objs.plugins/load-keymap "julia.keymap")
-           :lt.objs.langs.julia.stats/metrics]
+           :lt.objs.langs.julia.stats/metrics
+           :lt.objs.langs.julia/dark-theme]
 
      :files [(:lt.objs.files/file-types [{:name "Julia"
                                           :exts [:jl]
@@ -19,9 +22,6 @@
      :editor.julia [:lt.objs.langs.julia.proc/connect-on-open
                     :lt.objs.langs.julia.proc/attach-on-connect
 
-                    ;; Settings
-                    (:lt.objs.editor/tab-settings false 2 2)
-
                     ;; Editor support
                     :lt.objs.langs.julia.eval/eval.one
                     :lt.objs.langs.julia.eval/eval.all
@@ -31,6 +31,9 @@
                     :lt.objs.langs.julia.module/get-module-on-connect
                     :lt.objs.langs.julia.module/set-module
                     :lt.objs.highlights/refresh-on-open
+                    :lt.objs.julia.commands/get-block
+                    :lt.objs.julia.commands/return-block
+                    :lt.objs.langs.julia.menu/ed-menu+
 
 ;;                     :lt.objs.breakpoint/gutter-menu
 ;;                     :lt.objs.breakpoint/breakpoint-menu
@@ -45,8 +48,7 @@
 
                     ; Editor Commands
                     :lt.objs.langs.julia.eval/result
-                    :lt.objs.langs.julia.eval/error
-                    :lt.objs.langs.julia.results/inline-results]
+                    :lt.objs.langs.julia.eval/error]
 
      :hinter [:lt.objs.langs.julia.completions/line-change]
 
@@ -62,11 +64,20 @@
      :julia.profile-result [:lt.objs.langs.julia.profiler/clear
                             :lt.objs.langs.julia.profiler/menu]
 
-     :inline.result [:lt.objs.langs.julia.results/clear-result
-                     :lt.objs.langs.julia.results/eval]
-     }
- :- {:editor.julia [:lt.objs.eval/inline-results]
+     :inline.result [:lt.objs.langs.julia.results/register-result
+                     :lt.objs.langs.julia.results/unregister-result
+                     :lt.objs.langs.julia.results/eval
+                     :lt.plugins.reptile/attach-reptile
+                     :lt.plugins.reptile/clear-reptile
+                     :lt.objs.langs.julia.results/reval]
 
-     :editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
+     :inline.underline-result [:lt.objs.langs.julia.results/register-result
+                               :lt.objs.langs.julia.results/unregister-result
+                               :lt.objs.langs.julia.results/eval
+                               :lt.plugins.reptile/attach-reptile
+                               :lt.plugins.reptile/clear-reptile
+                               :lt.objs.langs.julia.results/reval]
+     }
+ :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
 
      :julia.profile-result [:lt.objs.eval/result-menu!]}}

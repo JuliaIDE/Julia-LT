@@ -256,7 +256,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     }
 
     // Number Literals
-    if (stream.match(/[+-]?([0-9_]+\.|\.[0-9]+|[0-9_]+)[0-9]*([ef][+-]?[0-9]+)?(im)?/i)) {
+    if (stream.match(/[+-]?([0-9][0-9_]*\.|\.[0-9]|[0-9])[0-9_]*([ef][+-]?[0-9]+)?(im)?/i)) {
       finalise_leavingexpr(state, stream);
       return 'number';
     }

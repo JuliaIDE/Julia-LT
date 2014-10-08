@@ -2,6 +2,8 @@
   (:require [lt.object :as object]
             [lt.util.dom :as dom]
             [lt.objs.editor :as editor]
+            [lt.objs.notifos :as notifos]
+            [lt.util.js :refer [debounce]]
             [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
@@ -36,13 +38,16 @@
 (defn line-styles [lh]
   (-> lh .-styles vec))
 
+(defn conj-vec [vec & args]
+  (apply conj (or vec []) args))
+
 (defn process-line-styles [vec]
   (loop [start 0
          [end token & vec] (rest vec)
          tokens {}]
     (if end
       (recur end vec
-             (update-in tokens [(keyword token)] conj [start end]))
+             (update-in tokens [(keyword token)] conj-vec [start end]))
       tokens)))
 
 (defn line-tokens [lh]
@@ -71,7 +76,9 @@
 (defn set-content' [mark* content]
   (let [mark @mark*
         node (.-replacedWith mark)
-        loc (.find mark)]
+        loc (.find mark)
+        content (str content)]
+    (.clear mark)
     (set! (.-innerText node) content)
     (.replaceRange (.-doc mark) content (.-from loc) (.-to loc))
     (set! (-> loc .-to .-ch) (+ (-> loc .-from .-ch) (.-length content)))
@@ -79,10 +86,7 @@
                              #js {:clearOnEnter true
                                   :replacedWith node}))))
 
-(def set-content (lt.util.js/debounce 100 set-content'))
-
-(defn value [node]
-  (-> node .-innerText js/parseInt))
+(def set-content (debounce 500 set-content'))
 
 (defn mark-slider [ed line span cb]
   (let [node (slider (content ed line span))
@@ -91,44 +95,109 @@
     (set! (.-onmousedown node)
           (fn [e]
             (.preventDefault e)
-            (let [start (value node)]
+            (let [current (.-innerText node)]
               (listen-drag!
                (fn [x y]
-                 (let [x (- x (.-clientX e))]
-                   (set! (.-innerText node) x)
-                   (set-content mark (str x))
-                   (cb x)))
+                 (let [x (- x (.-clientX e))
+                       result (cb current x)]
+                   (set! (.-innerText node) result)
+                   (set-content mark result)))
                (fn [x y]
                  (if (< (js/Math.abs (- x (.-clientX e))) 1)
-                   (.setCursor (.-doc @mark) (-> @mark .find .-to))))))))
-    (value node)))
+                   (.setCursor (-> @mark .-doc) (-> @mark .find .-to))))))))
+    mark))
 
-;; Objects & results
+;; Number processing
+
+(defn valid-number? [s]
+  (re-find #"^[0-9]+$" s))
+
+(defn div [x y] (Math/floor (/ x y)))
+
+(defn transform [start x]
+  (let [start (js/parseInt start)]
+    (+ start (div x 5))))
+
+;; Objects & API
+
+(behavior ::clear
+          :triggers #{:clear!}
+          :reaction (fn [this]
+                      (doseq [scale (:scales @this)]
+                        (-> scale :mark deref .clear))
+                      (object/destroy! this)))
+
+(behavior ::self-destruct
+          :triggers #{:init}
+          :debounce 500
+          :reaction (fn [this]
+                      (when-not (:obj @this)
+                        (object/raise this :clear!))))
 
 (object/object* ::reptile
                 :tags [:reptile]
+                :behaviors [::clear ::self-destruct]
                 :scales [])
 
-(defn reptile [ed start end]
+(defn reptile [ed [start end]]
   (let [this (object/create ::reptile)]
     (each-line ed start end
                (fn [handle]
                  (doseq [span (numbers handle)
-                         :let [idx (count (:scales @this))]]
-                   (object/update! this [:scales] conj
-                     (mark-slider ed (here's-my-number handle) span identity)))))
+                         :let [line (here's-my-number handle)
+                               idx (count (:scales @this))]]
+                   (when (valid-number? (content ed line span))
+                     (object/update! this [:scales] conj
+                       {:mark (mark-slider ed line span
+                                (fn [start x]
+                                  (let [val (transform start x)]
+                                    (when (not= val (-> @this :scales (get idx) :value))
+                                      (object/update! this [:scales idx :value] (constantly val))
+                                      (when-let [obj (:obj @this)]
+                                        (object/raise obj :scale (:scales @this))))
+                                    val)))
+                        :value (transform (content ed line span) 0)
+                        :loc (apply vector line span)})))))
     this))
 
-;; (def r (reptile ed 1 9))
+;; Interaction with results
 
-;; (:scales @r)
+(behavior ::attach-reptile
+          :triggers #{:init}
+          :reaction (fn [result]
+                      (reset! busy 0)
+                      (when-let [span (-> @result :opts :scales)]
+                        (let [reptile (reptile (:ed @result) span)]
+                          (object/merge! result {:scales reptile})
+                          (object/merge! reptile {:obj result})))))
 
-;; (doseq [obj (object/by-tag :reptile)]
-;;   (object/destroy! obj))
+(behavior ::clear-reptile
+          :triggers #{:clear!}
+          :reaction (fn [result]
+                      (when-let [reptile (@result :scales)]
+                        (object/raise reptile :clear!))))
 
-;; (mark-slider ed 11 (-> ed (line-handle 11) numbers first) identity)
+;; Notifications
 
-;; (def ed (-> "mandelbrot.jl" lt.objs.editor.pool/containing-path first))
+(def busy (atom 0))
+(def busy-shown false)
 
-;; (doseq [mark (.getAllMarks (editor/->cm-ed ed))]
-;;   (.clear mark))
+(def reset-busy
+  (debounce 5000 #(reset! busy 0)))
+
+(def working*
+  (debounce 50
+    #(when (and (not busy-shown) (> @busy 0))
+       (def busy-shown true)
+       (notifos/working))))
+
+(defn working []
+  (swap! busy inc)
+  (when (not busy-shown)
+    (working*)))
+
+(defn done-working []
+  (swap! busy dec)
+  (when (and busy-shown (<= @busy 0))
+    (def busy-shown false)
+    (notifos/done-working)))

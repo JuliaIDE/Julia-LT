@@ -2,17 +2,29 @@
   white-space: nowrap;
   cursor: default;
   -webkit-user-select: none; }
-  .julia .collapsible-header {
-    font-weight: bold; }
   .julia .collapsible-content {
-    max-width: 500px;
     max-height: 250px;
+    padding-right: 10px;
+    max-width: 500px;
     overflow: auto; }
+  .julia .collapsible-content .collapsible-content {
+    max-height: none;
+    max-width: none;
+    padding-left: 5px;
+    padding-right: 0; }
+  .julia .text {
+    white-space: pre; }
   .julia table {
     border-collapse: collapse; }
     .julia table td {
       padding: 3px;
       white-space: nowrap; }
+  .julia img {
+    max-height: 300px;
+    max-width: 500px; }
+  .julia .collapsible-content > img {
+    max-width: none;
+    max-height: none; }
 
 .julia.error {
   max-width: 500px;

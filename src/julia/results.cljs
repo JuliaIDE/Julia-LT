@@ -3,6 +3,7 @@
             [lt.object :as object]
             [lt.util.dom :as dom]
             [lt.objs.editor :as editor]
+            [lt.objs.notifos :as notifos]
             [lt.objs.clients :as clients])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
@@ -14,6 +15,9 @@
    (integer? thing) (@object/instances ed)
    :else thing))
 
+(defn ->client [id]
+  (some-> id ->ed deref :client :default))
+
 (defn jlcall [id code]
   (let [ed (->ed id)
         client (-> @ed :client :default)]
@@ -23,38 +27,22 @@
 
 (set! js/jlcall jlcall)
 
-(behavior ::inline-results
-          :triggers #{:editor.result}
-          :reaction (fn [this res loc opts]
-                      (let [ed (:ed @this)
-                            type (or (:type opts) :inline)
-                            line (editor/line-handle ed (:line loc))
-                            res-obj (object/create :lt.objs.eval/inline-result
-                                                   {:ed this
-                                                    :class (name type)
-                                                    :opts opts
-                                                    :result res
-                                                    :loc loc
-                                                    :line line
-                                                    :id (:id opts)})]
-                        (when (:id opts) (swap! results assoc (:id opts) res-obj))
-                        (when-let [prev (get (@this :widgets) [line type])]
-                          (when (:open @prev)
-                            (object/merge! res-obj {:open true}))
-                          (object/raise prev :clear!))
-                        (when (:start-line loc)
-                          (doseq [widget (map #(get (@this :widgets) [(editor/line-handle ed %) type]) (range (:start-line loc) (:line loc)))
-                                  :when widget]
-                            (object/raise widget :clear!)))
-                        (object/update! this [:widgets] assoc [line type] res-obj))))
+(defn id [result]
+  (-> @result :opts :id))
 
-(behavior ::clear-result
+(behavior ::register-result
+          :triggers #{:init}
+          :reaction (fn [this]
+                      (when-let [id (id this)]
+                        (swap! results assoc id this))))
+
+(behavior ::unregister-result
           :triggers #{:clear!}
           :reaction (fn [this]
                       (when-let [client (-> @this :ed deref :client :default)]
-                        (when (:id @this)
-                          (swap! results dissoc (:id @this))
-                          (clients/send client :result.clear (:id @this))))))
+                        (when-let [id (id this)]
+                          (swap! results dissoc id)
+                          (clients/send client :result.clear id)))))
 
 (behavior ::raise
           :triggers #{:raise}
@@ -71,3 +59,14 @@
                       (eval-with (:content @this) code)))
 
 (object/add-behavior! julia ::raise)
+
+(behavior ::reval
+          :triggers #{:scale}
+          :reaction (fn [result vals]
+                      (let [id (id result)
+                            client (->client id)]
+                        (when client
+                          (clients/send client :result.reval
+                                        {:id id
+                                         :vals (map :value vals)
+                                         :locs (map :loc vals)})))))
