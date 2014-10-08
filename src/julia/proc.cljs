@@ -1,6 +1,7 @@
 (ns lt.objs.langs.julia.proc
   (:require [lt.objs.langs.julia :as julia :refer [julia]]
             [lt.objs.proc :as proc]
+            [lt.objs.platform :as platform]
             [lt.object :as object]
             [lt.objs.console :as console]
             [lt.objs.clients.tcp :as tcp]
@@ -101,17 +102,23 @@
 
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
-(defn julia-path [] (or (@julia :path) "julia"))
+(defn built-in-path []
+  (let [path (files/join (js/process.cwd) "julia" "bin"
+                         (if (platform/win?) "julia.exe" "julia"))]
+    (when (files/exists? path) path)))
+
+(defn julia-path [] (or (@julia :path) (built-in-path) "julia"))
 
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
 ; complain – show a popup if we can't connect
 (defn connect [& {:keys [notify complain] :or {notify false complain true}}]
   (when notify (notifos/working "Spinning up Julia..."))
-  (let [client (clients/client! :julia.client)
+  (let [path (julia-path)
+        client (clients/client! :julia.client)
         obj (object/create ::connecting-notifier client)]
     (object/merge! obj {:notify notify :complain complain})
     (with-dir (files/home)
-      #(proc/exec {:command (julia-path)
+      #(proc/exec {:command path
                    :args [init tcp/port (clients/->id client)]
                    :obj obj}))
     (object/merge! client {:proc (-> @obj :procs first)})
