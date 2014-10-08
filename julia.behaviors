@@ -21,9 +21,6 @@
      :editor.julia [:lt.objs.langs.julia.proc/connect-on-open
                     :lt.objs.langs.julia.proc/attach-on-connect
 
-                    ;; Settings
-                    (:lt.objs.editor/tab-settings false 2 2)
-
                     ;; Editor support
                     :lt.objs.langs.julia.eval/eval.one
                     :lt.objs.langs.julia.eval/eval.all
