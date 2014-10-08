@@ -9,7 +9,8 @@
            (:lt.objs.plugins/load-css "css/reptile.css")
            (:lt.objs.plugins/load-css "css/browser.css")
            (:lt.objs.plugins/load-keymap "julia.keymap")
-           :lt.objs.langs.julia.stats/metrics]
+           :lt.objs.langs.julia.stats/metrics
+           :lt.objs.langs.julia/dark-theme]
 
      :files [(:lt.objs.files/file-types [{:name "Julia"
                                           :exts [:jl]
