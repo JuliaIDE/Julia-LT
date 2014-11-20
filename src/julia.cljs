@@ -61,7 +61,7 @@
           :triggers #{:object.instant}
           :desc "Julia: Use a dark theme"
           :type :user
-          :exclusive true
+          :exclusive [::light-theme]
           :reaction (fn [app]
                       (dom/add-class (dom/$ :body) :julia-dark)))
 
@@ -69,7 +69,7 @@
           :triggers #{:object.instant}
           :desc "Julia: Use a light theme"
           :type :user
-          :exclusive true
+          :exclusive [::dark-theme]
           :reaction (fn [app]
                       (dom/remove-class (dom/$ :body) :julia-dark)))
 
