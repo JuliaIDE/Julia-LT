@@ -17,13 +17,15 @@
 
 ;; Connection Monitors
 
+(def connection-str "connected")
+
 (behavior ::proc-out
           :triggers #{:proc.out}
           :reaction (fn [this data]
                       (when-not (@this :connected)
                         (let [out (.toString data)]
                           (object/update! this [:buffer] str out)
-                          (when (= out "connected")
+                          (when (= out connection-str)
                             (when (@this :notify) (notifos/done-working "Connected to Julia"))
                             (object/merge! this {:connected true
                                                  :just-connected true}))))))
@@ -56,7 +58,8 @@
 (behavior ::pipe-out
            :triggers #{:proc.out}
            :reaction (fn [this data]
-                       (if (:just-connected @this)
+                       (if (and (= (.toString data) connection-str)
+                                (or (:just-connected @this) (not (:connected @this))))
                          (object/merge! this {:just-connected false})
                          (object/update! this [:out-buffer] str data))
                        (let [out (@this :out-buffer)]
