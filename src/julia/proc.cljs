@@ -50,6 +50,9 @@
 
 ;; Pipe output to LT's console
 
+; Workaround for LT 0.7.0 bug
+(defn log [l] (console/log l nil))
+
 (behavior ::pipe-out
            :triggers #{:proc.out}
            :reaction (fn [this data]
@@ -58,7 +61,7 @@
                          (object/update! this [:out-buffer] str data))
                        (let [out (@this :out-buffer)]
                          (when (= (last out) "\n")
-                           (console/log out)
+                           (log out)
                            (object/merge! this {:out-buffer ""})))))
 
 (behavior ::pipe-err
@@ -67,7 +70,7 @@
                       (object/update! this [:err-buffer] str data)
                       (let [out (@this :err-buffer)]
                         (when (= (last out) "\n")
-                          (console/log out "error")
+                          (log out "error")
                           (object/merge! this {:err-buffer ""})))))
 
 (behavior ::flush
@@ -76,10 +79,10 @@
           :reaction (fn [this]
                       (when @this
                         (when-let [out (not-empty (@this :out-buffer))]
-                          (console/log out)
+                          (log out)
                           (object/merge! this {:out-buffer ""}))
                         (when-let [out (not-empty (@this :err-buffer))]
-                          (console/log out "error")
+                          (log out "error")
                           (object/merge! this {:err-buffer ""})))))
 
 ;; Connection object
