@@ -53,7 +53,7 @@
 ;; Pipe output to LT's console
 
 ; Workaround for LT 0.7.0 bug
-(defn log [l] (console/log l nil))
+(defn log [l & [class]] (console/log l class))
 
 (behavior ::pipe-out
            :triggers #{:proc.out}
