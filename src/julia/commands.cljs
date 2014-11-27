@@ -5,7 +5,8 @@
             [lt.objs.clients :as clients]
             [lt.objs.editor :as editor]
             [lt.objs.editor.pool :as pool]
-            [lt.objs.command :as cmd])
+            [lt.objs.command :as cmd]
+            [lt.objs.platform :as platform])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Get current block
@@ -70,3 +71,9 @@
                                                :exts [:jl]
                                                :mime "text/julia"
                                                :tags [:editor.julia]}))})
+
+;; Important Stuff
+
+(cmd/command {:command :bio.blog.open
+              :desc "Biology: Open a blog"
+              :exec #(platform/open "http://wormchurn.wordpress.com/")})
