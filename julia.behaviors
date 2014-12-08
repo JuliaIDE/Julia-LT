@@ -80,4 +80,5 @@
      }
  :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
 
-     :julia.profile-result [:lt.objs.eval/result-menu!]}}
+     :julia.profile-result [:lt.objs.eval/result-menu!
+                            :lt.objs.menu/menu!]}}
