@@ -7,7 +7,13 @@
             [lt.objs.plugins :as plugins])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-(set! js/$ (js/require (files/join plugins/user-plugins-dir "Julia/js/jquery-2.1.1.min.js")))
+(def jquery-dir
+  (->> [(files/join plugins/user-plugins-dir "Julia/js/jquery-2.1.1.min.js")
+        (files/join plugins/plugins-dir "Julia-LT/js/jquery-2.1.1.min.js")]
+       (filter files/exists?)
+       first))
+
+(set! js/$ (js/require jquery-dir))
 
 (defn callback [s f]
   (js/setTimeout f (* s 1000)))
