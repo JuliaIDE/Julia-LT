@@ -154,7 +154,9 @@
     (callback)
     (js/setTimeout #(wait-until cond callback) 100)))
 
-(defn when-connect [cb] (wait-until #(not= tcp/port 0) cb))
+(defn when-connect [cb] (wait-until #(and (not= tcp/port 0)
+                                          (> (.indexOf js/process.env.PATH "local") -1))
+                                    cb))
 
 (behavior ::connect-on-startup
           :triggers #{:post-init}
