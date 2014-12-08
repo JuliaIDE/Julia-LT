@@ -2,8 +2,12 @@
   (:require [lt.util.dom :as dom]
             [lt.object :as object]
             [lt.objs.editor :as editor]
-            [crate.core :as crate])
+            [crate.core :as crate]
+            [lt.objs.files :as files]
+            [lt.objs.plugins :as plugins])
   (:require-macros [lt.macros :refer [behavior defui]]))
+
+(set! js/$ (js/require (files/join plugins/user-plugins-dir "Julia/js/jquery-2.1.1.min.js")))
 
 (defn callback [s f]
   (js/setTimeout f (* s 1000)))
