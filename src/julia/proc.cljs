@@ -109,7 +109,7 @@
 (def init (files/join plugins/*plugin-dir* "jl" "init.jl"))
 
 (defn built-in-path []
-  (let [path (files/join (js/process.cwd) "julia" "bin"
+  (let [path (files/join (files/lt-home) "julia" "bin"
                          (if (platform/win?) "julia.exe" "julia"))]
     (when (files/exists? path) path)))
 
