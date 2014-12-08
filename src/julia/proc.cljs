@@ -157,7 +157,7 @@
 (defn when-connect [cb] (wait-until #(not= tcp/port 0) cb))
 
 (behavior ::connect-on-startup
-          :triggers #{:init}
+          :triggers #{:post-init}
           :desc "Julia: Spin up a client when Light Table starts"
           :type :user
           :exclusive true
