@@ -13,7 +13,7 @@
   (let [target (dom/attr a :href)]
     (set! (.-onclick a)
           (fn [e]
-            (platform/open target)))
+            (platform/open-url target)))
     (dom/attr a {:href "javascript:void(0);"})))
 
 (defn init-ui [frame]

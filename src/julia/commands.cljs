@@ -76,4 +76,4 @@
 
 (cmd/command {:command :bio.blog.open
               :desc "Biology: Open a blog"
-              :exec #(platform/open "http://wormchurn.wordpress.com/")})
+              :exec #(platform/open-url "http://wormchurn.wordpress.com/")})
