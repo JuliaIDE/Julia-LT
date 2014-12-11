@@ -1,5 +1,7 @@
 (ns lt.objs.langs.julia.util
   (:require [crate.core :as crate]
+            [lt.objs.files :as files]
+            [lt.objs.plugins :as plugins]
             [lt.objs.editor :as editor]))
 
 ;; Editors
@@ -44,3 +46,13 @@
 
 (defn parse-div [html]
   (-> html crate/raw into-div))
+
+;; Files
+
+(defn plugin-dir [& names]
+  (->> (for [dir [plugins/user-plugins-dir plugins/plugins-dir]
+             name names
+             :let [path (files/join dir name)]
+             :when (files/exists? path)]
+         path)
+       first))

@@ -4,16 +4,12 @@
             [lt.objs.editor :as editor]
             [crate.core :as crate]
             [lt.objs.files :as files]
-            [lt.objs.plugins :as plugins])
+            [lt.objs.plugins :as plugins]
+            [lt.objs.langs.julia.util :as util])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-(def jquery-dir
-  (->> [(files/join plugins/user-plugins-dir "Julia/js/jquery-2.1.1.min.js")
-        (files/join plugins/plugins-dir "Julia-LT/js/jquery-2.1.1.min.js")]
-       (filter files/exists?)
-       first))
-
-(set! js/$ (js/require jquery-dir))
+(set! js/$ (js/require (files/join (util/plugin-dir "Julia-LT" "Julia")
+                                   "js/jquery-2.1.1.min.js")))
 
 (defn callback [s f]
   (js/setTimeout f (* s 1000)))
