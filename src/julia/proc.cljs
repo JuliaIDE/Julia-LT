@@ -36,7 +36,7 @@
 (behavior ::proc-exit
           :triggers #{:proc.exit}
           :reaction (fn [this data]
-                      (when-not (:connected @this)
+                      (when-not (@this :connected)
                         (notifos/done-working "")
                         (when (:complain @this)
                           (popup/popup! {:header "Couldn't connect to Julia"
@@ -87,7 +87,8 @@
           :triggers #{:connected}
           :reaction (fn [this]
                       (when (@this :notify) (notifos/done-working "Connected to Julia"))
-                      (object/merge! this {:connected true})))
+                      (object/merge! this {:connected true})
+                      (set-default-client (@this :client))))
 
 (object/object* ::connecting-notifier
                 :tags #{:julia.connection-watch}
@@ -116,9 +117,9 @@
 (defn julia-path [] (or (@julia :path) (built-in-path) "julia"))
 
 (defn init-client [client event-obj]
+  (object/merge! event-obj {:client client})
   (clients/send client :notify-connected {} :only event-obj)
-  (clients/send client :julia.set-global-client {} :only julia)
-  (set-default-client client))
+  (clients/send client :julia.set-global-client {} :only julia))
 
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
 ; complain – show a popup if we can't connect
