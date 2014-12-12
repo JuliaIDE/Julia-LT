@@ -167,6 +167,10 @@
               :desc "Julia: Spawn a Terminal-based client"
               :exec spawn-terminal})
 
+(scl/add-connector {:name "Julia REPL"
+                    :desc "Spawn a connected Julia REPL"
+                    :connect connect-manual})
+
 ;; Connect on startup
 
 (defn wait-until [cond callback]
