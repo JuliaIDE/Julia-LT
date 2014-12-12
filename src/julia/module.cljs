@@ -48,6 +48,11 @@
   :triggers #{:object.instant :julia.connected}
   :reaction get-module)
 
+(cmd/command {:command :editor.julia.module-refresh
+              :desc "Julia: Refresh the module for the current editor"
+              :exec #(when-let [ed (pool/last-active)]
+                       (get-module ed))})
+
 (behavior ::set-module
   :triggers #{:julia.set-module}
   :reaction (fn [editor module]
