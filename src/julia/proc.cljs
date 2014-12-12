@@ -1,5 +1,6 @@
 (ns lt.objs.langs.julia.proc
   (:require [lt.objs.langs.julia :as julia :refer [julia]]
+            [lt.objs.langs.julia.util :as util]
             [lt.objs.proc :as proc]
             [lt.objs.platform :as platform]
             [lt.object :as object]
@@ -136,6 +137,7 @@
 
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
+    (notifos/working)
     (popup/popup! {:header "Connect Julia to Light Table"
                    :body (str "@async Jewel.server(" tcp/port ", " (clients/->id client) ")")
                    :buttons [{:label "Done"}]})
@@ -146,6 +148,19 @@
 (scl/add-connector {:name "Julia (manual)"
                     :desc "Manually connect to Julia."
                     :connect connect-manual})
+
+(defn spawn-terminal []
+  (let [client (clients/client! :julia.client)]
+    (notifos/working)
+    (util/term (str (util/escape-path (@julia :path))
+                    " -P \"using Jewel; @async Jewel.server(" tcp/port ", " (clients/->id client) ")\""))
+    (clients/send client :julia.set-global-client {} :only julia)
+    (set-default-client client)
+    client))
+
+(cmd/command {:command :julia.terminal-client.new
+              :desc "Julia: Spawn a Terminal-based client"
+              :exec spawn-terminal})
 
 ;; Connect on startup
 
