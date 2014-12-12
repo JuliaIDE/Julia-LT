@@ -13,7 +13,8 @@
             [lt.objs.clients :as clients]
             [lt.objs.notifos :as notifos]
             [lt.objs.eval :as eval]
-            [lt.objs.sidebar.command :as cmd])
+            [lt.objs.sidebar.command :as cmd]
+            [crate.core :as crate])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Connection Monitors
@@ -143,19 +144,27 @@
     obj))
 
 (defn connect-manual []
-  (let [client (clients/client! :julia.client)]
+  (let [client (clients/client! :julia.client)
+        connect-str (str "using Jewel; @async Jewel.server(" tcp/port ", " (clients/->id client) ")")]
     (notifos/working)
+    (platform/copy connect-str)
     (popup/popup! {:header "Connect Julia to Light Table"
-                   :body (str "@async Jewel.server(" tcp/port ", " (clients/->id client) ")")
-                   :buttons [{:label "Done"}]})
+                   :body (crate/html [:p connect-str]
+                                     [:p "(This has been copied to your clipboard)"])
+                   :buttons [#_{:label "Cancel" :click #(clients/rem! client)}
+                             {:label "Done"}]})
     (init-client client manual-notifier)
     client))
 
 (scl/add-connector {:name "Julia (manual)"
-                    :desc "Manually connect to Julia."
+                    :desc "Connect to a running Julia session"
                     :connect connect-manual})
 
-(when util/repl
+(cmd/command {:command :julia.connect-manual
+              :desc "Julia: Connect to a running session"
+              :exec connect-manual})
+
+(when util/term
   (defn spawn-terminal []
     (let [client (clients/client! :julia.client)]
       (notifos/working)
