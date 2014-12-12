@@ -169,7 +169,7 @@
   (defn spawn-terminal []
     (let [client (clients/client! :julia.client)]
       (notifos/working)
-      (util/term (str (util/escape-path (@julia :path))
+      (util/term (str (util/escape-path (julia-path))
                       " -P \"using Jewel; @async Jewel.server(" tcp/port ", " (clients/->id client) ")\""))
       (init-client client manual-notifier)
       client))

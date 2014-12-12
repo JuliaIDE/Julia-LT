@@ -86,7 +86,7 @@
 (when util/term
   (cmd/command {:command :julia.repl.new
                 :desc "Julia: Open a new Terminal REPL"
-                :exec #(util/term (util/escape-path (@julia :path)))}))
+                :exec #(util/term (util/escape-path (proc/julia-path)))}))
 
 ;; File management
 
