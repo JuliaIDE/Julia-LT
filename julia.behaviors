@@ -78,7 +78,8 @@
                                :lt.plugins.reptile/clear-reptile
                                :lt.objs.langs.julia.results/reval]
      }
- :- {:editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
+ :- {:app [:lt.objs.app/on-show-bind-navigate]
+     :editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
 
      :julia.profile-result [:lt.objs.eval/result-menu!
                             :lt.objs.menu/menu!]}}
