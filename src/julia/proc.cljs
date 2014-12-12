@@ -18,18 +18,12 @@
 
 ;; Connection Monitors
 
-(def connection-str "connected")
-
 (behavior ::proc-out
           :triggers #{:proc.out}
           :reaction (fn [this data]
                       (when-not (@this :connected)
                         (let [out (.toString data)]
-                          (object/update! this [:buffer] str out)
-                          (when (= out connection-str)
-                            (when (@this :notify) (notifos/done-working "Connected to Julia"))
-                            (object/merge! this {:connected true
-                                                 :just-connected true}))))))
+                          (object/update! this [:buffer] str out)))))
 
 (behavior ::proc-error
           :triggers #{:proc.error}
@@ -59,10 +53,7 @@
 (behavior ::pipe-out
            :triggers #{:proc.out}
            :reaction (fn [this data]
-                       (if (and (= (.toString data) connection-str)
-                                (or (:just-connected @this) (not (:connected @this))))
-                         (object/merge! this {:just-connected false})
-                         (object/update! this [:out-buffer] str data))
+                       (object/update! this [:out-buffer] str data)
                        (let [out (@this :out-buffer)]
                          (when (= (last out) "\n")
                            (log out)
@@ -91,10 +82,17 @@
 
 ;; Connection object
 
+(behavior ::connected
+          :triggers #{:connected}
+          :reaction (fn [this]
+                      (when (@this :notify) (notifos/done-working "Connected to Julia"))
+                      (object/merge! this {:connected true})))
+
 (object/object* ::connecting-notifier
                 :tags #{:julia.connection-watch}
                 :behaviors [::proc-out ::proc-error ::proc-exit
-                            ::pipe-out ::pipe-err ::flush]
+                            ::pipe-out ::pipe-err ::flush
+                            ::connected]
                 :init (fn [this client]
                         (object/merge! this {:client client})
                         nil))
@@ -116,6 +114,11 @@
 
 (defn julia-path [] (or (@julia :path) (built-in-path) "julia"))
 
+(defn init-client [client event-obj]
+  (clients/send client :notify-connected {} :only event-obj)
+  (clients/send client :julia.set-global-client {} :only julia)
+  (set-default-client client))
+
 ; notify – set the status bar (not used by e.g. eval which notifies itself)
 ; complain – show a popup if we can't connect
 (defn connect [& {:keys [notify complain] :or {notify false complain true}}]
@@ -129,11 +132,15 @@
                    :args [init tcp/port (clients/->id client)]
                    :obj obj}))
     (object/merge! client {:proc (-> @obj :procs first)})
-    (clients/send client :julia.set-global-client {} :only julia)
-    (set-default-client client)
+    (init-client client obj)
     client))
 
 ;; Manual connection
+
+(def manual-notifier
+  (let [obj (object/create ::connecting-notifier)]
+    (object/merge! obj {:notify true})
+    obj))
 
 (defn connect-manual []
   (let [client (clients/client! :julia.client)]
@@ -141,8 +148,7 @@
     (popup/popup! {:header "Connect Julia to Light Table"
                    :body (str "@async Jewel.server(" tcp/port ", " (clients/->id client) ")")
                    :buttons [{:label "Done"}]})
-    (clients/send client :julia.set-global-client {} :only julia)
-    (set-default-client client)
+    (init-client client manual-notifier)
     client))
 
 (scl/add-connector {:name "Julia (manual)"
@@ -154,8 +160,7 @@
     (notifos/working)
     (util/term (str (util/escape-path (@julia :path))
                     " -P \"using Jewel; @async Jewel.server(" tcp/port ", " (clients/->id client) ")\""))
-    (clients/send client :julia.set-global-client {} :only julia)
-    (set-default-client client)
+    (init-client client manual-notifier)
     client))
 
 (cmd/command {:command :julia.terminal-client.new
