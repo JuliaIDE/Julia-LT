@@ -1,85 +1,71 @@
-{:+ {:app [(:lt.objs.plugins/load-js ["js/julia.js" "julia_compiled.js"])
-           (:lt.objs.plugins/load-js ["js/runmode.js"])
-           (:lt.objs.plugins/load-js ["js/snap.svg.js"])
-           (:lt.objs.plugins/load-css "css/common.css")
-           (:lt.objs.plugins/load-css "css/light.css")
-           (:lt.objs.plugins/load-css "css/dark.css")
-           (:lt.objs.plugins/load-css "css/patch.css")
-           (:lt.objs.plugins/load-css "css/profiler.css")
-           (:lt.objs.plugins/load-css "css/reptile.css")
-           (:lt.objs.plugins/load-css "css/browser.css")
-           (:lt.objs.plugins/load-keymap "julia.keymap")
-           :lt.objs.langs.julia.stats/metrics
-           :lt.objs.langs.julia/dark-theme]
+[
+ [:app :lt.objs.plugins/load-js ["js/julia.js" "julia_compiled.js"]]
+ [:app :lt.objs.plugins/load-js ["js/runmode.js"]]
+ [:app :lt.objs.plugins/load-js ["js/snap.svg.js"]]
+ [:app :lt.objs.plugins/load-css "css/common.css"]
+ [:app :lt.objs.plugins/load-css "css/light.css"]
+ [:app :lt.objs.plugins/load-css "css/dark.css"]
+ [:app :lt.objs.plugins/load-css "css/patch.css"]
+ [:app :lt.objs.plugins/load-css "css/profiler.css"]
+ [:app :lt.objs.plugins/load-css "css/reptile.css"]
+ [:app :lt.objs.plugins/load-css "css/browser.css"]
+ [:app :lt.objs.plugins/load-keymap "julia.keymap"]
+ [:app :lt.objs.langs.julia.stats/metrics]
+ [:app :lt.objs.langs.julia/dark-theme]
+ [:app :-lt.objs.app/on-show-bind-navigate]
 
-     :files [(:lt.objs.files/file-types [{:name "Julia"
-                                          :exts [:jl]
-                                          :mime "text/julia"
-                                          :tags [:editor.julia]}])]
+ [:editor.active :lt.objs.langs.julia.module/update-module-statusbar]
 
-     :editor.active [:lt.objs.langs.julia.module/update-module-statusbar]
+ [:editor.julia :lt.objs.langs.julia.proc/connect-on-open]
+ [:editor.julia :lt.objs.langs.julia.proc/attach-on-connect]
+ [:editor.julia :lt.objs.langs.julia.eval/eval.one]
+ [:editor.julia :lt.objs.langs.julia.eval/eval.all]
+ [:editor.julia :lt.object/add-tag :editor.julia.hints]
+ [:editor.julia :lt.object/add-tag :editor.julia.doc]
+ [:editor.julia :lt.objs.langs.julia.module/get-module]
+ [:editor.julia :lt.objs.langs.julia.module/get-module-on-connect]
+ [:editor.julia :lt.objs.langs.julia.module/set-module]
+ [:editor.julia :lt.objs.highlights/refresh-on-open]
+ [:editor.julia :lt.objs.julia.commands/get-block]
+ [:editor.julia :lt.objs.julia.commands/return-block]
+ [:editor.julia :lt.objs.langs.julia.menu/ed-menu+]
+ [:editor.julia :lt.objs.langs.julia.browser/get-objects]
+ [:editor.julia :lt.objs.langs.julia.profiler/render-bars]
+ [:editor.julia :lt.objs.langs.julia.profiler/result]
+ [:editor.julia :lt.objs.langs.julia.profiler/refresh-on-open]
+ [:editor.julia :lt.objs.langs.julia.eval/result]
+ [:editor.julia :lt.objs.langs.julia.eval/error]
 
-     :editor.julia [:lt.objs.langs.julia.proc/connect-on-open
-                    :lt.objs.langs.julia.proc/attach-on-connect
+ [:editor.julia.doc :lt.object/add-tag :docable]
+ [:editor.julia.doc :lt.objs.langs.julia.doc/doc]
+ [:editor.julia.doc :lt.objs.langs.julia.doc/methods]
+ [:editor.julia.doc :lt.objs.langs.julia.doc/show-doc]
 
-                    ;; Editor support
-                    :lt.objs.langs.julia.eval/eval.one
-                    :lt.objs.langs.julia.eval/eval.all
-                    (:lt.object/add-tag :editor.julia.hints)
-                    (:lt.object/add-tag :editor.julia.doc)
-                    :lt.objs.langs.julia.module/get-module
-                    :lt.objs.langs.julia.module/get-module-on-connect
-                    :lt.objs.langs.julia.module/set-module
-                    :lt.objs.highlights/refresh-on-open
-                    :lt.objs.julia.commands/get-block
-                    :lt.objs.julia.commands/return-block
-                    :lt.objs.langs.julia.menu/ed-menu+
+ [:editor.julia.hints :lt.objs.langs.julia.completions/use-local-hints]
+ [:editor.julia.hints :lt.objs.langs.julia.completions/trigger-update-hints]
+ [:editor.julia.hints :lt.objs.langs.julia.completions/update-hints]
+ [:editor.julia.hints :-lt.plugins.auto-complete/textual-hints]
 
-;;                     :lt.objs.breakpoint/gutter-menu
-;;                     :lt.objs.breakpoint/breakpoint-menu
+ [:files :lt.objs.files/file-types [{:exts [:jl], :mime "text/julia", :tags [:editor.julia], :name "Julia"}]]
 
-                    ;; Browser
-                    :lt.objs.langs.julia.browser/get-objects
+ [:hinter :lt.objs.langs.julia.completions/line-change]
 
-                    ;; Profiler support
-                    :lt.objs.langs.julia.profiler/render-bars
-                    :lt.objs.langs.julia.profiler/result
-                    :lt.objs.langs.julia.profiler/refresh-on-open
+ [:inline.result :lt.objs.langs.julia.results/register-result]
+ [:inline.result :lt.objs.langs.julia.results/unregister-result]
+ [:inline.result :lt.objs.langs.julia.results/eval]
+ [:inline.result :lt.plugins.reptile/attach-reptile]
+ [:inline.result :lt.plugins.reptile/clear-reptile]
+ [:inline.result :lt.objs.langs.julia.results/reval]
 
-                    ; Editor Commands
-                    :lt.objs.langs.julia.eval/result
-                    :lt.objs.langs.julia.eval/error]
+ [:inline.underline-result :lt.objs.langs.julia.results/register-result]
+ [:inline.underline-result :lt.objs.langs.julia.results/unregister-result]
+ [:inline.underline-result :lt.objs.langs.julia.results/eval]
+ [:inline.underline-result :lt.plugins.reptile/attach-reptile]
+ [:inline.underline-result :lt.plugins.reptile/clear-reptile]
+ [:inline.underline-result :lt.objs.langs.julia.results/reval]
 
-     :hinter [:lt.objs.langs.julia.completions/line-change]
-
-     :editor.julia.doc [(:lt.object/add-tag :docable)
-                        :lt.objs.langs.julia.doc/doc
-                        :lt.objs.langs.julia.doc/methods
-                        :lt.objs.langs.julia.doc/show-doc]
-
-     :editor.julia.hints [:lt.objs.langs.julia.completions/use-local-hints
-                          :lt.objs.langs.julia.completions/trigger-update-hints
-                          :lt.objs.langs.julia.completions/update-hints]
-
-     :julia.profile-result [:lt.objs.langs.julia.profiler/clear
-                            :lt.objs.langs.julia.profiler/menu]
-
-     :inline.result [:lt.objs.langs.julia.results/register-result
-                     :lt.objs.langs.julia.results/unregister-result
-                     :lt.objs.langs.julia.results/eval
-                     :lt.plugins.reptile/attach-reptile
-                     :lt.plugins.reptile/clear-reptile
-                     :lt.objs.langs.julia.results/reval]
-
-     :inline.underline-result [:lt.objs.langs.julia.results/register-result
-                               :lt.objs.langs.julia.results/unregister-result
-                               :lt.objs.langs.julia.results/eval
-                               :lt.plugins.reptile/attach-reptile
-                               :lt.plugins.reptile/clear-reptile
-                               :lt.objs.langs.julia.results/reval]
-     }
- :- {:app [:lt.objs.app/on-show-bind-navigate]
-     :editor.julia.hints [:lt.plugins.auto-complete/textual-hints]
-
-     :julia.profile-result [:lt.objs.eval/result-menu!
-                            :lt.objs.menu/menu!]}}
+ [:julia.profile-result :lt.objs.langs.julia.profiler/clear]
+ [:julia.profile-result :lt.objs.langs.julia.profiler/menu]
+ [:julia.profile-result :-lt.objs.eval/result-menu!]
+ [:julia.profile-result :-lt.objs.menu/menu!]
+]
