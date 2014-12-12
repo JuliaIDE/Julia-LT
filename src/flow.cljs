@@ -8,7 +8,7 @@
             [lt.objs.langs.julia.util :as util])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
-(set! js/$ (js/require (files/join (util/plugin-dir "Julia-LT" "Julia")
+(set! js/$ (js/require (files/join util/jl-plugin-dir
                                    "js/jquery-2.1.1.min.js")))
 
 (defn callback [s f]

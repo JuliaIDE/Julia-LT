@@ -59,6 +59,8 @@
          path)
        first))
 
+(def jl-plugin-dir (plugin-dir "Julia-LT" "Julia"))
+
 ;; Terminal
 
 (defn call-me-maybe [f] (when f (f)))
