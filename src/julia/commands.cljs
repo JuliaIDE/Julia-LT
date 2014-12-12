@@ -6,7 +6,10 @@
             [lt.objs.editor :as editor]
             [lt.objs.editor.pool :as pool]
             [lt.objs.command :as cmd]
-            [lt.objs.platform :as platform])
+            [lt.objs.platform :as platform]
+            [lt.objs.files :as files]
+            [lt.objs.langs.julia.util :as util]
+            [lt.objs.langs.julia :refer [julia]])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; Get current block
@@ -77,3 +80,21 @@
 (cmd/command {:command :bio.blog.open
               :desc "Biology: Open a blog"
               :exec #(platform/open-url "http://wormchurn.wordpress.com/")})
+
+;; Terminal commands
+
+(when util/term
+  (cmd/command {:command :julia.repl.new
+                :desc "Julia: Open a new Terminal REPL"
+                :exec #(util/term (util/escape-path (@julia :path)))}))
+
+;; File management
+
+(defn touch-me-maybe [path]
+  (when-not (files/exists? path)
+    (files/save path ""))
+  path)
+
+(cmd/command {:command :juliarc.open
+              :desc "Julia: Open Julia startup code (juliarc.jl)"
+              :exec #(cmd/exec! :open-path (touch-me-maybe (files/home ".juliarc.jl")))})
