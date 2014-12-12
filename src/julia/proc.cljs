@@ -155,21 +155,22 @@
                     :desc "Manually connect to Julia."
                     :connect connect-manual})
 
-(defn spawn-terminal []
-  (let [client (clients/client! :julia.client)]
-    (notifos/working)
-    (util/term (str (util/escape-path (@julia :path))
-                    " -P \"using Jewel; @async Jewel.server(" tcp/port ", " (clients/->id client) ")\""))
-    (init-client client manual-notifier)
-    client))
+(when util/repl
+  (defn spawn-terminal []
+    (let [client (clients/client! :julia.client)]
+      (notifos/working)
+      (util/term (str (util/escape-path (@julia :path))
+                      " -P \"using Jewel; @async Jewel.server(" tcp/port ", " (clients/->id client) ")\""))
+      (init-client client manual-notifier)
+      client))
 
-(cmd/command {:command :julia.terminal-client.new
-              :desc "Julia: Spawn a Terminal-based client"
-              :exec spawn-terminal})
+  (cmd/command {:command :julia.terminal-client.new
+                :desc "Julia: Spawn a Terminal-based client"
+                :exec spawn-terminal})
 
-(scl/add-connector {:name "Julia REPL"
-                    :desc "Spawn a connected Julia REPL"
-                    :connect connect-manual})
+  (scl/add-connector {:name "Julia REPL"
+                      :desc "Spawn a connected Julia REPL"
+                      :connect connect-manual}))
 
 ;; Connect on startup
 
