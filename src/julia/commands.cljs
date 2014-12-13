@@ -102,3 +102,7 @@
 (cmd/command {:command :user-dir.open
               :desc "Settings: Open Settings Directory"
               :exec #(platform/open (files/lt-user-dir))})
+
+(cmd/command {:command :julia.pkg-dir.open
+              :desc "Julia: Open Package Directory"
+              :exec #(platform/open (files/home ".julia"))})
