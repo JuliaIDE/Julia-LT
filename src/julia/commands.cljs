@@ -98,3 +98,7 @@
 (cmd/command {:command :juliarc.open
               :desc "Julia: Open Julia startup code (juliarc.jl)"
               :exec #(cmd/exec! :open-path (touch-me-maybe (files/home ".juliarc.jl")))})
+
+(cmd/command {:command :user-dir.open
+              :desc "Settings: Open Settings Directory"
+              :exec #(platform/open (files/lt-user-dir))})
