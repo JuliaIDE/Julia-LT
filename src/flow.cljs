@@ -28,7 +28,7 @@
           :reaction (fn [result]
                       (-> result object/->content js/$ .hide)
                       (callback 0 #(show (object/->content result)))
-                      (callback 210 #(when (has-valid-editor? result)
+                      (callback 0.2 #(when (has-valid-editor? result)
                                        (editor/refresh (:ed @result))))))
 
 (behavior ::clear-mark
