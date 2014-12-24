@@ -106,3 +106,16 @@
 (cmd/command {:command :julia.pkg-dir.open
               :desc "Julia: Open Package Directory"
               :exec #(platform/open (files/home ".julia"))})
+
+(cmd/command {:command :julia.cwd
+              :desc "Julia: Set the current working directory here"
+              :exec (fn [path]
+                      (let [ed (pool/last-active)
+                            client (if (-> @ed :tags :julia)
+                                     (eval/get-client! {:command :julia.cwd
+                                                        :origin ed
+                                                        :create proc/connect})
+                                     (proc/default-client))]
+                        (clients/send client
+                                      :cwd
+                                      (or path (-> @ed :info :path)))))})
