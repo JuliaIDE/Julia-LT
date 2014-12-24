@@ -11,7 +11,6 @@
                       (conj items
                             {:label "Evaluate"
                              :order -2
-                             :enabled (not (editor/selection? this))
                              :click #(cmd/exec! :eval-editor-form)}
                             {:type "separator"
                              :order -1}
