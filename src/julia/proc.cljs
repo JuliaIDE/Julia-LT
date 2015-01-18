@@ -131,7 +131,7 @@
     (object/merge! obj {:notify notify :complain complain})
     (with-dir (files/home)
       #(proc/exec {:command path
-                   :args [init tcp/port (clients/->id client)]
+                   :args ["-i" init tcp/port (clients/->id client)]
                    :obj obj}))
     (object/merge! client {:proc (-> @obj :procs first)})
     (init-client client obj)
