@@ -176,7 +176,7 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
       if (stream.match(/^[\d_]+\.[\d_]*([Eef][+-]?\d+)?/)) {
         float_literal = true;
-      } else if (stream.match(/^[\d_]*\.[\d_]+([Eef][+-]?\d+)?/)) {
+      } else if (stream.match(/^[\d_]*\.(?![_])[\d_]+([Eef][+-]?\d+)?/)) {
         float_literal = true;
       }
 
