@@ -169,6 +169,40 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
     var leaving_expr = state.leaving_expr;
     state.leaving_expr = false;
 
+    // Number Literals
+    if (stream.match(/^[+-]?[0-9\.]/, false)) {
+
+      var float_literal = false;
+
+      if (stream.match(/^[\d_]+\.[\d_]*([Eef][+-]?\d+)?/)) {
+        float_literal = true;
+      } else if (stream.match(/^[\d_]*\.[\d_]+([Eef][+-]?\d+)?/)) {
+        float_literal = true;
+      }
+
+      if (float_literal) {
+        finalise_leavingexpr(state, stream);
+        return 'number';
+      }
+
+      var int_literal = false;
+
+      if (stream.match(/^0x[0-9a-f_]*(\.?[0-9a-f_]*[p][+-]?\d+)?(?![\d\.])/i)) {
+        int_literal = true;
+      } else if (stream.match(/^0b[01_]+(?![\d\.])/)) {
+        int_literal = true;
+      } else if (stream.match(/^0o[0-7_]+(?![\d\.])/)) {
+        int_literal = true;
+      } else if (stream.match(/^[\d_]+([Eef][\+\-]?\d+)?(?![\d\.])/)) {
+        int_literal = true;
+      }
+
+      if (int_literal || stream.match(/^0(?!\d)/)) {
+        finalise_leavingexpr(state, stream);
+        return 'number';
+      }
+    }
+
     // If a comma or dot, don't remove last keyword
     // This is so that `using A, B` works
     if (stream.match(/\.|,/))
@@ -253,12 +287,6 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
 
     if(stream.match("=>")) {
       return 'operator';
-    }
-
-    // Number Literals
-    if (stream.match(/[+-]?([0-9][0-9_]*\.|\.[0-9]|[0-9])[0-9_]*([ef][+-]?[0-9]+)?(im)?/i)) {
-      finalise_leavingexpr(state, stream);
-      return 'number';
     }
 
     // Open strings
