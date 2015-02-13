@@ -24,6 +24,7 @@
     (set! (.-onmousedown node) #(when (left-click? %) (reset! pos (->pos %))))
     (set! (.-onmouseup node)   #(when (and (left-click? %)
                                            (< (hypot @pos (->pos %)) 5))
+                                  (.preventDefault %) (.stopPropagation %)
                                   (f %)))))
 
 ;; Line highlighting

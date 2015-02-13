@@ -30,4 +30,4 @@ end
 
 require("Jewel")
 
-Jewel.server(map(parseint, ARGS)...)
+Jewel.server(map(parseint, ARGS)..., true)

@@ -1,5 +1,9 @@
 (ns lt.objs.langs.julia.util
   (:require [crate.core :as crate]
+            [lt.objs.files :as files]
+            [lt.objs.plugins :as plugins]
+            [lt.objs.console :as console]
+            [lt.objs.platform :as platform]
             [lt.objs.editor :as editor]))
 
 ;; Editors
@@ -44,3 +48,60 @@
 
 (defn parse-div [html]
   (-> html crate/raw into-div))
+
+;; Files
+
+(defn plugin-dir [& names]
+  (->> (for [dir [plugins/user-plugins-dir plugins/plugins-dir]
+             name names
+             :let [path (files/join dir name)]
+             :when (files/exists? path)]
+         path)
+       first))
+
+(def jl-plugin-dir (plugin-dir "Julia-LT" "Julia"))
+
+;; Terminal
+
+(defn call-me-maybe [f] (when f (f)))
+
+(defn exec [sh]
+  (.exec (js/require "child_process") sh
+         (fn [err stdout stderr]
+           (when err
+             (console/log err "error")))))
+
+(defn escape-quotes [s]
+  (-> s
+      #_(clojure.string/replace "\\" "\\\\")
+      (clojure.string/replace "\"" "\\\"")))
+
+(when (platform/mac?)
+  (defn escape-path [path]
+    (str "\"" path "\""))
+
+  (defn activate-term []
+    (exec "osascript -e 'tell application \"Terminal\" to activate'"))
+
+  (defn term-sh [sh]
+    (str "osascript -e 'tell application \"Terminal\" to do script \""
+         (escape-quotes sh)
+         "\"'"))
+
+  (defn term [sh]
+    (activate-term)
+    (exec (term-sh sh))))
+
+;; After much trial and error, I managed to figure out the magic
+;; incantation you need to use to do this.
+
+(when (platform/win?)
+  (defn escape-path [path]
+    (-> path
+       (clojure.string/replace #"([^\\/]* [^\\/]*)" "\"$1\"")))
+
+  (defn term-sh [sh]
+    (str "cmd /C start cmd /C " sh))
+
+  (defn term [sh]
+    (exec (term-sh sh))))

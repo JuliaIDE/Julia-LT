@@ -33,9 +33,12 @@
     (if-let [ed (editor-for-file file)]
       (let [handle (editor/line-handle ed (dec line))
             class (or class default-class)]
-        (toggle-background ed handle :light-line true) ; Needed so that transitions work
-        (toggle-background ed handle class true)
-        (assoc l :handle handle :ed ed))
+        (if handle
+          (do
+            (toggle-background ed handle :light-line true) ; Needed so that transitions work
+            (toggle-background ed handle class true)
+            (assoc l :handle handle :ed ed))
+          l))
       l)))
 
 (defn refresh-lines [{:keys [lines class]}]

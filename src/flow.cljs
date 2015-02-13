@@ -2,8 +2,14 @@
   (:require [lt.util.dom :as dom]
             [lt.object :as object]
             [lt.objs.editor :as editor]
-            [crate.core :as crate])
+            [crate.core :as crate]
+            [lt.objs.files :as files]
+            [lt.objs.plugins :as plugins]
+            [lt.objs.langs.julia.util :as util])
   (:require-macros [lt.macros :refer [behavior defui]]))
+
+(set! js/$ (js/require (files/join util/jl-plugin-dir
+                                   "js/jquery-2.1.1.min.js")))
 
 (defn callback [s f]
   (js/setTimeout f (* s 1000)))
@@ -22,7 +28,7 @@
           :reaction (fn [result]
                       (-> result object/->content js/$ .hide)
                       (callback 0 #(show (object/->content result)))
-                      (callback 210 #(when (has-valid-editor? result)
+                      (callback 0.2 #(when (has-valid-editor? result)
                                        (editor/refresh (:ed @result))))))
 
 (behavior ::clear-mark
