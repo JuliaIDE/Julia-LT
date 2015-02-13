@@ -11,14 +11,7 @@
   vertical-align: top;
   overflow: hidden; }
 
-.inline-exception {
-  max-width: 95%;  }
-
-.julia {
-  max-width: inherit!important;  }
-  
 .inline-exception > div {
-  max-width: inherit !important;
   display: inline-block;
   padding: 4px 10px;
   padding-bottom: 6px;
