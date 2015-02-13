@@ -139,6 +139,8 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         }
       }
       return 'string';
+    } else if (stream.match('.\'')) {
+        return 'operator';
     }
 
     // Multiline Comments
