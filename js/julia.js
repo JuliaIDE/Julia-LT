@@ -139,6 +139,8 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         }
       }
       return 'string';
+    } else if (stream.match('.\'')) {
+        return 'operator';
     }
 
     // Multiline Comments
@@ -340,8 +342,10 @@ CodeMirror.defineMode("julia2", function(config, parserConfig) {
         if (stream.match(/,|\./, false))
           state.last_keyword = last_keyword;
         return 'def ';
-      } else if (stream.match('(', false)) {
-        return (stream.column() == 0 ? 'def ' : 'variable-2 ');
+      } else if (stream.match(/{?.*}?\(.*\)\s*=(?!=)/, false)) {
+          return 'def ';
+      } else if (stream.match(/\(.*\)/, false)){
+          return 'variable-2';
       } else {
         return 'variable ';
       }
