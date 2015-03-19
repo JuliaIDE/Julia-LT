@@ -28,6 +28,9 @@ catch e
   end
 end
 
+# workaround JuliaLang/julia#6765
+eval(Base, :(is_interactive = true))
+
 require("Jewel")
 
 Jewel.server(map(parseint, ARGS)..., true)
