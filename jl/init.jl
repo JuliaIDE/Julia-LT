@@ -7,6 +7,14 @@ if VERSION < v"0.3-"
   exit(1)
 end
 
+const bundlepath = joinpath(JULIA_HOME, "..", "packages")
+
+if !isdir(Pkg.dir()) && isdir(bundlepath)
+  info("Installing packages...")
+  mkpath(Pkg.dir())
+  run(`cp -a $bundlepath/. $(Pkg.dir())`)
+end
+
 try
   require("Jewel")
 catch e
