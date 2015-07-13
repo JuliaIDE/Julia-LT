@@ -12,7 +12,8 @@ const bundlepath = joinpath(JULIA_HOME, "..", "packages")
 if !isdir(Pkg.dir()) && isdir(bundlepath)
   info("Installing packages...")
   mkpath(Pkg.dir())
-  run(`cp -a $bundlepath/. $(Pkg.dir())`)
+  @unix_only run(`cp -a $bundlepath/. $(Pkg.dir())`)
+  @windows_only run(`XCopy /E /Q $bundlepath $(Pkg.dir())`)
 end
 
 try
