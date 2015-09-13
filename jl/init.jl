@@ -16,10 +16,12 @@ if !isdir(Pkg.dir()) && isdir(bundlepath)
   @windows_only run(`XCopy /E /Q $bundlepath $(Pkg.dir())`)
 end
 
+VERSION < v"0.4-" && (require(s::Symbol) = Base.require(string(s)))
+
 try
-  require("Jewel")
+  require(:Jewel)
 catch e
-  if isa(e, ErrorException) && e.msg == "Jewel not found"
+  if isa(e, ArgumentError) && e.msg == "Jewel not found in path"
     try
       info("Couldn't find Jewel package, attempting installation...")
       Pkg.add("Jewel")
@@ -37,6 +39,6 @@ catch e
   end
 end
 
-require("Jewel")
+!isdefined(Main, :Jewel) && require(:Jewel)
 
-Jewel.server(map(parseint, ARGS)..., true)
+Jewel.server(map(s->parse(Int, s), ARGS)..., true)
