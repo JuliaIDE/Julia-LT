@@ -1,12 +1,3 @@
-if VERSION < v"0.3-"
-  println(STDERR, """
-  This plugin requires Julia 0.3 or higher to work. Your current version
-  is $(VERSION). Please download a more recent release from
-  http://www.julialang.org/downloads
-  """)
-  exit(1)
-end
-
 const bundlepath = joinpath(JULIA_HOME, "..", "packages")
 
 if !isdir(Pkg.dir()) && isdir(bundlepath)
@@ -18,12 +9,19 @@ end
 
 VERSION < v"0.4-" && (require(s::Symbol) = Base.require(string(s)))
 
+const oldout = STDOUT
+const olderr = STDERR
+
+const out = redirect_stdout()[1]
+const err = redirect_stderr()[1]
+
 try
   require(:Jewel)
 catch e
   if isa(e, ArgumentError) && e.msg == "Jewel not found in path"
     try
       info("Couldn't find Jewel package, attempting installation...")
+      Pkg.update()
       Pkg.add("Jewel")
     catch e
       println(STDERR, """
@@ -41,4 +39,15 @@ end
 
 !isdefined(Main, :Jewel) && require(:Jewel)
 
-Jewel.server(map(s->parse(Int, s), ARGS)..., true)
+try
+
+global s = Jewel.server(map(s->parse(Int, s), ARGS)..., true)
+
+LightTable.flushpipe(out)
+LightTable.flushpipe(err)
+
+catch e
+  showerror(olderr, e, catch_backtrace())
+end
+
+wait(s)
