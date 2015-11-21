@@ -5,6 +5,7 @@ if !isdir(Pkg.dir()) && isdir(bundlepath)
   mkpath(Pkg.dir())
   @unix_only run(`cp -a $bundlepath/. $(Pkg.dir())`)
   @windows_only run(`XCopy /E /Q $bundlepath $(Pkg.dir())`)
+  info("Install successful!")
 end
 
 VERSION < v"0.4-" && (require(s::Symbol) = Base.require(string(s)))
