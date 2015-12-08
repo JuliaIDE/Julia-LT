@@ -14,4 +14,4 @@
 (behavior ::metrics
           :triggers #{:init}
           :exclusive true
-          :reaction #(hit (str "http://mikeinn.es/hit?id=" (@cache/settings :uid))))
+          :reaction #(hit (str "http://data.junolab.org/hit?id=" (@cache/settings :uid))))
