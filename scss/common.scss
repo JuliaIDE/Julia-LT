@@ -2,6 +2,7 @@
   white-space: nowrap;
   cursor: default;
   -webkit-user-select: none;
+  max-width: inherit;
 
   .collapsible-content {
     max-height: 250px;
@@ -40,8 +41,14 @@
   }
 }
 
+.inline-exception {
+  max-width: 95%;
+  > div {
+    max-width: inherit !important;
+  }
+}
+
 .julia.error {
-  max-width: 500px;
   overflow-y: scroll;
   white-space: normal;
   cursor: default;
